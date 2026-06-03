@@ -279,9 +279,9 @@ export function SaudeClient({ userId, alturaCm, initialMedicoes, initialSintomas
       )}
 
       {(showMedicaoForm || showSintomaForm) && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => { setShowMedicaoForm(false); setShowSintomaForm(false); }} />
-          <div className="relative w-full max-w-md bg-white rounded-t-[32px] p-6 shadow-xl animate-slide-up">
+        <div className="fixed inset-0 z-[100] flex items-end justify-center">
+          <div className="absolute inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm" onClick={() => { setShowMedicaoForm(false); setShowSintomaForm(false); }} />
+          <div className="relative z-[101] w-full max-w-md bg-white rounded-t-[32px] p-6 shadow-xl animate-slide-up">
             <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6" />
             <h2 className="text-xl font-bold mb-6">{showMedicaoForm ? "Nova Medição" : "Registrar Sintoma"}</h2>
             

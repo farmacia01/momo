@@ -112,7 +112,7 @@ export default function CadastroFornecedorPage() {
       </div>
 
       <main className="flex-1 px-6 pt-8 overflow-y-auto">
-        <div className="mx-auto max-w-md pb-24">
+        <div className="mx-auto max-w-md pb-32">
           {error && (
             <div className="mb-6 rounded-xl bg-red-50 p-4 text-sm text-red-600 animate-fade-up">
               {error}

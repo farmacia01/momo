@@ -6,6 +6,7 @@ import { Check } from "lucide-react";
 
 interface WeekTrackerProps {
   doseDates: string[]; // ISO strings
+  nextDoseDate?: Date;
 }
 
 export function WeekTracker({ doseDates }: WeekTrackerProps) {

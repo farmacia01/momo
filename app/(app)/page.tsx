@@ -1,6 +1,7 @@
 import { createServerClient } from "@/lib/supabase-server";
 import { DashboardClient } from "@/components/DashboardClient";
-import { differenceInDays, differenceInWeeks, addDays } from "date-fns";
+import { differenceInDays, differenceInWeeks } from "date-fns";
+import { calcularProximaDose } from "@/lib/utils/dose";
 
 export default async function DashboardPage() {
   const supabase = createServerClient();
@@ -51,23 +52,17 @@ export default async function DashboardPage() {
   const weightDelta = (firstWeight?.peso_kg && lastWeight?.peso_kg) ? (firstWeight.peso_kg - lastWeight.peso_kg).toFixed(1) : 0;
   const daysSinceLastWeight = lastWeight ? differenceInDays(new Date(), new Date(lastWeight.data_medicao)) : null;
   
-  let nextDoseDate = null;
-  let daysUntilNextDose = null;
-  if (lastDose?.data_aplicacao) {
-    nextDoseDate = addDays(new Date(lastDose.data_aplicacao), 7);
-    daysUntilNextDose = differenceInDays(nextDoseDate, new Date());
-  } else {
-    nextDoseDate = new Date();
-    daysUntilNextDose = 0;
-  }
+  const calculoDose = calcularProximaDose(
+    lastDose?.data_aplicacao,
+    profile?.data_inicio_tratamento
+  );
 
   return (
     <DashboardClient 
       userId={session.user.id}
       profile={profile}
       lastDose={lastDose}
-      nextDoseDate={nextDoseDate}
-      daysUntilNextDose={daysUntilNextDose}
+      calculoDose={calculoDose}
       weeksCompleted={weeksCompleted}
       lastWeight={lastWeight}
       weightDelta={weightDelta}

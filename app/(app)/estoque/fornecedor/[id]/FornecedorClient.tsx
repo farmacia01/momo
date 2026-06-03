@@ -57,7 +57,7 @@ export function FornecedorClient({
   const nome = nomeFornecedor(fornecedor);
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-32">
       <PageHeader title="Fornecedor" />
 
       {/* Hero header */}

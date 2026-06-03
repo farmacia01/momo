@@ -94,7 +94,7 @@ export function DietaClient({
   const progressoPct = Math.min(100, Math.round((totaisHoje.calorias / plano.caloriasMax) * 100));
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-36">
       <PageHeader title="Minha Dieta" />
 
       {/* Hero Card */}
@@ -163,7 +163,7 @@ export function DietaClient({
             {/* Add meal */}
             <button
               onClick={() => setShowForm(true)}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-forest text-white text-sm font-bold shadow-lg shadow-forest/20 active:scale-[0.98] transition-transform"
+              className="fixed bottom-[70px] left-5 right-5 z-[45] z-45 flex items-center justify-center gap-2 rounded-2xl bg-forest py-3.5 text-sm font-bold text-white shadow-lg shadow-forest/20 transition-transform active:scale-[0.98]"
             >
               <Plus size={18} /> Registrar refeição
             </button>
@@ -249,8 +249,8 @@ function RefeicaoForm({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/40 p-0 sm:p-6">
-      <div className="w-full max-w-md bg-white rounded-t-[32px] sm:rounded-[32px] p-6 max-h-[90vh] overflow-y-auto animate-slide-up">
+    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/40 p-0 sm:items-center sm:p-6">
+      <div className="relative z-[101] w-full max-w-md max-h-[90vh] overflow-y-auto rounded-t-[32px] bg-white p-6 animate-slide-up sm:rounded-[32px]">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-black text-slate-900">Registrar refeição</h2>
           <button onClick={onClose} className="p-2 text-slate-400"><X size={20} /></button>

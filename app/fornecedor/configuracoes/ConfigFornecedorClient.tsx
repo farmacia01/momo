@@ -63,7 +63,7 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
   };
 
   return (
-    <div className="space-y-6 pb-24">
+    <div className="space-y-6 pb-32">
       <div className="flex items-center gap-3">
         <div className="h-12 w-12 rounded-2xl bg-surface flex items-center justify-center text-forest">
           <Store size={22} />

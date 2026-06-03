@@ -61,7 +61,7 @@ export function ConfiguracoesClient({ initialProfile }: { initialProfile: Profil
   }
 
   return (
-    <div className="space-y-6 pb-24">
+    <div className="space-y-6 pb-32">
       <PageHeader 
         title={view === "menu" ? "Configurações" : view === "address" ? "Endereço" : "Meu Perfil"} 
         showBack={view !== "menu"}

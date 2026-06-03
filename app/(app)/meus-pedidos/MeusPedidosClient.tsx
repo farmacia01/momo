@@ -50,7 +50,7 @@ export function MeusPedidosClient({ initialPedidos }: { initialPedidos: any[] })
   const [pedidos] = useState<PedidoComInfo[]>(initialPedidos);
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-32">
       <PageHeader title="Meus Pedidos" />
 
       {pedidos.length === 0 ? (

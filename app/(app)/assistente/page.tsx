@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Bot, Send, User, Sparkles, AlertCircle } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { motion, AnimatePresence } from "framer-motion";
+import { useFabVisibility } from "@/components/FabVisibilityContext";
 
 const suggestions = [
   "Quais proteínas comer na janta?",
@@ -19,6 +20,7 @@ type ChatMessage = {
 };
 
 export default function AssistentePage() {
+  const { setFabHidden } = useFabVisibility();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "welcome",
@@ -30,6 +32,14 @@ export default function AssistentePage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setFabHidden(true);
+
+    return () => {
+      setFabHidden(false);
+    };
+  }, [setFabHidden]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -90,7 +100,7 @@ export default function AssistentePage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-10rem)] flex-col">
+    <div className="flex min-h-[calc(100vh-10rem)] flex-col pb-36">
       <PageHeader title="Assistente IA" />
 
       <div className="mb-4 flex gap-3 rounded-2xl border border-amber-100 bg-amber-50 p-3 shadow-sm animate-fade-up">
@@ -154,7 +164,8 @@ export default function AssistentePage() {
           )}
         </div>
 
-        <div className="space-y-4 border-t border-gray-100 p-4">
+        <div className="fixed bottom-[70px] left-0 right-0 z-[45] z-45 border-t border-gray-100 bg-white p-4">
+          <div className="mx-auto w-full max-w-md px-4">
           {messages.length <= 1 && !isLoading && (
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
               {suggestions.map((suggestion) => (
@@ -188,6 +199,7 @@ export default function AssistentePage() {
               <Send size={20} strokeWidth={2.5} />
             </button>
           </form>
+          </div>
         </div>
       </div>
     </div>

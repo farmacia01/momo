@@ -56,7 +56,7 @@ export default async function EstoquePage() {
   if (ampolasDisponiveis < 0) ampolasDisponiveis = 0; // Prevent negative display
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-32">
       <EstoqueClient
         userId={session.user.id}
         initialAmpolas={ampolas || []}

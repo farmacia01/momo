@@ -146,8 +146,8 @@ export function BottomNav() {
         )}
       </AnimatePresence>
 
-      <nav className="fixed left-1/2 -translate-x-1/2 bottom-6 z-[60] w-full max-w-[340px] px-2 pointer-events-none">
-        <div className="flex w-full items-center justify-around gap-1 rounded-full bg-gray-900/95 backdrop-blur-md p-1.5 shadow-2xl pointer-events-auto">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pointer-events-none">
+        <div className="mx-auto flex w-full max-w-[340px] items-center justify-around gap-1 rounded-full bg-gray-900/95 p-1.5 shadow-2xl backdrop-blur-md pointer-events-auto">
           {primaryItems.map((item) => {
             const active = isActive(pathname, item.href);
             const Icon = item.icon;

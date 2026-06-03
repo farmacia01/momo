@@ -120,7 +120,7 @@ export function DosesClient({ userId, initialDoses, currentDoseMg }: { userId: s
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-32">
       <PageHeader 
         title="Minhas Doses" 
         action={

@@ -8,13 +8,13 @@ import Link from "next/link";
 import { WeekTracker } from "./WeekTracker";
 import { DashboardChart } from "./DashboardChart";
 import { NotificationBell } from "./NotificationBell";
+import { getTextoProximaDose, type CalculoDose } from "@/lib/utils/dose";
 
 interface DashboardClientProps {
   userId: string;
   profile: any;
   lastDose: any;
-  nextDoseDate: Date;
-  daysUntilNextDose: number | null;
+  calculoDose: CalculoDose;
   weeksCompleted: number;
   lastWeight: any;
   weightDelta: string | number;
@@ -43,8 +43,7 @@ export function DashboardClient({
   userId,
   profile,
   lastDose,
-  nextDoseDate,
-  daysUntilNextDose,
+  calculoDose,
   weeksCompleted,
   lastWeight,
   weightDelta,
@@ -63,19 +62,14 @@ export function DashboardClient({
     .substring(0, 2)
     .toUpperCase() || 'U';
 
-  const formatDaysUntil = (days: number) => {
-    if (days < 0) return 'Atrasada';
-    if (days === 0) return 'HOJE';
-    if (days === 1) return 'Amanhã';
-    return `Em ${days} dias`;
-  };
+  const textosDose = getTextoProximaDose(calculoDose);
 
   return (
     <motion.div 
       variants={container}
       initial="hidden"
       animate="show"
-      className="space-y-6"
+      className="space-y-6 pb-32"
     >
       {/* Top row */}
       <motion.div variants={item} className="flex justify-between items-center">
@@ -103,7 +97,7 @@ export function DashboardClient({
         <p className="text-[13px] font-bold opacity-70 uppercase tracking-widest mb-4">
           Semana {weeksCompleted + 1} de tratamento
         </p>
-        <WeekTracker doseDates={doses?.map(d => d.data_aplicacao) || []} />
+        <WeekTracker doseDates={doses?.map(d => d.data_aplicacao) || []} nextDoseDate={calculoDose.data} />
       </motion.div>
 
       {/* Metric Grid 2x2 */}
@@ -112,11 +106,18 @@ export function DashboardClient({
           variants={item}
           icon={<Calendar className="w-4 h-4" />}
           label="Próxima dose"
-          value={daysUntilNextDose !== null ? formatDaysUntil(daysUntilNextDose) : '--'}
-          subValue={format(nextDoseDate, "dd 'de' MMM", { locale: ptBR })}
-          badge={daysUntilNextDose === 0 ? "Hoje" : undefined}
-          iconBg="bg-[#e8f5ee]"
-          iconColor="text-[#16a34a]"
+          value={textosDose.principal}
+          subValue={textosDose.secundario}
+          badge={textosDose.badge}
+          badgeColor={
+            textosDose.cor === 'red' ? 'bg-red-50 border border-red-200 text-red-600' :
+            textosDose.cor === 'green' ? 'bg-green-50 border border-green-200 text-green-600 animate-pulse' :
+            textosDose.cor === 'yellow' ? 'bg-yellow-50 border border-yellow-200 text-yellow-600' :
+            undefined
+          }
+          valueColor={textosDose.cor === 'red' ? 'text-red-600' : textosDose.cor === 'green' ? 'text-green-600' : undefined}
+          iconBg={textosDose.cor === 'red' ? 'bg-red-50' : textosDose.cor === 'green' ? 'bg-green-50' : 'bg-[#e8f5ee]'}
+          iconColor={textosDose.cor === 'red' ? 'text-red-600' : textosDose.cor === 'green' ? 'text-green-600' : 'text-[#16a34a]'}
         />
         <MetricCard 
           variants={item}
@@ -203,7 +204,7 @@ export function DashboardClient({
   );
 }
 
-function MetricCard({ icon, label, value, subValue, badge, badgeColor, iconBg, iconColor, variants }: any) {
+function MetricCard({ icon, label, value, subValue, badge, badgeColor, iconBg, iconColor, valueColor, variants }: any) {
   return (
     <motion.div 
       variants={variants}
@@ -221,8 +222,8 @@ function MetricCard({ icon, label, value, subValue, badge, badgeColor, iconBg, i
       </div>
       <div className="mt-4">
         <p className="text-[11px] font-medium text-gray-400">{label}</p>
-        <div className="flex items-baseline gap-1 mt-0.5">
-          <h4 className="text-[22px] font-bold text-gray-900 tracking-tight">{value}</h4>
+        <div className="flex flex-col mt-0.5">
+          <h4 className={`text-[18px] font-bold tracking-tight line-clamp-1 ${valueColor || 'text-gray-900'}`}>{value}</h4>
           <span className="text-[11px] font-medium text-gray-400">{subValue}</span>
         </div>
       </div>

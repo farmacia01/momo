@@ -138,7 +138,7 @@ export default function FornecedorProdutosPage() {
   if (loading) return <div className="flex h-64 items-center justify-center"><LoadingSpinner /></div>;
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-32">
       <PageHeader
         title="Meus Produtos"
         showBack={false}
@@ -187,8 +187,8 @@ export default function FornecedorProdutosPage() {
 
       {/* Modal criar/editar */}
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/40 p-0 sm:p-6">
-          <div className="w-full max-w-md bg-white rounded-t-[32px] sm:rounded-[32px] p-6 max-h-[90vh] overflow-y-auto animate-slide-up">
+        <div className="fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/40 p-0 sm:items-center sm:p-6">
+          <div className="relative z-[101] w-full max-w-md max-h-[90vh] overflow-y-auto rounded-t-[32px] bg-white p-6 animate-slide-up sm:rounded-[32px]">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-lg font-black text-slate-900">{editing ? "Editar produto" : "Novo produto"}</h2>
               <button onClick={() => setShowForm(false)} className="p-2 text-slate-400"><X size={20} /></button>
