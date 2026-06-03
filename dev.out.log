@@ -26,3 +26,23 @@
  ✓ Compiled in 658ms (4012 modules)
  ✓ Compiled in 190ms (1916 modules)
  ○ Compiling /_error ...
+ ✓ Compiled /_error in 2.1s (4238 modules)
+ GET /fornecedor 200 in 699ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 703ms (4226 modules)
+ GET /_next/static/css/app/layout.css?v=1780448489241 404 in 886ms
+ GET /_next/static/css/app/fornecedor/layout.css?v=1780448489241 404 in 891ms
+ GET /_next/static/chunks/main-app.js?v=1780448489241 404 in 787ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 13ms
+ GET /_next/static/chunks/app/fornecedor/page.js 404 in 12ms
+ GET /_next/static/chunks/app/fornecedor/layout.js 404 in 46ms
+ GET /fornecedor 200 in 858ms
+ GET /fornecedor 200 in 503ms
+ GET /_next/static/css/app/layout.css?v=1780448528830 404 in 21ms
+ GET /_next/static/css/app/fornecedor/layout.css?v=1780448528830 404 in 21ms
+ GET /_next/static/chunks/main-app.js?v=1780448528830 404 in 27ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 28ms
+ GET /_next/static/chunks/app/fornecedor/layout.js 404 in 28ms
+ GET /_next/static/chunks/app/fornecedor/page.js 404 in 25ms
+ GET /fornecedor 200 in 457ms
+ GET /fornecedor 200 in 465ms

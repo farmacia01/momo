@@ -82,3 +82,65 @@ Require stack:
   ],
   page: '/fornecedor'
 }
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'D:\baixados\monjaro\.next\server\vendor-chunks\eventemitter3.js'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/eventemitter3' in D:\baixados\monjaro\.next\server for build dependencies doesn't lead to expected result 'D:\baixados\monjaro\.next\server\vendor-chunks\eventemitter3.js', but to 'Error: Can't resolve './vendor-chunks/eventemitter3' in 'D:\baixados\monjaro\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/eventemitter3 (expected D:\baixados\monjaro\.next\server\vendor-chunks\eventemitter3.js)
+<w>  at file dependencies D:\baixados\monjaro\.next\server\webpack-runtime.js
+<w>  at file D:\baixados\monjaro\.next\server\webpack-runtime.js
+<w>  at file dependencies D:\baixados\monjaro\.next\server\app\fornecedor\page.js
+<w>  at file D:\baixados\monjaro\.next\server\app\fornecedor\page.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\server\require.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\server\require.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\server\load-components.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\build\utils.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\build\utils.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs D:\baixados\monjaro\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/object-assign' in D:\baixados\monjaro\.next\server for build dependencies doesn't lead to expected result 'D:\baixados\monjaro\.next\server\vendor-chunks\object-assign.js', but to 'Error: Can't resolve './vendor-chunks/object-assign' in 'D:\baixados\monjaro\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/object-assign (expected D:\baixados\monjaro\.next\server\vendor-chunks\object-assign.js)
+<w>  at file dependencies D:\baixados\monjaro\.next\server\webpack-runtime.js
+<w>  at file D:\baixados\monjaro\.next\server\webpack-runtime.js
+<w>  at file dependencies D:\baixados\monjaro\.next\server\app\fornecedor\page.js
+<w>  at file D:\baixados\monjaro\.next\server\app\fornecedor\page.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\server\require.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\server\require.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\server\load-components.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\build\utils.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\build\utils.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs D:\baixados\monjaro\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/clsx' in D:\baixados\monjaro\.next\server for build dependencies doesn't lead to expected result 'D:\baixados\monjaro\.next\server\vendor-chunks\clsx.js', but to 'Error: Can't resolve './vendor-chunks/clsx' in 'D:\baixados\monjaro\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/clsx (expected D:\baixados\monjaro\.next\server\vendor-chunks\clsx.js)
+<w>  at file dependencies D:\baixados\monjaro\.next\server\webpack-runtime.js
+<w>  at file D:\baixados\monjaro\.next\server\webpack-runtime.js
+<w>  at file dependencies D:\baixados\monjaro\.next\server\app\fornecedor\page.js
+<w>  at file D:\baixados\monjaro\.next\server\app\fornecedor\page.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\server\require.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\server\require.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\server\load-components.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\build\utils.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\build\utils.js
+<w>  at file dependencies D:\baixados\monjaro\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file D:\baixados\monjaro\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs D:\baixados\monjaro\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
