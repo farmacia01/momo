@@ -1,0 +1,80 @@
+import { createServerClient } from "@/lib/supabase-server";
+import { DashboardClient } from "@/components/DashboardClient";
+import { differenceInDays, differenceInWeeks, addDays } from "date-fns";
+
+export default async function DashboardPage() {
+  const supabase = createServerClient();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) return null;
+
+  // Profile
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', session.user.id)
+    .single();
+
+  // Doses
+  const { data: doses } = await supabase
+    .from('doses')
+    .select('data_aplicacao, dose_mg, local_aplicacao, observacoes')
+    .eq('user_id', session.user.id)
+    .order('data_aplicacao', { ascending: false });
+    
+  const lastDose = doses?.[0];
+
+  // Weights
+  const { data: weights } = await supabase
+    .from('medicoes_saude')
+    .select('data_medicao, peso_kg')
+    .eq('user_id', session.user.id)
+    .not('peso_kg', 'is', null)
+    .order('data_medicao', { ascending: false });
+
+  // Inventory
+  const { data: ampolas } = await supabase
+    .from('estoque_ampolas')
+    .select('quantidade')
+    .eq('user_id', session.user.id);
+  
+  const totalPurchased = ampolas?.reduce((acc, curr) => acc + (curr.quantidade || 0), 0) || 0;
+  const ampolasUsadas = doses?.length || 0;
+  const totalAmpolas = Math.max(0, totalPurchased - ampolasUsadas);
+
+  // Calculations
+  const startTreatmentDate = profile?.data_inicio_tratamento ? new Date(profile.data_inicio_tratamento) : new Date();
+  const weeksCompleted = differenceInWeeks(new Date(), startTreatmentDate);
+  
+  const lastWeight = weights?.[0];
+  const firstWeight = weights?.[weights.length - 1];
+  const weightDelta = (firstWeight?.peso_kg && lastWeight?.peso_kg) ? (firstWeight.peso_kg - lastWeight.peso_kg).toFixed(1) : 0;
+  const daysSinceLastWeight = lastWeight ? differenceInDays(new Date(), new Date(lastWeight.data_medicao)) : null;
+  
+  let nextDoseDate = null;
+  let daysUntilNextDose = null;
+  if (lastDose?.data_aplicacao) {
+    nextDoseDate = addDays(new Date(lastDose.data_aplicacao), 7);
+    daysUntilNextDose = differenceInDays(nextDoseDate, new Date());
+  } else {
+    nextDoseDate = new Date();
+    daysUntilNextDose = 0;
+  }
+
+  return (
+    <DashboardClient 
+      userId={session.user.id}
+      profile={profile}
+      lastDose={lastDose}
+      nextDoseDate={nextDoseDate}
+      daysUntilNextDose={daysUntilNextDose}
+      weeksCompleted={weeksCompleted}
+      lastWeight={lastWeight}
+      weightDelta={weightDelta}
+      daysSinceLastWeight={daysSinceLastWeight}
+      totalAmpolas={totalAmpolas}
+      weights={weights || []}
+      doses={doses || []}
+    />
+  );
+}

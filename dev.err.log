@@ -1,0 +1,84 @@
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (102kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (243kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+ ⨯ Error: Cannot find module './787.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\app\fornecedor\pedidos\page.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\load-components.js
+- D:\baixados\monjaro\node_modules\next\dist\build\utils.js
+- D:\baixados\monjaro\node_modules\next\dist\server\dev\hot-middleware.js
+- D:\baixados\monjaro\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\router-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+    at __webpack_require__.f.require (D:\baixados\monjaro\.next\server\webpack-runtime.js:198:28)
+    at D:\baixados\monjaro\.next\server\webpack-runtime.js:111:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (D:\baixados\monjaro\.next\server\webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (D:\baixados\monjaro\.next\server\webpack-runtime.js:162:22)
+    at D:\baixados\monjaro\.next\server\app\fornecedor\page.js:1:19666
+    at Object.<anonymous> (D:\baixados\monjaro\.next\server\app\fornecedor\page.js:1:19748)
+    at Module._compile (node:internal/modules/cjs/loader:1830:14)
+    at Object..js (node:internal/modules/cjs/loader:1961:10)
+    at Module.load (node:internal/modules/cjs/loader:1553:32)
+    at Module._load (node:internal/modules/cjs/loader:1355:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+    at requirePage (D:\baixados\monjaro\node_modules\next\dist\server\require.js:109:84)
+    at D:\baixados\monjaro\node_modules\next\dist\server\load-components.js:98:84
+    at async loadComponentsImpl (D:\baixados\monjaro\node_modules\next\dist\server\load-components.js:98:26)
+    at async DevServer.findPageComponentsImpl (D:\baixados\monjaro\node_modules\next\dist\server\next-server.js:709:36)
+    at async DevServer.findPageComponents (D:\baixados\monjaro\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (D:\baixados\monjaro\node_modules\next\dist\server\base-server.js:1894:24)
+    at async DevServer.renderToResponseImpl (D:\baixados\monjaro\node_modules\next\dist\server\base-server.js:1946:32)
+    at async DevServer.pipeImpl (D:\baixados\monjaro\node_modules\next\dist\server\base-server.js:921:25)
+    at async NextNodeServer.handleCatchallRenderRequest (D:\baixados\monjaro\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (D:\baixados\monjaro\node_modules\next\dist\server\base-server.js:817:17)
+    at async D:\baixados\monjaro\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (D:\baixados\monjaro\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (D:\baixados\monjaro\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (D:\baixados\monjaro\node_modules\next\dist\server\lib\router-server.js:173:21)
+    at async handleRequest (D:\baixados\monjaro\node_modules\next\dist\server\lib\router-server.js:350:24)
+    at async requestHandlerImpl (D:\baixados\monjaro\node_modules\next\dist\server\lib\router-server.js:374:13)
+    at async Server.requestListener (D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\app\\fornecedor\\pedidos\\page.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\load-components.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\build\\utils.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ],
+  page: '/fornecedor'
+}

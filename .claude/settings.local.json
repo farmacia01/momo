@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(node scripts/generate-icons.js)",
+      "Bash(npm install *)",
+      "PowerShell(Get-PSDrive -PSProvider FileSystem | Select-Object Name, @{N='UsedGB';E={[math]::Round\\($_.Used/1GB,1\\)}}, @{N='FreeGB';E={[math]::Round\\($_.Free/1GB,1\\)}} | Format-Table -AutoSize)",
+      "Bash(npm run *)",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue | Select-Object Id, StartTime, @{N='Cmd';E={\\(Get-CimInstance Win32_Process -Filter \"ProcessId=$\\($_.Id\\)\"\\).CommandLine}} | Format-List)"
+    ]
+  }
+}

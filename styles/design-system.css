@@ -1,0 +1,59 @@
+/* Momo — design system tokens
+ * Inspiration: organic skincare (natural greens, rounded cards, floating pill
+ * nav) + finance dashboard (bold metrics, dense-but-clean layout).
+ * Imported at the top of app/globals.css. */
+
+:root {
+  --color-forest: #1a5c38;
+  --color-primary: #2d8653;
+  --color-primary-light: #4ade80;
+  --color-surface: #e8f5ee;
+  --color-surface-mid: #d1ead9;
+  --color-bg: #f8faf9;
+  --color-dark: #0f172a;
+  --color-dark-mid: #1e293b;
+  --color-text: #111827;
+  --color-text-muted: #6b7280;
+  --color-warning: #fbbf24;
+  --color-danger: #ef4444;
+  --color-success: #16a34a;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+  --shadow-card: 0 2px 12px rgba(26, 92, 56, 0.08);
+  --shadow-float: 0 8px 32px rgba(26, 92, 56, 0.15);
+}
+
+/* Shimmer used by the SkeletonLoader component. */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e8e4 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Subtle pop-in for the FAB action menu. */
+@keyframes fab-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fab-pop {
+  animation: fab-pop 0.18s ease-out both;
+}

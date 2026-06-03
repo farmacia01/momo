@@ -1,0 +1,13 @@
+-- Migration: 20260602165358_supplier_portal.sql
+-- SUPERSEDED — não cria mais nenhuma estrutura.
+--
+-- Esta migration continha uma primeira versão das tabelas `fornecedores` e
+-- `fornecedor_produtos` (com PK `id = auth.users(id)` e colunas como
+-- `ufs_atendidas`, `preco_normal`, `tipo_embalagem`). Essa modelagem foi
+-- substituída pela migration 20260602170000_modulo_fornecedores.sql, que faz
+-- `DROP TABLE IF EXISTS` dessas tabelas e as recria com o schema definitivo
+-- (`id` UUID aleatório + coluna `user_id`, `regioes_entrega`, `preco`,
+-- `tipo_produto`, além de `pedidos` e `avaliacoes_fornecedor`).
+--
+-- Mantida como no-op para preservar o histórico de migrations. Toda a
+-- estrutura do portal de fornecedores vive na migration 170000.

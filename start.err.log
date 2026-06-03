@@ -1,0 +1,660 @@
+ ⨯ Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './vendor-chunks/next.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}
+ ⨯ Error: Cannot find module './161.js'
+Require stack:
+- D:\baixados\monjaro\.next\server\webpack-runtime.js
+- D:\baixados\monjaro\.next\server\pages\_document.js
+- D:\baixados\monjaro\node_modules\next\dist\server\require.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next-server.js
+- D:\baixados\monjaro\node_modules\next\dist\server\next.js
+- D:\baixados\monjaro\node_modules\next\dist\server\lib\start-server.js
+- D:\baixados\monjaro\node_modules\next\dist\cli\next-start.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1476:15)
+    at D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1049:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1073:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1094:12)
+    at Module._load (node:internal/modules/cjs/loader:1262:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1576:12)
+    at mod.require (D:\baixados\monjaro\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\baixados\\monjaro\\.next\\server\\webpack-runtime.js',
+    'D:\\baixados\\monjaro\\.next\\server\\pages\\_document.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\require.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\next.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'D:\\baixados\\monjaro\\node_modules\\next\\dist\\cli\\next-start.js'
+  ]
+}

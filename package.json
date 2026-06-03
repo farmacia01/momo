@@ -1,0 +1,41 @@
+{
+  "name": "momo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "gen:icons": "node scripts/generate-icons.js"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^3.0.67",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/supabase-js": "^2.45.4",
+    "ai": "^6.0.194",
+    "date-fns": "^3.6.0",
+    "framer-motion": "^12.40.0",
+    "lucide-react": "^0.446.0",
+    "next": "14.2.15",
+    "openai": "^6.41.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.4.1",
+    "recharts": "^2.12.7",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.10",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "@types/web-push": "^3.6.3",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.15",
+    "next-pwa": "^5.6.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.2"
+  }
+}
