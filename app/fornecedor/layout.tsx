@@ -8,6 +8,8 @@ export const viewport: Viewport = {
   themeColor: "#0d0d0d",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function FornecedorLayout({ children }: { children: React.ReactNode }) {
   const supabase = createServerClient();
   

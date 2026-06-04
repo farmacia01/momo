@@ -2,14 +2,14 @@ import { OpenAI } from 'openai';
 import { NextResponse } from 'next/server';
 import { PLANOS, type FaseMounjaro } from '@/lib/diet-plans';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export const maxDuration = 60; // DALL-E 3 and GPT can take time
 
 export async function POST(req: Request) {
   try {
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
     const { mealType, phase }: { mealType: string, phase: FaseMounjaro } = await req.json();
 
     const plano = PLANOS[phase];
