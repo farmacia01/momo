@@ -580,31 +580,34 @@ function ToggleRow({
   const expandRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className={`p-4 ${disabled ? "opacity-60" : ""}`}>
-      <div className="flex items-center gap-4">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-forest">
+    <div className={`transition-colors ${disabled ? "opacity-50" : "active:bg-slate-50"}`}>
+      <div 
+        className={`flex items-center gap-4 p-4 cursor-pointer ${disabled || busy ? "cursor-not-allowed" : ""}`}
+        onClick={() => !(disabled || busy) && onToggle()}
+      >
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-surface text-forest">
           {icon}
         </div>
         <div className="flex-1">
           <p className="text-sm font-bold text-gray-900">{title}</p>
           {subtitle && <p className="text-[11px] font-medium text-gray-400">{subtitle}</p>}
         </div>
-        <button
-          type="button"
-          onClick={onToggle}
-          disabled={disabled || busy}
-          aria-label={title}
-          aria-pressed={enabled}
+        <div
           className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
             enabled ? "bg-forest" : "bg-gray-200"
-          } ${disabled || busy ? "cursor-not-allowed" : ""}`}
+          }`}
         >
           <span
             className={`absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
               enabled ? "translate-x-5" : ""
             }`}
           />
-        </button>
+          {busy && (
+            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/5">
+              <LoadingSpinner size="sm" />
+            </div>
+          )}
+        </div>
       </div>
 
       {expand && (
@@ -615,7 +618,7 @@ function ToggleRow({
           }}
           className="overflow-hidden transition-all duration-300 ease-in-out"
         >
-          <div className="pl-[60px] pt-4">{expand}</div>
+          <div className="px-4 pb-6 pl-[60px]">{expand}</div>
         </div>
       )}
     </div>
