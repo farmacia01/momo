@@ -13,8 +13,13 @@ export const runtime = "nodejs";
  * Protected by a shared secret: send header `x-n8n-secret: <N8N_SECRET>`.
  */
 export async function POST(req: Request) {
+  const authHeader = req.headers.get("Authorization");
+  const bearerSecret = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : null;
+  const customSecret = req.headers.get("x-n8n-secret");
+  
   const secret = process.env.N8N_SECRET;
-  if (!secret || req.headers.get("x-n8n-secret") !== secret) {
+  
+  if (!secret || (bearerSecret !== secret && customSecret !== secret)) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 

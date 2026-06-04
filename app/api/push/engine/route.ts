@@ -13,10 +13,19 @@ export const runtime = "nodejs";
  * 3. Dispara notificações via local /api/push/send.
  */
 export async function GET(req: Request) {
-  // Proteção simples por token fixo ou secret
+  // Proteção por token (URL ou Header Bearer)
   const { searchParams } = new URL(req.url);
-  const secret = searchParams.get("secret");
-  if (secret !== process.env.CAKTO_WEBHOOK_SECRET && secret !== "cron-debug") {
+  const querySecret = searchParams.get("secret");
+  const authHeader = req.headers.get("Authorization");
+  const bearerSecret = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : null;
+  
+  const masterSecret = process.env.N8N_SECRET || process.env.CAKTO_WEBHOOK_SECRET;
+
+  if (
+    querySecret !== masterSecret && 
+    bearerSecret !== masterSecret && 
+    querySecret !== "cron-debug"
+  ) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 
