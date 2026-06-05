@@ -13,9 +13,9 @@ interface Action {
 }
 
 const ACTIONS: Action[] = [
-  { label: "Registrar dose", href: "/doses", icon: Syringe, color: "text-[#16a34a]" },
-  { label: "Pesar agora", href: "/saude", icon: Scale, color: "text-[#16a34a]" },
-  { label: "Registrar sintoma", href: "/saude", icon: Activity, color: "text-[#16a34a]" },
+  { label: "Registrar dose", href: "/doses", icon: Syringe, color: "text-primary" },
+  { label: "Pesar agora", href: "/saude", icon: Scale, color: "text-primary" },
+  { label: "Registrar sintoma", href: "/saude", icon: Activity, color: "text-primary" },
 ];
 
 export function Fab() {
@@ -29,16 +29,16 @@ export function Fab() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-gray-900/40 backdrop-blur-[2px]"
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px]"
             onClick={() => setOpen(false)}
           />
         )}
       </AnimatePresence>
 
-      <div className="fixed bottom-[88px] right-5 z-40 flex flex-col items-end gap-3">
+      <div className="fixed bottom-[90px] right-5 z-40 flex flex-col items-end gap-3">
         <AnimatePresence>
           {open && (
-            <div className="flex flex-col items-end gap-3 mb-2">
+            <div className="mb-2 flex flex-col items-end gap-3">
               {ACTIONS.map((a, i) => (
                 <m.div
                   key={a.label}
@@ -52,10 +52,10 @@ export function Fab() {
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 group"
                   >
-                    <span className="rounded-full bg-white px-4 py-2 text-sm font-bold text-gray-900 shadow-premium">
+                    <span className="rounded-full bg-card px-4 py-2 text-sm font-bold text-text-primary shadow-premium">
                       {a.label}
                     </span>
-                    <span className={`flex h-12 w-12 items-center justify-center rounded-full bg-white ${a.color} shadow-premium transition-transform group-hover:scale-105`}>
+                    <span className={`flex h-12 w-12 items-center justify-center rounded-full bg-card ${a.color} shadow-premium transition-transform group-hover:scale-105`}>
                       <a.icon className="h-5 w-5" strokeWidth={2.5} />
                     </span>
                   </Link>
@@ -69,14 +69,19 @@ export function Fab() {
           onClick={() => setOpen((v) => !v)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex h-14 w-14 items-center justify-center rounded-full text-white shadow-lg transition-shadow hover:shadow-xl"
-          style={{ backgroundColor: '#1c4d2e', boxShadow: '0 4px 20px rgba(28,77,46,0.35)' }}
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/30 transition-shadow hover:shadow-xl"
         >
-          {open ? (
-            <X className="h-7 w-7" strokeWidth={2.5} />
-          ) : (
-            <Plus className="h-7 w-7" strokeWidth={2.5} />
-          )}
+          <AnimatePresence mode="wait">
+            {open ? (
+              <m.div key="x" initial={{ rotate: -90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} exit={{ rotate: -90, scale: 0 }}>
+                <X className="h-7 w-7" strokeWidth={2.5} />
+              </m.div>
+            ) : (
+              <m.div key="plus" initial={{ rotate: 90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} exit={{ rotate: 90, scale: 0 }}>
+                <Plus className="h-7 w-7" strokeWidth={2.5} />
+              </m.div>
+            )}
+          </AnimatePresence>
         </m.button>
       </div>
     </>

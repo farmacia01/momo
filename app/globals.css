@@ -23,18 +23,17 @@ html, body {
   overflow-x: hidden;
   position: relative;
   height: 100%;
-  min-height: 100%;
-  background-color: #f2f2f7;
+  min-height: 100dvh; /* Use dvh for mobile viewport */
+}
+
+body {
+  @apply bg-background text-text-primary antialiased;
 }
 
 #__next {
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
-}
-
-body {
-  @apply text-slate-900 antialiased;
 }
 
 /* Portal do fornecedor: fundo preto cobrindo inclusive a safe-area do iOS. */
@@ -52,7 +51,7 @@ body:has([data-portal="fornecedor"]) {
 /* Thin, subtle scrollbars to keep the clean medical look. */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-color: #D1D5DB transparent; /* gray-300 */
 }
 
 *::-webkit-scrollbar {
@@ -61,12 +60,13 @@ body:has([data-portal="fornecedor"]) {
 }
 
 *::-webkit-scrollbar-thumb {
-  @apply rounded-full bg-slate-300;
+  @apply rounded-full bg-gray-300;
 }
 
 @layer components {
   .card {
-    @apply rounded-[20px] bg-white p-5 shadow-premium transition-all duration-200;
+    /* The card color is now explicit, not just default white */
+    @apply rounded-[20px] bg-card p-5 shadow-premium transition-all duration-200;
   }
 
   .card-clickable {
@@ -74,11 +74,11 @@ body:has([data-portal="fornecedor"]) {
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-forest px-6 py-3.5 text-sm font-semibold text-white transition-all duration-150 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-forest focus:ring-offset-2 disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-white transition-all duration-150 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border-none bg-white px-6 py-3.5 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-150 active:scale-[0.97] hover:bg-slate-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-none bg-card px-6 py-3.5 text-sm font-semibold text-text-primary shadow-sm transition-all duration-150 active:scale-[0.97] hover:bg-gray-100;
   }
 
   .btn-pill {
@@ -86,15 +86,15 @@ body:has([data-portal="fornecedor"]) {
   }
 
   .page-title {
-    @apply text-lg font-bold tracking-tight text-slate-900;
+    @apply text-lg font-bold tracking-tight text-text-primary;
   }
 
   .page-subtitle {
-    @apply mt-1 text-sm text-slate-500;
+    @apply mt-1 text-sm text-text-secondary;
   }
 
   .input-standard {
-    @apply w-full rounded-2xl border-none bg-white px-4 py-3.5 text-sm shadow-sm transition-all focus:border-forest focus:outline-none focus:ring-[3px] focus:ring-forest/10;
+    @apply w-full rounded-2xl border-none bg-card px-4 py-3.5 text-sm shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-[3px] focus:ring-primary/10;
   }
 }
 
@@ -104,7 +104,7 @@ body:has([data-portal="fornecedor"]) {
   appearance: none;
   width: 24px;
   height: 24px;
-  background: linear-gradient(135deg, #1c4d2e, #2d7a4f);
+  background: linear-gradient(135deg, #155734, #1F6B43); /* primary-dark, primary */
   border-radius: 50%;
   cursor: pointer;
   border: 3px solid white;
@@ -114,7 +114,7 @@ body:has([data-portal="fornecedor"]) {
 .range-slider::-moz-range-thumb {
   width: 24px;
   height: 24px;
-  background: linear-gradient(135deg, #1c4d2e, #2d7a4f);
+  background: linear-gradient(135deg, #155734, #1F6B43); /* primary-dark, primary */
   border-radius: 50%;
   cursor: pointer;
   border: 3px solid white;

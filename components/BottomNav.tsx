@@ -18,7 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { m, AnimatePresence  } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 
 interface Item {
   label: string;
@@ -36,7 +36,6 @@ export function BottomNav() {
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [role, setRole] = useState<'paciente' | 'fornecedor'>('paciente');
-  const [pendingOrders, setPendingOrders] = useState(0);
 
   useEffect(() => {
     async function checkRole() {
@@ -51,21 +50,6 @@ export function BottomNav() {
 
       if (fornecedor) {
         setRole('fornecedor');
-        const { count } = await supabase
-          .from('pedidos')
-          .select('*', { count: 'exact', head: true })
-          .eq('fornecedor_id', fornecedor.id)
-          .eq('status', 'novo');
-        
-        setPendingOrders(count || 0);
-
-        const channel = supabase
-          .channel('nav-orders')
-          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pedidos', filter: `fornecedor_id=eq.${fornecedor.id}` }, 
-          () => setPendingOrders(prev => prev + 1))
-          .subscribe();
-        
-        return () => { supabase.removeChannel(channel); };
       }
     }
     checkRole();
@@ -111,11 +95,12 @@ export function BottomNav() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="relative m-4 w-full max-w-md rounded-[32px] bg-white p-6 shadow-2xl z-[101]"
+              className="relative m-4 w-full max-w-[430px] rounded-[32px] bg-card p-6 shadow-2xl z-[101]"
+              style={{ marginBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
             >
               <div className="mb-6 flex items-center justify-between">
-                <h3 className="text-lg font-bold text-gray-900">Explorar</h3>
-                <button onClick={() => setSheetOpen(false)} className="rounded-full bg-gray-50 p-2 text-gray-400">
+                <h3 className="text-lg font-bold text-text-primary">Explorar</h3>
+                <button onClick={() => setSheetOpen(false)} className="rounded-full bg-gray-100 p-2 text-text-secondary">
                   <X className="h-5 w-5" />
                 </button>
               </div>
@@ -130,13 +115,13 @@ export function BottomNav() {
                       onMouseEnter={() => router.prefetch(s.href)}
                       onClick={() => setSheetOpen(false)}
                       className={`flex flex-col items-center gap-2 rounded-[24px] p-4 text-center transition-all ${
-                        active ? "bg-surface" : "hover:bg-gray-50"
+                        active ? "bg-primary/10" : "hover:bg-gray-50"
                       }`}
                     >
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-mid text-forest">
+                      <span className={`flex h-12 w-12 items-center justify-center rounded-full ${active ? 'bg-primary/20 text-primary' : 'bg-gray-100 text-text-primary'}`}>
                         <Icon className="h-5 w-5" strokeWidth={2.5} />
                       </span>
-                      <span className="text-[11px] font-bold text-gray-900">
+                      <span className="text-[11px] font-bold text-text-primary">
                         {s.label}
                       </span>
                     </Link>
@@ -148,8 +133,11 @@ export function BottomNav() {
         )}
       </AnimatePresence>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pointer-events-none">
-        <div className="mx-auto flex w-full max-w-[340px] items-center justify-around gap-1 rounded-full bg-gray-900/95 p-1.5 shadow-2xl backdrop-blur-md pointer-events-auto">
+      <nav 
+        className="fixed bottom-0 left-0 right-0 z-50 h-[72px] w-full border-t border-gray-200 bg-card"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <div className="mx-auto flex h-full max-w-[430px] items-center justify-around">
           {primaryItems.map((item) => {
             const active = isActive(pathname, item.href);
             const Icon = item.icon;
@@ -158,40 +146,24 @@ export function BottomNav() {
                 key={item.href}
                 href={item.href}
                 onMouseEnter={() => router.prefetch(item.href)}
-                className={`flex items-center gap-2 rounded-full transition-all duration-300 ${
-                  active ? "bg-[#1c4d2e] px-4 py-2 shadow-lg shadow-[#1c4d2e]/20" : "p-3 hover:bg-white/5"
-                }`}
+                className="flex h-full w-full flex-col items-center justify-center gap-1"
               >
-                <Icon className={`h-5 w-5 shrink-0 ${active ? "text-white" : "text-white/40"}`} strokeWidth={2.5} />
-                {active && (
-                  <m.span 
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="text-[11px] font-bold text-white whitespace-nowrap"
-                  >
+                <Icon className={`h-6 w-6 shrink-0 ${active ? "text-primary" : "text-text-secondary"}`} strokeWidth={2} />
+                <span className={`text-[10px] font-bold ${active ? "text-primary" : "text-text-secondary"}`}>
                     {item.label}
-                  </m.span>
-                )}
+                </span>
               </Link>
             );
           })}
 
           <button
             onClick={() => setSheetOpen(true)}
-            className={`flex items-center gap-2 rounded-full transition-all duration-300 ${
-              maisActive ? "bg-[#1c4d2e] px-4 py-2 shadow-lg shadow-[#1c4d2e]/20" : "p-3 hover:bg-white/5"
-            }`}
+            className="flex h-full w-full flex-col items-center justify-center gap-1"
           >
-            <MoreHorizontal className={`h-5 w-5 shrink-0 ${maisActive ? "text-white" : "text-white/40"}`} strokeWidth={2.5} />
-            {maisActive && (
-              <m.span 
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-[11px] font-bold text-white whitespace-nowrap"
-              >
+            <MoreHorizontal className={`h-6 w-6 shrink-0 ${maisActive ? "text-primary" : "text-text-secondary"}`} strokeWidth={2} />
+            <span className={`text-[10px] font-bold ${maisActive ? "text-primary" : "text-text-secondary"}`}>
                 Mais
-              </m.span>
-            )}
+            </span>
           </button>
         </div>
       </nav>

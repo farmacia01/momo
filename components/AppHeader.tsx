@@ -1,57 +1,41 @@
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { NotificationBell } from "./NotificationBell";
-import Image from "next/image";
+"use client";
 
-/**
- * Standard page header: greeting + today's date on the left, avatar + bell on
- * the right. Transparent background (no card).
- */
-export function AppHeader({
-  userId,
-  name,
-  subtitle,
-  initials,
-  avatarUrl,
-}: {
-  userId?: string;
-  name: string;
-  /** Defaults to today's date in pt-BR. */
-  subtitle?: string;
-  /** Fallback avatar when there's no image. */
-  initials?: string;
-  avatarUrl?: string;
-}) {
-  const date =
-    subtitle ?? format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR });
-  const fallback =
-    initials ?? (name.trim().slice(0, 2).toUpperCase() || "MT");
+import { usePathname } from "next/navigation";
+import { NotificationBell } from "./NotificationBell";
+
+interface AppHeaderProps {
+  userId: string;
+}
+
+const getTitleForPath = (path: string) => {
+    if (path === '/') return "Dashboard";
+    if (path.startsWith('/doses')) return "Minhas Doses";
+    if (path.startsWith('/saude')) return "Minha Saúde";
+    if (path.startsWith('/dieta')) return "Minha Dieta";
+    if (path.startsWith('/estoque')) return "Meu Estoque";
+    if (path.startsWith('/meus-pedidos')) return "Meus Pedidos";
+    if (path.startsWith('/configuracoes')) return "Configurações";
+    if (path.startsWith('/assistente')) return "Assistente IA";
+    return "Monjaro";
+}
+
+export function AppHeader({ userId }: AppHeaderProps) {
+  const pathname = usePathname();
+  const title = getTitleForPath(pathname);
 
   return (
-    <header className="flex items-center justify-between">
-      <div className="min-w-0">
-        <h1 className="truncate text-[22px] font-bold tracking-tight text-[#111827]">
-          Olá, {name}!
-        </h1>
-        <p className="mt-0.5 text-[13px] font-medium capitalize text-[#6b7280]">
-          {date}
-        </p>
+    <header 
+      className="sticky top-0 z-30 grid h-[60px] grid-cols-3 items-center gap-4 border-b border-gray-200/80 bg-card/80 px-4 backdrop-blur-sm"
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+    >
+      <div className="flex-1 justify-self-start">
+        {/* Intentionally left blank for alignment */}
       </div>
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="justify-self-center">
+        <h1 className="text-lg font-bold text-text-primary whitespace-nowrap">{title}</h1>
+      </div>
+      <div className="flex items-center gap-3 justify-self-end">
         <NotificationBell userId={userId} />
-        {avatarUrl ? (
-          <Image
-            src={avatarUrl}
-            alt={name}
-            width={40}
-            height={40}
-            className="h-10 w-10 rounded-full object-cover"
-          />
-        ) : (
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#d1ead9] text-sm font-bold text-[#1a5c38]">
-            {fallback}
-          </div>
-        )}
       </div>
     </header>
   );
