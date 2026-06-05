@@ -157,6 +157,7 @@ export function BottomNav() {
               <Link
                 key={item.href}
                 href={item.href}
+                onMouseEnter={() => router.prefetch(item.href)}
                 className={`flex items-center gap-2 rounded-full transition-all duration-300 ${
                   active ? "bg-[#1c4d2e] px-4 py-2 shadow-lg shadow-[#1c4d2e]/20" : "p-3 hover:bg-white/5"
                 }`}

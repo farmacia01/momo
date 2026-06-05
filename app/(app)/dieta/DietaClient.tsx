@@ -104,8 +104,9 @@ export function DietaClient({
   }
 
   return (
-    <div className="space-y-6 pb-36">
-      <PageHeader title="Minha Dieta" />
+    <div style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden', paddingBottom: 100, boxSizing: 'border-box' }}>
+      <div className="space-y-6">
+        <PageHeader title="Minha Dieta" />
 
       <BlurPaywall ativo={status !== "premium"} mensagem="Receitas e dieta personalizadas no Premium">
         <div className="space-y-6">
@@ -211,6 +212,7 @@ export function DietaClient({
       {showForm && (
         <RefeicaoForm userId={userId} onClose={() => setShowForm(false)} onAdded={handleAdded} />
       )}
+    </div>
     </div>
   );
 }

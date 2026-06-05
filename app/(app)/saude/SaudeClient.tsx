@@ -272,23 +272,24 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
   }, [chartDataMedicoes]);
 
   return (
-    <div className="space-y-6 pb-32">
-      <PageHeader
-        title="Peso & Saúde"
-        action={
-          <button
-            onClick={() => setShareOpen(true)}
-            title="Compartilhar progresso"
-            aria-label="Compartilhar progresso"
-            className="group relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-forest shadow-sm transition-transform active:scale-90"
-          >
-            <Share2 className="h-5 w-5" />
-            <span className="pointer-events-none absolute right-0 top-12 z-10 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-              Compartilhar progresso
-            </span>
-          </button>
-        }
-      />
+    <div style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden', paddingBottom: 100, boxSizing: 'border-box' }}>
+      <div className="space-y-6">
+        <PageHeader
+          title="Peso & Saúde"
+          action={
+            <button
+              onClick={() => setShareOpen(true)}
+              title="Compartilhar progresso"
+              aria-label="Compartilhar progresso"
+              className="group relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-forest shadow-sm transition-transform active:scale-90"
+            >
+              <Share2 className="h-5 w-5" />
+              <span className="pointer-events-none absolute right-0 top-12 z-10 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                Compartilhar progresso
+              </span>
+            </button>
+          }
+        />
 
       <div className="flex gap-2 p-1 bg-slate-100 rounded-full">
         {(["Peso", "Pressão", "Sintomas"] as Tab[]).map(tab => {
@@ -334,8 +335,8 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
               <div className="relative overflow-hidden bg-gradient-to-br from-[#1c4d2e] to-[#2d7a4f] p-6 rounded-[24px] shadow-lg text-white">
                 <div className="absolute top-[-20px] right-[-20px] w-32 h-32 rounded-full bg-white/10 blur-2xl" />
                 <p className="text-[11px] font-bold text-white/60 uppercase tracking-widest">PESO ATUAL</p>
-                <div className="flex items-baseline gap-1 mt-2">
-                  <span className="text-[52px] font-bold tracking-[-1.5px] leading-tight">
+                <div className="flex items-baseline gap-1 mt-2 overflow-hidden w-full">
+                  <span style={{ fontSize: 'clamp(32px, 12vw, 52px)' }} className="font-bold tracking-[-1.5px] leading-tight">
                     {pesoAtual ? pesoAtual.toFixed(1) : "––"}
                   </span>
                   <span className="text-2xl font-light opacity-80">kg</span>
@@ -842,6 +843,7 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
           setShareOpen(true);
         }}
       />
+    </div>
     </div>
   );
 }

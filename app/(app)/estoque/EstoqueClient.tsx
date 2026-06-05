@@ -79,20 +79,21 @@ export function EstoqueClient({ userId, initialAmpolas, initialAlerta, profile, 
   };
 
   return (
-    <div className="space-y-8 pb-32">
-      <PageHeader 
-        title="Meu Estoque" 
-        action={
-          <div className="flex gap-2">
-            <Link href="/meus-pedidos" className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-gray-400 shadow-sm active:scale-90 transition-transform">
-              <ShoppingCart size={20} />
-            </Link>
-            <button onClick={() => setShowForm(true)} className="flex h-10 w-10 items-center justify-center rounded-full bg-forest text-white shadow-lg active:scale-90 transition-transform">
-              <Plus size={20} />
-            </button>
-          </div>
-        }
-      />
+    <div style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden', paddingBottom: 100, boxSizing: 'border-box' }}>
+      <div className="space-y-8">
+        <PageHeader 
+          title="Meu Estoque" 
+          action={
+            <div className="flex gap-2">
+              <Link href="/meus-pedidos" className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-gray-400 shadow-sm active:scale-90 transition-transform">
+                <ShoppingCart size={20} />
+              </Link>
+              <button onClick={() => setShowForm(true)} className="flex h-10 w-10 items-center justify-center rounded-full bg-forest text-white shadow-lg active:scale-90 transition-transform">
+                <Plus size={20} />
+              </button>
+            </div>
+          }
+        />
 
       <BlurPaywall ativo={isExpirado} mensagem="Gerencie seu estoque no Premium">
         <div className="space-y-8">
@@ -172,6 +173,7 @@ export function EstoqueClient({ userId, initialAmpolas, initialAlerta, profile, 
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

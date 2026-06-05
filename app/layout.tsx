@@ -41,7 +41,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={dmSans.variable}>
-      <body className={`${dmSans.className} font-sans bg-[#f2f2f7]`} suppressHydrationWarning>
+      <body className={`${dmSans.className} font-sans bg-[#f2f2f7] w-full max-w-full overflow-x-hidden`} style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden' }} suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>

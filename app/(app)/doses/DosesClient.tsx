@@ -123,18 +123,19 @@ export function DosesClient({
   };
 
   return (
-    <div className="space-y-6 pb-32">
-      <PageHeader 
-        title="Minhas Doses" 
-        action={
-          <button 
-            onClick={handleOpenForm}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-forest text-white shadow-sm transition-transform active:scale-90"
-          >
-            <Plus className="h-5 w-5" />
-          </button>
-        }
-      />
+    <div style={{ width: '100%', maxWidth: '100vw', overflowX: 'hidden', paddingBottom: 100, boxSizing: 'border-box' }}>
+      <div className="space-y-6">
+        <PageHeader 
+          title="Minhas Doses" 
+          action={
+            <button 
+              onClick={handleOpenForm}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-forest text-white shadow-sm transition-transform active:scale-90"
+            >
+              <Plus className="h-5 w-5" />
+            </button>
+          }
+        />
 
       <BlurPaywall ativo={isExpirado} mensagem="Registre suas doses semanais no Premium">
         <div className="space-y-6">
@@ -307,6 +308,7 @@ export function DosesClient({
           </div>
         </div>
       </BlurPaywall>
+    </div>
     </div>
   );
 }
