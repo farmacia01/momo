@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { ArrowLeft, ArrowRight, Check, Store, ShieldCheck, MapPin, X, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence  } from 'framer-motion';
 
 const RAIOS = [10, 20, 30, 50, 100];
 
@@ -245,7 +245,7 @@ export default function CadastroFornecedorPage() {
                 <div className="mt-4 flex flex-wrap gap-2">
                   <AnimatePresence>
                     {cidadesEntrega.map((cidade) => (
-                      <motion.span
+                      <m.span
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
@@ -256,7 +256,7 @@ export default function CadastroFornecedorPage() {
                         <button type="button" onClick={() => removeCidade(cidade)} className="text-slate-300 hover:text-red-500 transition-colors">
                           <X size={14} />
                         </button>
-                      </motion.span>
+                      </m.span>
                     ))}
                   </AnimatePresence>
                 </div>

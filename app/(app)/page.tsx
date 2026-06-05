@@ -9,35 +9,39 @@ export default async function DashboardPage() {
 
   if (!session) return null;
 
-  // Profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
+  const [profileResult, dosesResult, weightsResult, ampolasResult] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('nome, dose_atual_mg, data_inicio_tratamento, peso_meta, plano_ativo, trial_expira_em, peso_inicial, altura_cm, imc')
+      .eq('id', session.user.id)
+      .single(),
+      
+    supabase
+      .from('doses')
+      .select('data_aplicacao, dose_mg, local_aplicacao, observacoes')
+      .eq('user_id', session.user.id)
+      .order('data_aplicacao', { ascending: false }),
+      
+    supabase
+      .from('medicoes_saude')
+      .select('data_medicao, peso_kg')
+      .eq('user_id', session.user.id)
+      .not('peso_kg', 'is', null)
+      .order('data_medicao', { ascending: false })
+      .limit(30),
+      
+    supabase
+      .from('estoque_ampolas')
+      .select('quantidade')
+      .eq('user_id', session.user.id)
+  ]);
 
-  // Doses
-  const { data: doses } = await supabase
-    .from('doses')
-    .select('data_aplicacao, dose_mg, local_aplicacao, observacoes')
-    .eq('user_id', session.user.id)
-    .order('data_aplicacao', { ascending: false });
+  const profile = profileResult.data;
+  const doses = dosesResult.data;
+  const weights = weightsResult.data;
+  const ampolas = ampolasResult.data;
     
   const lastDose = doses?.[0];
-
-  // Weights
-  const { data: weights } = await supabase
-    .from('medicoes_saude')
-    .select('data_medicao, peso_kg')
-    .eq('user_id', session.user.id)
-    .not('peso_kg', 'is', null)
-    .order('data_medicao', { ascending: false });
-
-  // Inventory
-  const { data: ampolas } = await supabase
-    .from('estoque_ampolas')
-    .select('quantidade')
-    .eq('user_id', session.user.id);
   
   const totalPurchased = ampolas?.reduce((acc, curr) => acc + (curr.quantidade || 0), 0) || 0;
   const ampolasUsadas = doses?.length || 0;
@@ -48,7 +52,7 @@ export default async function DashboardPage() {
   const weeksCompleted = differenceInWeeks(new Date(), startTreatmentDate);
   
   const lastWeight = weights?.[0];
-  const firstWeight = weights?.[weights.length - 1];
+  const firstWeight = weights?.[weights?.length - 1];
   const weightDelta = (firstWeight?.peso_kg && lastWeight?.peso_kg) ? (firstWeight.peso_kg - lastWeight.peso_kg).toFixed(1) : 0;
   const daysSinceLastWeight = lastWeight ? differenceInDays(new Date(), new Date(lastWeight.data_medicao)) : null;
   

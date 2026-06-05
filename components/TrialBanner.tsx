@@ -18,6 +18,11 @@ export function TrialBanner() {
   return (
     <div
       style={{
+        position: isExpirado ? 'fixed' : 'relative',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 60,
         background: isExpirado ? "#ef4444" : urgente ? "#f59e0b" : "#1c4d2e",
         padding: "10px 16px",
         display: "flex",
@@ -28,7 +33,7 @@ export function TrialBanner() {
     >
       <span style={{ fontSize: 13, color: "#fff", fontWeight: 500 }}>
         {isExpirado
-          ? "⚠️ Seu acesso expirou. Assine para continuar."
+          ? "🔒 Seu trial expirou. Assine para continuar."
           : urgente
             ? `⚠️ Trial expira em ${diasRestantesTrial} dia(s)!`
             : `🌿 Trial gratuito — ${diasRestantesTrial} dias restantes`}
@@ -37,9 +42,9 @@ export function TrialBanner() {
         href="/plano"
         style={{
           background: "#fff",
-          color: "#1c4d2e",
+          color: isExpirado ? "#ef4444" : "#1c4d2e",
           fontSize: 12,
-          fontWeight: 700,
+          fontWeight: 800,
           padding: "6px 14px",
           borderRadius: 999,
           textDecoration: "none",

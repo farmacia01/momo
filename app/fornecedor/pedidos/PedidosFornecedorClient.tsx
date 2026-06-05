@@ -19,7 +19,7 @@ import {
   ArrowUpRight,
   Bike
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence  } from 'framer-motion';
 import { formatBRL, STATUS_PEDIDO, TIPO_PRODUTO_LABEL } from "@/lib/fornecedores";
 import { sendPush, pedidoNotificacoes } from "@/lib/notifications";
 import toast from "react-hot-toast";
@@ -179,14 +179,14 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
       <div className="space-y-3">
         <AnimatePresence mode="popLayout">
           {filteredPedidos.length === 0 ? (
-            <motion.div 
+            <m.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="text-center py-20 bg-[#111] rounded-[18px] border border-dashed border-[rgba(255,255,255,0.08)]"
             >
               <ShoppingBag className="mx-auto text-[rgba(255,255,255,0.1)] mb-4" size={36} />
               <p className="text-[rgba(255,255,255,0.2)] text-[13px]">Nenhum pedido aqui</p>
-            </motion.div>
+            </m.div>
           ) : (
             filteredPedidos.map((pedido, i) => (
               <PedidoCard
@@ -259,7 +259,7 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
   const status = STATUS_PEDIDO[pedido.status as keyof typeof STATUS_PEDIDO];
 
   return (
-    <motion.div
+    <m.div
       layout
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
@@ -350,7 +350,7 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
            </Link>
         )}
       </div>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -359,14 +359,14 @@ function AcceptDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, on
 
   return (
     <div className="fixed inset-0 z-[100] flex items-end justify-center px-0">
-      <motion.div 
+      <m.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
       />
-      <motion.div 
+      <m.div 
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
@@ -399,7 +399,7 @@ function AcceptDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, on
             {loading ? "Processando..." : "Confirmar aceite"}
           </button>
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 }
@@ -412,14 +412,14 @@ function RejectDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, on
 
   return (
     <div className="fixed inset-0 z-[100] flex items-end justify-center px-0">
-      <motion.div 
+      <m.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
       />
-      <motion.div 
+      <m.div 
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
@@ -467,7 +467,7 @@ function RejectDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, on
             {loading ? "Processando..." : "Confirmar recusa"}
           </button>
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 }

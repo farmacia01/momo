@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Lock, Eye, EyeOff, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { m  } from 'framer-motion';
 import toast from "react-hot-toast";
 
 export default function RedefinirSenhaPage() {
@@ -61,7 +61,7 @@ export default function RedefinirSenhaPage() {
 
   return (
     <div className="min-h-screen bg-[#f2f2f7] flex flex-col items-center justify-center p-6">
-      <motion.div 
+      <m.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-white rounded-[32px] p-8 shadow-xl shadow-black/5"
@@ -150,7 +150,7 @@ export default function RedefinirSenhaPage() {
             </form>
           </div>
         )}
-      </motion.div>
+      </m.div>
     </div>
   );
 }

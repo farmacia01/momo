@@ -1,6 +1,10 @@
 @import "../styles/design-system.css";
 
-@tailwind base;
+@keyframes blurPulse {
+  0%, 100% { filter: blur(5px); }
+  50% { filter: blur(7px); }
+}
+
 @tailwind components;
 @tailwind utilities;
 

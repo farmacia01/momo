@@ -552,7 +552,47 @@ function NotificacoesSection({ userId }: { userId: string }) {
         enabled={config.dicas_dieta}
         onToggle={() => persistConfig({ dicas_dieta: !config.dicas_dieta })}
       />
+
+      {pushOn && <TestPushButton userId={userId} />}
     </Card>
+  );
+}
+
+function TestPushButton({ userId }: { userId: string }) {
+  const [busy, setBusy] = useState(false);
+
+  async function handleTest() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const res = await fetch("/api/push/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      const data = await res.json();
+      if (data.sent > 0) {
+        toast.success("Notificação de teste enviada!");
+      } else {
+        toast.error(data.message || data.error || "Nenhum dispositivo encontrado.");
+      }
+    } catch {
+      toast.error("Erro ao enviar notificação de teste.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="px-4 pb-4 pt-2">
+      <button
+        onClick={handleTest}
+        disabled={busy}
+        className="w-full rounded-full border border-forest py-3 text-sm font-bold text-forest transition-colors hover:bg-forest hover:text-white disabled:opacity-50"
+      >
+        {busy ? "Enviando..." : "Testar notificação"}
+      </button>
+    </div>
   );
 }
 

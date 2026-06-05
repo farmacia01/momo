@@ -4,7 +4,7 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Mail, ArrowLeft, CheckCircle2, Droplets } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m  } from 'framer-motion';
 
 export default function EsqueceuSenhaPage() {
   const [email, setEmail] = useState("");
@@ -31,7 +31,7 @@ export default function EsqueceuSenhaPage() {
 
   return (
     <div className="min-h-screen bg-[#f2f2f7] flex flex-col items-center justify-center p-6">
-      <motion.div 
+      <m.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-white rounded-[32px] p-8 shadow-xl shadow-black/5"
@@ -103,7 +103,7 @@ export default function EsqueceuSenhaPage() {
             </form>
           </div>
         )}
-      </motion.div>
+      </m.div>
     </div>
   );
 }

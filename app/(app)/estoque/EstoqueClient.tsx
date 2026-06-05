@@ -9,6 +9,8 @@ import { Plus, Bell, ShoppingCart, Calculator, AlertTriangle, ExternalLink, Cale
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { PageHeader } from "@/components/PageHeader";
+import { usePlano } from "@/hooks/usePlano";
+import { BlurPaywall } from "@/components/BlurPaywall";
 
 interface Compra {
   id: string;
@@ -38,6 +40,7 @@ export function EstoqueClient({ userId, initialAmpolas, initialAlerta, profile, 
 }) {
   const [compras, setCompras] = useState<Compra[]>(initialAmpolas);
   const [alerta, setAlerta] = useState<Alerta | null>(initialAlerta);
+  const { isExpirado } = usePlano();
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -91,42 +94,46 @@ export function EstoqueClient({ userId, initialAmpolas, initialAlerta, profile, 
         }
       />
 
-      {/* Hero Card */}
-      <div className={`p-8 rounded-[24px] shadow-premium text-center transition-colors ${bgColor}`}>
-        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Disponíveis</p>
-        <h2 className={`text-7xl font-black tracking-tighter ${statusColor}`}>{ampolasDisponiveis}</h2>
-        <p className="text-sm font-bold text-gray-500 mt-4">Suficiente para <span className="text-gray-900">{ampolasDisponiveis * 7} dias</span></p>
-        
-        {ampolasDisponiveis < qtdMinima && (
-          <div className="mt-6 flex items-center justify-center gap-2 text-red-600 bg-red-100/50 py-2.5 rounded-full text-[11px] font-bold uppercase tracking-wider">
-            <AlertTriangle size={14} /> Estoque crítico
-          </div>
-        )}
-      </div>
-
-      {/* Histórico Simplificado (Horizontal ou Compacto) */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between px-1">
-          <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Últimas Compras</h3>
-          <button className="text-[10px] font-bold text-forest uppercase tracking-widest">Ver tudo</button>
-        </div>
-        {compras.length === 0 ? (
-          <EmptyState icon={<PackageOpen />} title="Sem compras" description="Registre sua primeira compra." />
-        ) : (
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-6 px-6">
-            {compras.slice(0, 5).map(c => (
-              <div key={c.id} className="min-w-[180px] bg-white p-4 rounded-[20px] shadow-premium border border-slate-50">
-                <p className="text-[13px] font-bold text-gray-900">{c.quantidade} ampolas · {c.dose_mg}mg</p>
-                <p className="text-[10px] text-gray-400 font-medium mt-0.5">{format(new Date(c.data_compra), "dd/MM/yy")}</p>
-                <div className="mt-3 pt-3 border-t border-slate-50 flex justify-between items-baseline">
-                  <p className="text-[10px] text-gray-400">Total</p>
-                  <p className="text-xs font-black text-forest">R$ {(c.quantidade * (c.preco_unitario || 0)).toFixed(2)}</p>
-                </div>
+      <BlurPaywall ativo={isExpirado} mensagem="Gerencie seu estoque no Premium">
+        <div className="space-y-8">
+          {/* Hero Card */}
+          <div className={`p-8 rounded-[24px] shadow-premium text-center transition-colors ${bgColor}`}>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Disponíveis</p>
+            <h2 className={`text-7xl font-black tracking-tighter ${statusColor}`}>{ampolasDisponiveis}</h2>
+            <p className="text-sm font-bold text-gray-500 mt-4">Suficiente para <span className="text-gray-900">{ampolasDisponiveis * 7} dias</span></p>
+            
+            {ampolasDisponiveis < qtdMinima && (
+              <div className="mt-6 flex items-center justify-center gap-2 text-red-600 bg-red-100/50 py-2.5 rounded-full text-[11px] font-bold uppercase tracking-wider">
+                <AlertTriangle size={14} /> Estoque crítico
               </div>
-            ))}
+            )}
           </div>
-        )}
-      </div>
+
+          {/* Histórico Simplificado (Horizontal ou Compacto) */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Últimas Compras</h3>
+              <button className="text-[10px] font-bold text-forest uppercase tracking-widest">Ver tudo</button>
+            </div>
+            {compras.length === 0 ? (
+              <EmptyState icon={<PackageOpen />} title="Sem compras" description="Registre sua primeira compra." />
+            ) : (
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-6 px-6">
+                {compras.slice(0, 5).map(c => (
+                  <div key={c.id} className="min-w-[180px] bg-white p-4 rounded-[20px] shadow-premium border border-slate-50">
+                    <p className="text-[13px] font-bold text-gray-900">{c.quantidade} ampolas · {c.dose_mg}mg</p>
+                    <p className="text-[10px] text-gray-400 font-medium mt-0.5">{format(new Date(c.data_compra), "dd/MM/yy")}</p>
+                    <div className="mt-3 pt-3 border-t border-slate-50 flex justify-between items-baseline">
+                      <p className="text-[10px] text-gray-400">Total</p>
+                      <p className="text-xs font-black text-forest">R$ {(c.quantidade * (c.preco_unitario || 0)).toFixed(2)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </BlurPaywall>
 
       {showForm && (
         <div className="fixed inset-0 z-[100] flex items-end justify-center">

@@ -8,6 +8,7 @@ const dmSans = DM_Sans({
   weight: ["400", "500", "600", "700"],
   variable: "--font-dm-sans",
   display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {

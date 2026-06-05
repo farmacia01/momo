@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Bell, Check, ExternalLink } from "lucide-react";
 import { useNotifications } from "@/lib/hooks/useNotifications";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence  } from 'framer-motion';
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -33,7 +33,7 @@ export function NotificationBell({ userId }: { userId: string | undefined }) {
               className="fixed inset-0 z-40 bg-transparent"
               onClick={() => setIsOpen(false)}
             />
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -123,7 +123,7 @@ export function NotificationBell({ userId }: { userId: string | undefined }) {
                    </p>
                 </div>
               )}
-            </motion.div>
+            </m.div>
           </>
         )}
       </AnimatePresence>

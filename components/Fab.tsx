@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Plus, Syringe, Scale, Activity, type LucideIcon, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence  } from 'framer-motion';
 
 interface Action {
   label: string;
@@ -25,7 +25,7 @@ export function Fab() {
     <>
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -40,7 +40,7 @@ export function Fab() {
           {open && (
             <div className="flex flex-col items-end gap-3 mb-2">
               {ACTIONS.map((a, i) => (
-                <motion.div
+                <m.div
                   key={a.label}
                   initial={{ opacity: 0, y: 20, scale: 0.8 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -59,13 +59,13 @@ export function Fab() {
                       <a.icon className="h-5 w-5" strokeWidth={2.5} />
                     </span>
                   </Link>
-                </motion.div>
+                </m.div>
               ))}
             </div>
           )}
         </AnimatePresence>
 
-        <motion.button
+        <m.button
           onClick={() => setOpen((v) => !v)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -76,7 +76,7 @@ export function Fab() {
           ) : (
             <Plus className="h-7 w-7" strokeWidth={2.5} />
           )}
-        </motion.button>
+        </m.button>
       </div>
     </>
   );

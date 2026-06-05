@@ -7,26 +7,27 @@ export default async function SaudePage() {
 
   if (!session) return null;
 
-  // Profile to get height, start date, and target weight
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('altura_cm, data_inicio_tratamento, peso_meta, peso_inicial')
-    .eq('id', session.user.id)
-    .single();
+  const [profileResult, medicoesResult, sintomasResult] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('altura_cm, data_inicio_tratamento, peso_meta, peso_inicial')
+      .eq('id', session.user.id)
+      .single(),
+    supabase
+      .from('medicoes_saude')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .order('data_medicao', { ascending: false }),
+    supabase
+      .from('sintomas')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .order('data', { ascending: false })
+  ]);
 
-  // Fetch medicoes
-  const { data: medicoes } = await supabase
-    .from('medicoes_saude')
-    .select('*')
-    .eq('user_id', session.user.id)
-    .order('data_medicao', { ascending: false });
-
-  // Fetch sintomas
-  const { data: sintomas } = await supabase
-    .from('sintomas')
-    .select('*')
-    .eq('user_id', session.user.id)
-    .order('data', { ascending: false });
+  const profile = profileResult.data;
+  const medicoes = medicoesResult.data;
+  const sintomas = sintomasResult.data;
 
   return (
     <SaudeClient 

@@ -13,7 +13,7 @@ import {
   ArrowUpRight
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { m  } from 'framer-motion';
 import { formatBRL } from "@/lib/fornecedores";
 import toast from "react-hot-toast";
 
@@ -72,7 +72,7 @@ export function DetalhePedidoClient({ initialPedido, isFornecedor }: { initialPe
       </div>
 
       {/* Status Stepper */}
-      <motion.div 
+      <m.div 
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         className="f-card p-6 overflow-x-auto scrollbar-hide"
@@ -103,11 +103,11 @@ export function DetalhePedidoClient({ initialPedido, isFornecedor }: { initialPe
             );
           })}
         </div>
-      </motion.div>
+      </m.div>
 
       <div className="space-y-4">
         {/* Item details */}
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -134,10 +134,10 @@ export function DetalhePedidoClient({ initialPedido, isFornecedor }: { initialPe
             <span className="text-[13px] font-bold text-[rgba(255,255,255,0.4)]">Total recebido</span>
             <span className="text-xl font-black text-white">{formatBRL(pedido.preco_total)}</span>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Address */}
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -164,10 +164,10 @@ export function DetalhePedidoClient({ initialPedido, isFornecedor }: { initialPe
               <Truck size={20} className="text-[#60a5fa]" />
             </div>
           )}
-        </motion.div>
+        </m.div>
 
         {/* Observations */}
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -209,13 +209,13 @@ export function DetalhePedidoClient({ initialPedido, isFornecedor }: { initialPe
               </div>
             )
           )}
-        </motion.div>
+        </m.div>
       </div>
 
       {/* Action floating bar */}
       {isFornecedor && pedido.status !== "entregue" && pedido.status !== "cancelado" && (
         <div className="fixed bottom-[90px] left-6 right-6 z-40">
-          <motion.div 
+          <m.div 
             initial={{ y: 100 }}
             animate={{ y: 0 }}
             className="bg-[#111111] border border-[rgba(255,255,255,0.1)] p-4 rounded-3xl shadow-2xl flex gap-3"
@@ -259,7 +259,7 @@ export function DetalhePedidoClient({ initialPedido, isFornecedor }: { initialPe
                 CONFIRMAR ENTREGA
               </button>
             )}
-          </motion.div>
+          </m.div>
         </div>
       )}
     </div>

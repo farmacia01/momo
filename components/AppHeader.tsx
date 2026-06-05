@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { NotificationBell } from "./NotificationBell";
+import Image from "next/image";
 
 /**
  * Standard page header: greeting + today's date on the left, avatar + bell on
@@ -39,10 +40,11 @@ export function AppHeader({
       <div className="flex shrink-0 items-center gap-2">
         <NotificationBell userId={userId} />
         {avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={avatarUrl}
             alt={name}
+            width={40}
+            height={40}
             className="h-10 w-10 rounded-full object-cover"
           />
         ) : (

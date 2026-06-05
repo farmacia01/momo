@@ -24,7 +24,7 @@ import {
   TIPO_PRODUTO_LABEL,
   type StatusPedido 
 } from "@/lib/fornecedores";
-import { motion } from "framer-motion";
+import { m  } from 'framer-motion';
 
 interface PedidoComInfo {
   id: string;
@@ -101,7 +101,7 @@ function PedidoCard({ pedido, index }: { pedido: PedidoComInfo, index: number })
   }[pedido.status];
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
@@ -177,6 +177,6 @@ function PedidoCard({ pedido, index }: { pedido: PedidoComInfo, index: number })
           </span>
         </div>
       )}
-    </motion.div>
+    </m.div>
   );
 }

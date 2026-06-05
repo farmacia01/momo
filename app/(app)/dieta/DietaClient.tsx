@@ -19,7 +19,7 @@ import { MacroRing } from "@/components/MacroRing";
 import { EmptyState } from "@/components/EmptyState";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { PageHeader } from "@/components/PageHeader";
-import { PaywallCard } from "@/components/PaywallCard";
+import { BlurPaywall } from "@/components/BlurPaywall";
 import { usePlano } from "@/hooks/usePlano";
 import toast from "react-hot-toast";
 import {
@@ -56,25 +56,10 @@ export function DietaClient({
   const [tab, setTab] = useState<Tab>("Hoje");
   const [refeicoes, setRefeicoes] = useState<Refeicao[]>(initialRefeicoes);
   const [showForm, setShowForm] = useState(false);
-  const { isExpirado } = usePlano();
+  const { isExpirado, loading: loadingPlano, status } = usePlano();
 
   const fase = faseFromDose(doseMg);
   const plano = PLANOS[fase];
-
-  async function handleDelete(id: string) {
-    const { error } = await supabase.from("refeicoes_registradas").delete().eq("id", id);
-    if (error) {
-      toast.error("Erro ao remover refeição.");
-      return;
-    }
-    setRefeicoes((prev) => prev.filter((r) => r.id !== id));
-    toast.success("Refeição removida.");
-  }
-
-  function handleAdded(nova: Refeicao) {
-    setRefeicoes((prev) => [nova, ...prev]);
-    setShowForm(false);
-  }
 
   const refeicoesHoje = useMemo(
     () => refeicoes.filter((r) => isSameDay(parseISO(r.data), new Date())),
@@ -95,150 +80,133 @@ export function DietaClient({
 
   const progressoPct = Math.min(100, Math.round((totaisHoje.calorias / plano.caloriasMax) * 100));
 
+  if (loadingPlano) {
+    return (
+      <div className="flex h-[60vh] items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  async function handleDelete(id: string) {
+    const { error } = await supabase.from("refeicoes_registradas").delete().eq("id", id);
+    if (error) {
+      toast.error("Erro ao remover refeição.");
+      return;
+    }
+    setRefeicoes((prev) => prev.filter((r) => r.id !== id));
+    toast.success("Refeição removida.");
+  }
+
+  function handleAdded(nova: Refeicao) {
+    setRefeicoes((prev) => [nova, ...prev]);
+    setShowForm(false);
+  }
+
   return (
     <div className="space-y-6 pb-36">
       <PageHeader title="Minha Dieta" />
 
-      {/* Hero Card */}
-      <div className="bg-white p-6 rounded-[24px] shadow-premium border-none">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="h-10 w-10 rounded-full bg-forest/10 text-forest flex items-center justify-center">
-            <Leaf size={20} />
-          </div>
-          <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Fase atual</p>
-            <h2 className="text-base font-bold text-slate-900 mt-0.5">Fase {fase}: {plano.nome}</h2>
-          </div>
-        </div>
-        
-        <div className="flex justify-between items-end mb-2">
-          <p className="text-sm font-bold text-slate-900">{totaisHoje.calorias} <span className="text-slate-400 font-medium">/ {plano.caloriasMax} kcal</span></p>
-          <p className="text-xs font-bold text-forest">{progressoPct}%</p>
-        </div>
-        <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-          <div className="h-full bg-forest rounded-full transition-all duration-500" style={{ width: `${progressoPct}%` }} />
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex p-1 bg-white rounded-full shadow-premium gap-1 overflow-x-auto scrollbar-hide">
-        {(["Hoje", "Plano", "Receitas"] as Tab[]).map(t => {
-          const isSoon = t === "Receitas";
-          return (
-            <button
-              key={t}
-              onClick={() => {
-                if (isSoon) {
-                  toast("Em breve! Receitas personalizadas com IA estão chegando 🚀", {
-                    icon: '⏳',
-                    style: {
-                      borderRadius: '10px',
-                      background: '#333',
-                      color: '#fff',
-                      fontSize: '12px'
-                    },
-                  });
-                  return;
-                }
-                setTab(t);
-              }}
-              className={`flex-1 min-w-[70px] py-2.5 rounded-full text-[12px] font-bold transition-all flex items-center justify-center gap-1.5 ${
-                tab === t ? "bg-forest text-white shadow-lg shadow-forest/20" : "text-gray-400 hover:bg-gray-50"
-              } ${isSoon ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              {t === "Receitas" ? (
-                <span className="flex items-center justify-center gap-1">
-                  <Sparkles size={12} className={tab === t ? "text-amber-300" : ""} /> {t}
-                </span>
-              ) : t}
-              {isSoon && (
-                <span className="bg-slate-100 text-slate-400 text-[8px] font-black px-1.5 py-0.5 rounded-full leading-none uppercase tracking-tighter shrink-0">
-                  Breve
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="page-transition-enter">
-        {tab === "Hoje" && (
-          <div className="space-y-6">
-            <div className="bg-white p-5 rounded-[24px] shadow-premium flex items-center justify-between">
-              <div className="w-[120px] h-[120px]">
-                <MacroRing 
-                  macros={{
-                    proteina_g: totaisHoje.proteina_g,
-                    carbo_g: totaisHoje.carbo_g,
-                    gordura_g: totaisHoje.gordura_g,
-                  }} 
-                  metaCalorias={plano.caloriasMax} 
-                  size={120}
-                  showLegend={false}
-                />
+      <BlurPaywall ativo={status !== "premium"} mensagem="Receitas e dieta personalizadas no Premium">
+        <div className="space-y-6">
+          {/* Hero Card */}
+          <div className="bg-white p-6 rounded-[24px] shadow-premium border-none">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-10 w-10 rounded-full bg-forest/10 text-forest flex items-center justify-center">
+                <Leaf size={20} />
               </div>
-              <div className="flex-1 ml-6 space-y-2">
-                <MacroLegend color="bg-[#16a34a]" label="Proteínas" value={`${totaisHoje.proteina_g}g`} />
-                <MacroLegend color="bg-[#f59e0b]" label="Carbos" value={`${totaisHoje.carbo_g}g`} />
-                <MacroLegend color="bg-[#6366f1]" label="Gorduras" value={`${totaisHoje.gordura_g}g`} />
+              <div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Fase atual</p>
+                <h2 className="text-base font-bold text-slate-900 mt-0.5">Fase {fase}: {plano.nome}</h2>
               </div>
             </div>
             
-            {/* Add meal */}
-            <button
-              onClick={() => setShowForm(true)}
-              className="fixed bottom-[70px] left-5 right-5 z-[45] z-45 flex items-center justify-center gap-2 rounded-2xl bg-forest py-3.5 text-sm font-bold text-white shadow-lg shadow-forest/20 transition-transform active:scale-[0.98]"
-            >
-              <Plus size={18} /> Registrar refeição
-            </button>
-
-            {/* List of meals */}
-            <div className="space-y-3">
-               {refeicoesHoje.length === 0 ? (
-                 <EmptyState icon={<Utensils />} title="Nada ainda" description="Registre sua primeira refeição do dia." />
-               ) : (
-                 refeicoesHoje.map(r => (
-                   <div key={r.id} className="bg-white p-4 rounded-[20px] shadow-premium flex justify-between items-center">
-                     <div>
-                       <p className="text-[10px] font-bold text-forest uppercase tracking-wider">{TIPO_REFEICAO_LABEL[r.tipo]}</p>
-                       <p className="text-sm font-bold text-gray-900">{r.descricao}</p>
-                       <p className="text-[11px] text-gray-400 mt-0.5">{r.calorias_estimadas} kcal · P:{r.proteinas_g}g C:{r.carboidratos_g}g</p>
-                     </div>
-                     <button onClick={() => handleDelete(r.id)} className="p-2 text-gray-300 hover:text-red-500 transition-colors"><Trash2 size={16} /></button>
-                   </div>
-                 ))
-               )}
+            <div className="flex justify-between items-end mb-2">
+              <p className="text-sm font-bold text-slate-900">{totaisHoje.calorias} <span className="text-slate-400 font-medium">/ {plano.caloriasMax} kcal</span></p>
+              <p className="text-xs font-bold text-forest">{progressoPct}%</p>
+            </div>
+            <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-full bg-forest rounded-full transition-all duration-500" style={{ width: `${progressoPct}%` }} />
             </div>
           </div>
-        )}
 
-        {tab === "Plano" && <MeuPlano fase={fase} />}
-        {tab === "Receitas" && (
-          <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
-            <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center text-amber-500 animate-pulse">
-              <Sparkles size={40} />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-slate-900">Receitas com IA</h3>
-              <p className="text-sm text-slate-500 max-w-[260px] mx-auto mt-1">
-                Estamos finalizando o nosso motor de inteligência artificial para gerar cardápios perfeitos para sua fase do Mounjaro.
-              </p>
-            </div>
+          {/* Tabs */}
+          <div className="flex p-1 bg-white rounded-full shadow-premium gap-1 overflow-x-auto scrollbar-hide">
+            {(["Hoje", "Plano", "Receitas"] as Tab[]).map(t => {
+              return (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  className={`flex-1 min-w-[70px] py-2.5 rounded-full text-[12px] font-bold transition-all flex items-center justify-center gap-1.5 ${
+                    tab === t ? "bg-forest text-white shadow-lg shadow-forest/20" : "text-gray-400 hover:bg-gray-50"
+                  }`}
+                >
+                  {t === "Receitas" ? (
+                    <span className="flex items-center justify-center gap-1">
+                      <Sparkles size={12} className={tab === t ? "text-amber-300" : ""} /> {t}
+                    </span>
+                  ) : t}
+                </button>
+              );
+            })}
           </div>
-        )}
-        {/* 
-          TODO: ativar quando pronto
-          {tab === "Receitas" &&
-            (isExpirado ? (
-              <PaywallCard
-                recurso="Receitas Premium"
-                descricao="Assine para gerar receitas personalizadas com IA por fase do tratamento."
-              />
-            ) : (
-              <ReceitasIA userId={userId} fase={fase} doseMg={doseMg} />
-            ))}
-        */}
-      </div>
+
+          <div className="page-transition-enter">
+            {tab === "Hoje" && (
+              <div className="space-y-6">
+                <div className="bg-white p-5 rounded-[24px] shadow-premium flex items-center justify-between">
+                  <div className="w-[120px] h-[120px]">
+                    <MacroRing 
+                      macros={{
+                        proteina_g: totaisHoje.proteina_g,
+                        carbo_g: totaisHoje.carbo_g,
+                        gordura_g: totaisHoje.gordura_g,
+                      }} 
+                      metaCalorias={plano.caloriasMax} 
+                      size={120}
+                      showLegend={false}
+                    />
+                  </div>
+                  <div className="flex-1 ml-6 space-y-2">
+                    <MacroLegend color="bg-[#16a34a]" label="Proteínas" value={`${totaisHoje.proteina_g}g`} />
+                    <MacroLegend color="bg-[#f59e0b]" label="Carbos" value={`${totaisHoje.carbo_g}g`} />
+                    <MacroLegend color="bg-[#6366f1]" label="Gorduras" value={`${totaisHoje.gordura_g}g`} />
+                  </div>
+                </div>
+                
+                {/* Add meal */}
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-forest py-3.5 text-sm font-bold text-white shadow-lg shadow-forest/20 transition-transform active:scale-[0.98] w-full"
+                >
+                  <Plus size={18} /> Registrar refeição
+                </button>
+
+                {/* List of meals */}
+                <div className="space-y-3">
+                  {refeicoesHoje.length === 0 ? (
+                    <EmptyState icon={<Utensils />} title="Nada ainda" description="Registre sua primeira refeição do dia." />
+                  ) : (
+                    refeicoesHoje.map(r => (
+                      <div key={r.id} className="bg-white p-4 rounded-[20px] shadow-premium flex justify-between items-center">
+                        <div>
+                          <p className="text-[10px] font-bold text-forest uppercase tracking-wider">{TIPO_REFEICAO_LABEL[r.tipo]}</p>
+                          <p className="text-sm font-bold text-gray-900">{r.descricao}</p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">{r.calorias_estimadas} kcal · P:{r.proteinas_g}g C:{r.carboidratos_g}g</p>
+                        </div>
+                        <button onClick={() => handleDelete(r.id)} className="p-2 text-gray-300 hover:text-red-500 transition-colors"><Trash2 size={16} /></button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+
+            {tab === "Plano" && <MeuPlano fase={fase} />}
+            {tab === "Receitas" && <ReceitasIA userId={userId} fase={fase} doseMg={doseMg} />}
+          </div>
+        </div>
+      </BlurPaywall>
 
       {showForm && (
         <RefeicaoForm userId={userId} onClose={() => setShowForm(false)} onAdded={handleAdded} />

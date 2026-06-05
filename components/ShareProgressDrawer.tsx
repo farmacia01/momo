@@ -36,6 +36,8 @@ interface ShareOptions {
 
 const WHATSAPP_GREEN = "#25D366";
 
+import { m, AnimatePresence } from "framer-motion";
+
 export function ShareProgressDrawer({ open, onClose, data }: Props) {
   const [mounted, setMounted] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -155,98 +157,115 @@ export function ShareProgressDrawer({ open, onClose, data }: Props) {
     window.open(`https://wa.me/?text=${encodeURIComponent(whatsappText)}`, "_blank");
   }
 
-  if (!mounted || !open) return null;
+  if (!mounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[120] flex items-end justify-center">
-      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
+    <AnimatePresence>
+      {open && (
+        <m.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="fixed inset-0 z-[120] flex items-end justify-center"
+        >
+          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative z-[121] flex max-h-[94vh] w-full max-w-md flex-col overflow-hidden rounded-t-[28px] bg-[#f2f2f7] shadow-xl animate-slide-up">
-        {/* Header */}
-        <div className="flex-shrink-0 pt-3">
-          <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-slate-300" />
-          <div className="flex items-start justify-between px-6 pb-3">
-            <div>
-              <h2 className="text-[18px] font-bold text-slate-900">Compartilhar progresso</h2>
-              <p className="text-xs font-medium text-slate-400">
-                Mostre sua jornada para quem importa
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-slate-500"
-              aria-label="Fechar"
-            >
-              <X size={18} />
-            </button>
-          </div>
-        </div>
-
-        <div className="flex-1 space-y-5 overflow-y-auto px-6 py-4 pb-8">
-          {/* Preview do card (escalado) */}
-          <div ref={previewWrapRef} className="flex justify-center">
-            <div
-              style={{ width: 400 * scale, height: 500 * scale }}
-              className="overflow-hidden rounded-[24px]"
-            >
-              <div style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}>
-                <ProgressCard
-                  ref={cardRef}
-                  data={data}
-                  opts={opts}
-                  pesoPerdidoStr={pesoPerdidoStr}
-                  mediaStr={mediaStr}
-                  imcStr={imcStr}
-                  mesAno={mesAno}
-                />
+          <m.div 
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 400, damping: 35 }}
+            className="relative z-[121] flex max-h-[94vh] w-full max-w-md flex-col overflow-hidden rounded-t-[28px] bg-[#f2f2f7] shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex-shrink-0 pt-3">
+              <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-slate-300" />
+              <div className="flex items-start justify-between px-6 pb-3">
+                <div>
+                  <h2 className="text-[18px] font-bold text-slate-900">Compartilhar progresso</h2>
+                  <p className="text-xs font-medium text-slate-400">
+                    Mostre sua jornada para quem importa
+                  </p>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-slate-500"
+                  aria-label="Fechar"
+                >
+                  <X size={18} />
+                </button>
               </div>
             </div>
-          </div>
 
-          {/* Seleção do que mostrar */}
-          <div>
-            <p className="mb-2 ml-1 text-[11px] font-bold uppercase tracking-widest text-slate-400">
-              O que mostrar
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <OptionPill label="Peso perdido total" active={opts.pesoPerdido} onClick={() => setOpts((o) => ({ ...o, pesoPerdido: !o.pesoPerdido }))} />
-              <OptionPill label="Semanas de tratamento" active={opts.semanas} onClick={() => setOpts((o) => ({ ...o, semanas: !o.semanas }))} />
-              <OptionPill label="IMC atual" active={opts.imc} onClick={() => setOpts((o) => ({ ...o, imc: !o.imc }))} />
-              <OptionPill label="Gráfico de evolução" active={opts.grafico} onClick={() => setOpts((o) => ({ ...o, grafico: !o.grafico }))} />
-              <OptionPill label="Peso atual" active={opts.pesoAtual} onClick={() => setOpts((o) => ({ ...o, pesoAtual: !o.pesoAtual }))} />
-            </div>
-          </div>
+            <div className="flex-1 space-y-5 overflow-y-auto px-6 py-4 pb-8">
+              {/* Preview do card (escalado) */}
+              <div ref={previewWrapRef} className="flex justify-center">
+                <div
+                  style={{ width: 400 * scale, height: 500 * scale }}
+                  className="overflow-hidden rounded-[24px]"
+                >
+                  <div style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}>
+                    <ProgressCard
+                      ref={cardRef}
+                      data={data}
+                      opts={opts}
+                      pesoPerdidoStr={pesoPerdidoStr}
+                      mediaStr={mediaStr}
+                      imcStr={imcStr}
+                      mesAno={mesAno}
+                    />
+                  </div>
+                </div>
+              </div>
 
-          {/* Ações */}
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={handleSaveImage}
-                disabled={busy}
-                className="flex items-center justify-center gap-2 rounded-full bg-white py-3.5 text-sm font-bold text-slate-700 shadow-sm transition-all active:scale-[0.97] disabled:opacity-50"
-              >
-                <Download size={18} /> Salvar imagem
-              </button>
-              <button
-                onClick={handleShare}
-                disabled={busy}
-                className="flex items-center justify-center gap-2 rounded-full bg-forest py-3.5 text-sm font-bold text-white shadow-sm transition-all active:scale-[0.97] disabled:opacity-50"
-              >
-                <Share2 size={18} /> Compartilhar
-              </button>
+              {/* Seleção do que mostrar */}
+              <div>
+                <p className="mb-2 ml-1 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                  O que mostrar
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <OptionPill label="Peso perdido total" active={opts.pesoPerdido} onClick={() => setOpts((o) => ({ ...o, pesoPerdido: !o.pesoPerdido }))} />
+                  <OptionPill label="Semanas de tratamento" active={opts.semanas} onClick={() => setOpts((o) => ({ ...o, semanas: !o.semanas }))} />
+                  <OptionPill label="IMC atual" active={opts.imc} onClick={() => setOpts((o) => ({ ...o, imc: !o.imc }))} />
+                  <OptionPill label="Gráfico de evolução" active={opts.grafico} onClick={() => setOpts((o) => ({ ...o, grafico: !o.grafico }))} />
+                  <OptionPill label="Peso atual" active={opts.pesoAtual} onClick={() => setOpts((o) => ({ ...o, pesoAtual: !o.pesoAtual }))} />
+                </div>
+              </div>
+
+              {/* Ações */}
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={handleSaveImage}
+                    disabled={busy}
+                    className="flex items-center justify-center gap-2 rounded-full bg-white py-3.5 text-sm font-bold text-slate-700 shadow-sm transition-all active:scale-[0.97] disabled:opacity-50"
+                  >
+                    <Download size={18} /> Salvar imagem
+                  </button>
+                  <button
+                    onClick={handleShare}
+                    disabled={busy}
+                    className="flex items-center justify-center gap-2 rounded-full bg-forest py-3.5 text-sm font-bold text-white shadow-sm transition-all active:scale-[0.97] disabled:opacity-50"
+                  >
+                    <Share2 size={18} /> Compartilhar
+                  </button>
+                </div>
+                <button
+                  onClick={handleWhatsApp}
+                  disabled={busy}
+                  style={{ backgroundColor: WHATSAPP_GREEN }}
+                  className="flex w-full items-center justify-center gap-2 rounded-full py-3.5 text-sm font-bold text-white shadow-sm transition-all active:scale-[0.97] disabled:opacity-50"
+                >
+                  <WhatsAppIcon /> Compartilhar no WhatsApp
+                </button>
+              </div>
             </div>
-            <button
-              onClick={handleWhatsApp}
-              disabled={busy}
-              style={{ backgroundColor: WHATSAPP_GREEN }}
-              className="flex w-full items-center justify-center gap-2 rounded-full py-3.5 text-sm font-bold text-white shadow-sm transition-all active:scale-[0.97] disabled:opacity-50"
-            >
-              <WhatsAppIcon /> Compartilhar no WhatsApp
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>,
+          </m.div>
+        </m.div>
+      )}
+    </AnimatePresence>,
     document.body,
   );
 }

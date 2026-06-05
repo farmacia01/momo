@@ -8,17 +8,21 @@ export default async function DosesPage() {
 
   if (!session) return null;
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('dose_atual_mg, data_inicio_tratamento')
-    .eq('id', session.user.id)
-    .single();
+  const [profileResult, dosesResult] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('dose_atual_mg, data_inicio_tratamento')
+      .eq('id', session.user.id)
+      .single(),
+    supabase
+      .from('doses')
+      .select('id, data_aplicacao, dose_mg, local_aplicacao, observacoes, created_at, lado_corpo, foto_url')
+      .eq('user_id', session.user.id)
+      .order('data_aplicacao', { ascending: false })
+  ]);
 
-  const { data: doses } = await supabase
-    .from('doses')
-    .select('*')
-    .eq('user_id', session.user.id)
-    .order('data_aplicacao', { ascending: false });
+  const profile = profileResult.data;
+  const doses = dosesResult.data;
 
   const calculoDose = calcularProximaDose(
     doses?.[0]?.data_aplicacao,
