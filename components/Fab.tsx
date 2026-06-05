@@ -35,7 +35,7 @@ export function Fab() {
         )}
       </AnimatePresence>
 
-      <div className="fixed bottom-24 right-6 z-40 flex flex-col items-end gap-3">
+      <div className="fixed bottom-[88px] right-5 z-40 flex flex-col items-end gap-3">
         <AnimatePresence>
           {open && (
             <div className="flex flex-col items-end gap-3 mb-2">
@@ -69,7 +69,8 @@ export function Fab() {
           onClick={() => setOpen((v) => !v)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1c4d2e] text-white shadow-lg shadow-[#1c4d2e]/30 transition-shadow hover:shadow-xl"
+          className="flex h-14 w-14 items-center justify-center rounded-full text-white shadow-lg transition-shadow hover:shadow-xl"
+          style={{ backgroundColor: '#1c4d2e', boxShadow: '0 4px 20px rgba(28,77,46,0.35)' }}
         >
           {open ? (
             <X className="h-7 w-7" strokeWidth={2.5} />

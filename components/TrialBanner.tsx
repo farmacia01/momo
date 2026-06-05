@@ -1,5 +1,6 @@
 "use client";
 
+import { Lock, AlertTriangle, Leaf } from "lucide-react";
 import { usePlano } from "@/hooks/usePlano";
 
 /**
@@ -29,14 +30,28 @@ export function TrialBanner() {
         alignItems: "center",
         justifyContent: "space-between",
         gap: 8,
+        width: '100%',
+        maxWidth: '100vw',
+        boxSizing: 'border-box',
       }}
     >
-      <span style={{ fontSize: 13, color: "#fff", fontWeight: 500 }}>
-        {isExpirado
-          ? "🔒 Seu trial expirou. Assine para continuar."
-          : urgente
-            ? `⚠️ Trial expira em ${diasRestantesTrial} dia(s)!`
-            : `🌿 Trial gratuito — ${diasRestantesTrial} dias restantes`}
+      <span style={{
+        fontSize: 13,
+        color: "#fff",
+        fontWeight: 500,
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+        overflow: 'hidden',
+      }}>
+        {isExpirado ? (
+          <><Lock size={14} color="#fff" style={{ flexShrink: 0 }} /><span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Seu trial expirou. Assine para continuar.</span></>
+        ) : urgente ? (
+          <><AlertTriangle size={14} color="#fff" style={{ flexShrink: 0 }} /><span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Trial expira em {diasRestantesTrial} dia(s)!</span></>
+        ) : (
+          <><Leaf size={14} color="#fff" style={{ flexShrink: 0 }} /><span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Trial gratuito — {diasRestantesTrial} dias restantes</span></>
+        )}
       </span>
       <a
         href="/plano"
@@ -44,11 +59,12 @@ export function TrialBanner() {
           background: "#fff",
           color: isExpirado ? "#ef4444" : "#1c4d2e",
           fontSize: 12,
-          fontWeight: 800,
+          fontWeight: 700,
           padding: "6px 14px",
           borderRadius: 999,
           textDecoration: "none",
           whiteSpace: "nowrap",
+          flexShrink: 0,
         }}
       >
         {isExpirado ? "Assinar agora" : "Ver planos"}
