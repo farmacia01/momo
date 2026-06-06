@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bell, Check, ExternalLink, Zap, Settings, ShieldAlert } from "lucide-react";
 import { useNotifications } from "@/lib/hooks/useNotifications";
 import { motion, AnimatePresence } from "framer-motion";
