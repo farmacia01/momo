@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { Plus, Package, Edit2, Trash2, X } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
@@ -9,7 +9,6 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { TIPO_PRODUTO_LABEL, formatBRL } from "@/lib/fornecedores";
 import toast from "react-hot-toast";
-import { motion, AnimatePresence } from "framer-motion";
 const DOSES = [2.5, 5, 7.5, 10, 12.5, 15];
 
 type Produto = {
