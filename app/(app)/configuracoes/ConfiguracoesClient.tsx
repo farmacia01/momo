@@ -348,7 +348,10 @@ const DIAS = [
 ];
 
 function NotificacoesSection({ userId }: { userId: string }) {
-  const supported = pushSupported();
+  // pushSupported() checks window/navigator — must run client-side only
+  const [supported, setSupported] = useState(false);
+  useEffect(() => { setSupported(pushSupported()); }, []);
+
   const [pushOn, setPushOn] = useState(false);
   const [pushBusy, setPushBusy] = useState(false);
 
@@ -427,34 +430,39 @@ function NotificacoesSection({ userId }: { userId: string }) {
       toast.error("Para usar notificações, instale o app na tela inicial do seu celular.", { duration: 5000 });
       return;
     }
+
+    // Se for ativar, pedir permissão ANTES de qualquer await (contexto de gesto do usuário)
+    if (!pushOn && typeof Notification !== "undefined") {
+      if (Notification.permission === "denied") {
+        toast.error("Notificações bloqueadas. Ative nas configurações do navegador.", { duration: 5000 });
+        return;
+      }
+      if (Notification.permission !== "granted") {
+        const perm = await Notification.requestPermission();
+        if (perm !== "granted") {
+          toast.error("Permissão negada. Ative nas configurações do navegador.", { duration: 5000 });
+          return;
+        }
+      }
+    }
+
     setPushBusy(true);
-    const loadingId = toast.loading(pushOn ? "Desativando..." : "Solicitando permissão...");
+    const loadingId = toast.loading(pushOn ? "Desativando..." : "Ativando notificações...");
     try {
       if (pushOn) {
         await unsubscribeFromPush();
         setPushOn(false);
-        toast.dismiss(loadingId);
         toast.success("Notificações desativadas.");
       } else {
-        if (typeof Notification !== "undefined" && Notification.permission === "denied") {
-          toast.dismiss(loadingId);
-          toast.error("Notificações bloqueadas. Ative nas configurações do navegador.", { duration: 5000 });
-          return;
-        }
         await subscribeToPush(userId);
         setPushOn(true);
-        toast.dismiss(loadingId);
         toast.success("Notificações ativadas!");
       }
     } catch (err: any) {
-      toast.dismiss(loadingId);
       const msg = String(err?.message || "");
-      if (msg.includes("negada") || msg.includes("denied")) {
-        toast.error("Notificações bloqueadas. Ative nas configurações do navegador.", { duration: 5000 });
-      } else {
-        toast.error(msg || "Não foi possível alterar as notificações.");
-      }
+      toast.error(msg || "Não foi possível alterar as notificações.");
     } finally {
+      toast.dismiss(loadingId);
       setPushBusy(false);
     }
   }

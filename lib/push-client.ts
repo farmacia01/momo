@@ -32,18 +32,16 @@ export async function subscribeToPush(userId: string): Promise<void> {
   if (!pushSupported()) throw new Error("Notificações não são suportadas neste navegador.");
 
   const vapid = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-  if (!vapid) throw new Error("Chave VAPID pública não configurada.");
+  if (!vapid) throw new Error("Chave VAPID não configurada. Adicione NEXT_PUBLIC_VAPID_PUBLIC_KEY nas variáveis de ambiente da Vercel.");
 
-  const permission = await Notification.requestPermission();
-  if (permission !== "granted") throw new Error("Permissão de notificação negada.");
-
-  // navigator.serviceWorker.ready aguarda o SW ativo. Com buildExcludes configurado
-  // no next.config.js, o SW instala sem erro de precache e ativa normalmente.
+  // Permissão já garantida pelo chamador (ConfiguracoesClient.togglePush).
+  // Aguarda o SW estar ativo — funciona após o buildExcludes fix no next.config.js
+  // que impede que app-build-manifest.json cause bad-precaching-response.
   const reg = await Promise.race([
     navigator.serviceWorker.ready,
     new Promise<never>((_, reject) =>
       setTimeout(
-        () => reject(new Error("Serviço de notificação indisponível. Recarregue a página e tente novamente.")),
+        () => reject(new Error("Service worker não ativou. Recarregue a página e tente novamente.")),
         12000
       )
     ),
