@@ -53,6 +53,28 @@ export async function POST(req: NextRequest) {
       break
     }
 
+    case 'pix_generated': {
+      const email = pedido.customer?.email
+      if (!email) break
+      
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .single()
+
+      if (profile) {
+        await supabase.from('assinaturas').upsert({
+          user_id: profile.id,
+          cakto_order_id: pedido.id?.toString(),
+          status: 'pendente',
+          valor: pedido.price,
+          plano: 'mensal',
+        }, { onConflict: 'cakto_order_id' })
+      }
+      break
+    }
+
     case 'purchase_refused': {
       const email = pedido.customer?.email
       if (!email) break

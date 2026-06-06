@@ -48,7 +48,27 @@ export async function subscribeToPush(userId: string): Promise<void> {
   const permission = await Notification.requestPermission();
   if (permission !== "granted") throw new Error("Permissão de notificação negada.");
 
-  const reg = await navigator.serviceWorker.ready;
+  // Se não há SW registrado, tenta registrar manualmente como fallback.
+  const existing = await navigator.serviceWorker.getRegistration("/sw.js");
+  if (!existing) {
+    try {
+      await navigator.serviceWorker.register("/sw.js");
+    } catch {
+      throw new Error("Recarregue a página e tente ativar novamente.");
+    }
+  }
+
+  // Aguarda SW ativo com timeout de 15s para não travar indefinidamente.
+  const reg = await Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Recarregue a página e tente ativar novamente.")),
+        15000
+      )
+    ),
+  ]);
+
   let sub = await reg.pushManager.getSubscription();
   if (!sub) {
     sub = await reg.pushManager.subscribe({
