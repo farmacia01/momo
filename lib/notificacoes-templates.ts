@@ -347,6 +347,8 @@ export const NOTIFICACOES = {
   },
 };
 
+export type NotificationTemplateKey = string;
+
 // ━━━━━━━━━━━━━━━━━━━━━━
 // TIMING RECOMENDADO (usado pelo motor e admin)
 // ━━━━━━━━━━━━━━━━━━━━━━
