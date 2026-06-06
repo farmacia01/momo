@@ -56,18 +56,18 @@ export default function LoginPage() {
 
         {/* Logo Area */}
         <div className="z-10 flex flex-col items-center gap-2 animate-fade-up">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-inner">
             <Droplets className="h-10 w-10 text-white fill-white/20" />
           </div>
           <div className="mt-2 text-center">
-            <h1 className="text-3xl font-bold tracking-tight">Momo</h1>
-            <p className="text-sm font-light uppercase tracking-[0.2em] opacity-80">Tracker</p>
+            <h1 className="text-4xl font-black tracking-tighter">Momo</h1>
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-60">Sua melhor versão</p>
           </div>
         </div>
 
         {/* Tagline */}
-        <p className="z-10 mt-8 max-w-[260px] text-lg font-medium leading-tight opacity-85 animate-fade-up [animation-delay:200ms]">
-          Acompanhe sua jornada de transformação
+        <p className="z-10 mt-8 max-w-[280px] text-lg font-medium leading-tight opacity-90 animate-fade-up [animation-delay:200ms]">
+          Acompanhamento inteligente para sua jornada com Mounjaro
         </p>
 
         {/* decorative dots */}
