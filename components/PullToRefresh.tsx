@@ -5,46 +5,42 @@ import { useRouter } from "next/navigation";
 import { m } from "framer-motion";
 import { RefreshCw } from "lucide-react";
 
-const PULL_THRESHOLD = 70;
-
-function isAtBottom() {
-  return window.innerHeight + window.scrollY >= document.body.scrollHeight - 10;
-}
+const PULL_THRESHOLD = 80;
 
 export function PullToRefresh({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [pullUp, setPullUp] = useState(0);
+  const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const startYRef = useRef<number | null>(null);
   const pullingRef = useRef(false);
 
   function onTouchStart(e: React.TouchEvent) {
-    if (isAtBottom()) {
+    if (window.scrollY === 0) {
       startYRef.current = e.touches[0].clientY;
     }
   }
 
   function onTouchMove(e: React.TouchEvent) {
     if (startYRef.current === null || isRefreshing) return;
-    const delta = startYRef.current - e.touches[0].clientY; // positivo = arrastou pra cima
-    if (delta > 0 && isAtBottom()) {
+    const delta = e.touches[0].clientY - startYRef.current; // positivo = dedo desceu
+    if (delta > 0 && window.scrollY === 0) {
       pullingRef.current = true;
-      setPullUp(Math.min(delta * 0.4, PULL_THRESHOLD + 20));
+      setPullDistance(Math.min(delta * 0.4, PULL_THRESHOLD + 20));
     } else {
       startYRef.current = null;
-      setPullUp(0);
+      setPullDistance(0);
     }
   }
 
   async function onTouchEnd() {
-    if (pullingRef.current && pullUp > PULL_THRESHOLD && !isRefreshing) {
+    if (pullingRef.current && pullDistance > PULL_THRESHOLD && !isRefreshing) {
       setIsRefreshing(true);
-      setPullUp(40);
+      setPullDistance(40);
       router.refresh();
       await new Promise((r) => setTimeout(r, 800));
       setIsRefreshing(false);
     }
-    setPullUp(0);
+    setPullDistance(0);
     startYRef.current = null;
     pullingRef.current = false;
   }
@@ -56,17 +52,18 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
-      {children}
-
-      {/* Indicador no fundo */}
+      {/* Indicador no topo */}
       <m.div
-        className="fixed bottom-24 left-0 right-0 flex justify-center pointer-events-none z-50"
-        style={{ opacity: Math.min(1, pullUp / 40) }}
-        animate={isRefreshing ? { opacity: 1 } : {}}
+        className="absolute top-0 left-0 right-0 flex justify-center pointer-events-none z-50"
+        style={{
+          y: pullDistance - 50,
+          opacity: Math.min(1, pullDistance / 40),
+        }}
+        animate={isRefreshing ? { y: 20, opacity: 1 } : {}}
       >
         <div className="bg-white rounded-full p-2 shadow-xl border border-slate-100">
           <m.div
-            animate={isRefreshing ? { rotate: 360 } : { rotate: pullUp * 3 }}
+            animate={isRefreshing ? { rotate: 360 } : { rotate: pullDistance * 3 }}
             transition={
               isRefreshing
                 ? { repeat: Infinity, duration: 1, ease: "linear" }
@@ -77,6 +74,16 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
           </m.div>
         </div>
       </m.div>
+
+      {/* Conteúdo desce levemente ao puxar */}
+      <div
+        style={{
+          transform: `translateY(${pullDistance}px)`,
+          transition: pullDistance === 0 ? "transform 0.3s ease" : "none",
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }
