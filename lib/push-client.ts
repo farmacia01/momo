@@ -90,7 +90,7 @@ export async function subscribeToPush(userId: string): Promise<void> {
     const convertedKey = urlBase64ToUint8Array(vapidKey);
     sub = await readyReg.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: convertedKey,
+      applicationServerKey: convertedKey as unknown as BufferSource,
     });
   }
 
