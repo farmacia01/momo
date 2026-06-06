@@ -248,7 +248,7 @@ export function DosesClient({
                 <textarea
                   rows={2}
                   value={observacoes}
-                  onChange={(e) => setObsMedicao(e.target.value)}
+                  onChange={(e) => setObservacoes(e.target.value)}
                   placeholder="Como foi a aplicação?"
                   className="input-standard mt-1"
                 />
