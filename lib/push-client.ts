@@ -1,14 +1,5 @@
 "use client";
 
-/**
- * Client-side Web Push enrollment. Registers the device with the browser's
- * push service and stores the subscription in `push_subscriptions` so the
- * server (/api/push/send) can deliver notifications to it later.
- *
- * Note: the service worker is disabled in development (see next.config.js),
- * so enrollment only works in a production build / deployed PWA.
- */
-
 import { supabase } from "@/lib/supabase";
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -29,7 +20,6 @@ export function pushSupported(): boolean {
   );
 }
 
-/** Whether this device currently has an active push subscription. */
 export async function getPushStatus(): Promise<boolean> {
   if (!pushSupported()) return false;
   const reg = await navigator.serviceWorker.getRegistration("/");
@@ -38,7 +28,6 @@ export async function getPushStatus(): Promise<boolean> {
   return !!sub;
 }
 
-/** Request permission, subscribe, and persist the subscription. */
 export async function subscribeToPush(userId: string): Promise<void> {
   if (!pushSupported()) throw new Error("Notificações não são suportadas neste navegador.");
 
@@ -48,45 +37,17 @@ export async function subscribeToPush(userId: string): Promise<void> {
   const permission = await Notification.requestPermission();
   if (permission !== "granted") throw new Error("Permissão de notificação negada.");
 
-  // Obtém ou registra o service worker (escopo raiz "/", não o path do arquivo)
-  let reg = await navigator.serviceWorker.getRegistration("/");
-  if (!reg) {
-    try {
-      reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
-    } catch {
-      throw new Error("Recarregue a página e tente ativar novamente.");
-    }
-  }
-
-  // Aguarda worker ativo com timeout de 8s.
-  // Evita navigator.serviceWorker.ready que pode travar no mobile quando há
-  // um SW em estado "waiting" (versão antiga ainda controlando a página).
-  if (!reg.active) {
-    await new Promise<void>((resolve, reject) => {
-      const timer = setTimeout(
-        () => reject(new Error("Recarregue a página e tente ativar novamente.")),
-        8000
-      );
-      const sw = reg!.installing ?? reg!.waiting;
-      if (!sw) { clearTimeout(timer); resolve(); return; }
-      sw.addEventListener("statechange", function onState() {
-        const state = (sw as ServiceWorker).state;
-        if (state === "activated") {
-          clearTimeout(timer);
-          resolve();
-        } else if (state === "redundant") {
-          clearTimeout(timer);
-          reject(new Error("Recarregue a página e tente ativar novamente."));
-        }
-      });
-    });
-    reg = (await navigator.serviceWorker.getRegistration("/")) ?? reg;
-  }
-
-  // Verificação final antes de tentar inscrever
-  if (!reg?.active) {
-    throw new Error("Recarregue a página e tente ativar novamente.");
-  }
+  // navigator.serviceWorker.ready aguarda o SW ativo. Com buildExcludes configurado
+  // no next.config.js, o SW instala sem erro de precache e ativa normalmente.
+  const reg = await Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Serviço de notificação indisponível. Recarregue a página e tente novamente.")),
+        12000
+      )
+    ),
+  ]);
 
   let sub = await reg.pushManager.getSubscription();
   if (!sub) {

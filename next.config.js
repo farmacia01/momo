@@ -3,10 +3,15 @@ const withPWA = require("next-pwa")({
   dest: "public",
   register: true,
   skipWaiting: true,
-  // Inject our custom push / notificationclick handlers into the generated SW.
   importScripts: ["/push-sw.js"],
-  // Disable the service worker in development to avoid caching headaches.
   disable: process.env.NODE_ENV === "development",
+  // Exclude Next.js internal files that return 404 on Vercel, preventing
+  // Workbox bad-precaching-response errors that block SW installation.
+  buildExcludes: [
+    /app-build-manifest\.json$/,
+    /middleware-manifest\.json$/,
+    /react-loadable-manifest\.json$/,
+  ],
 });
 
 const nextConfig = {
