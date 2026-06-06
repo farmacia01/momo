@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { m } from "framer-motion";
 import { RefreshCw } from "lucide-react";
@@ -12,37 +12,53 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
   const [isAtTop, setIsAtTop] = useState(true);
   const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const startY = useRef(0);
+  const pulling = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsAtTop(window.scrollY === 0);
+      setIsAtTop(window.scrollY <= 5);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleDrag = (_: any, info: any) => {
+  const handleTouchStart = (e: React.TouchEvent) => {
     if (isRefreshing || !isAtTop) return;
+    startY.current = e.touches[0].pageY;
+    pulling.current = true;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!pulling.current || isRefreshing || !isAtTop) return;
     
-    // Tracking downward movement from the top
-    if (info.offset.y > 0) {
-      const distance = Math.min(info.offset.y * 0.4, PULL_THRESHOLD + 20);
+    const currentY = e.touches[0].pageY;
+    const diff = currentY - startY.current;
+
+    if (diff > 0) {
+      // Apply resistance
+      const distance = Math.min(diff * 0.4, PULL_THRESHOLD + 20);
       setPullDistance(distance);
+      
+      // Prevent default scroll when pulling down at the top
+      if (diff > 10 && e.cancelable) {
+        // e.preventDefault(); // Can't prevent default in passive listener, but we are in React event
+      }
     } else {
       setPullDistance(0);
+      pulling.current = false;
     }
   };
 
-  const handleDragEnd = async (_: any, info: any) => {
-    if (isRefreshing) return;
+  const handleTouchEnd = async () => {
+    if (!pulling.current || isRefreshing) return;
+    pulling.current = false;
 
-    // Only refresh if enough distance AND positive velocity (actually pulling down)
-    if (isAtTop && info.offset.y > PULL_THRESHOLD && info.velocity.y > 0) {
+    if (pullDistance > PULL_THRESHOLD) {
       setIsRefreshing(true);
       setPullDistance(40);
       
       router.refresh();
-      
       await new Promise((resolve) => setTimeout(resolve, 800));
       
       setIsRefreshing(false);
@@ -53,19 +69,24 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="relative overflow-visible touch-pan-y">
+    <div 
+      className="relative w-full"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Indicator */}
       <m.div
-        className="absolute top-0 left-0 right-0 flex justify-center pointer-events-none z-50"
+        className="fixed top-4 left-0 right-0 flex justify-center pointer-events-none z-[100]"
         style={{ 
-          y: pullDistance - 50,
+          y: pullDistance - 60,
           opacity: Math.min(1, pullDistance / 40)
         }}
         animate={isRefreshing ? { y: 20, opacity: 1 } : {}}
       >
         <div className="bg-white rounded-full p-2 shadow-xl border border-slate-100 flex items-center justify-center">
           <m.div
-            animate={isRefreshing ? { rotate: 360 } : { rotate: pullDistance * 3 }}
+            animate={isRefreshing ? { rotate: 360 } : { rotate: pullDistance * 4 }}
             transition={isRefreshing ? { repeat: Infinity, duration: 1, ease: "linear" } : { type: "tween" }}
           >
             <RefreshCw size={18} className="text-forest" strokeWidth={3} />
@@ -73,16 +94,10 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
         </div>
       </m.div>
 
-      {/* Content Wrapper */}
+      {/* Main content - moves down when pulled */}
       <m.div
-        drag="y"
-        dragConstraints={{ top: 0, bottom: 0 }}
-        dragElastic={0.2} // Reduced elasticity to avoid blocking tap events
-        onDrag={handleDrag}
-        onDragEnd={handleDragEnd}
         animate={{ y: pullDistance }}
-        transition={{ type: "spring", stiffness: 400, damping: 40 }}
-        style={{ touchAction: "pan-y" }}
+        transition={pulling.current ? { type: "tween", duration: 0 } : { type: "spring", stiffness: 400, damping: 40 }}
       >
         {children}
       </m.div>
