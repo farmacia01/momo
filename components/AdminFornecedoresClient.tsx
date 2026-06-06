@@ -93,7 +93,7 @@ export function AdminFornecedoresClient({ fornecedores: initial }: { fornecedore
           {filtered.map((f, i) => {
             const nome = f.nome_fantasia || f.razao_social;
             const produtosAtivos = f.fornecedor_produtos.filter((p) => p.ativo);
-            const doses = [...new Set(f.fornecedor_produtos.map((p) => `${p.dose_mg}mg`))].join(", ");
+            const doses = Array.from(new Set(f.fornecedor_produtos.map((p) => `${p.dose_mg}mg`))).join(", ");
             const isLoading = loading?.startsWith(f.id);
             const statusBadge = f.status === "ativo" ? "a-badge-green" : f.status === "pendente" ? "a-badge-yellow" : f.status === "suspenso" ? "a-badge-red" : "a-badge-gray";
             const statusLabel = { ativo: "ATIVO", pendente: "PENDENTE", suspenso: "SUSPENSO", reprovado: "REPROVADO" }[f.status] || f.status.toUpperCase();
