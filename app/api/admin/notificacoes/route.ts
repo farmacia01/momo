@@ -28,16 +28,16 @@ export async function POST(req: Request) {
   } else if (segmento === "sem_dose_10d") {
     const ha10dias = new Date(hoje.getTime() - 10 * 24 * 60 * 60 * 1000).toISOString();
     const { data: comDose } = await admin.from("doses").select("user_id").gte("data_aplicacao", ha10dias);
-    const idsComDose = [...new Set((comDose || []).map((d) => d.user_id))];
+    const idsComDose = Array.from(new Set((comDose || []).map((d) => d.user_id)));
     query = query.in("plano_ativo", ["premium", "trial"]);
     if (idsComDose.length > 0) query = query.not("id", "in", `(${idsComDose.join(",")})`);
   } else if (segmento === "sem_peso_7d") {
     const ha7dias = new Date(hoje.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const { data: comPeso } = await admin.from("medicoes_saude").select("user_id").gte("data_medicao", ha7dias);
-    const idsComPeso = [...new Set((comPeso || []).map((m) => m.user_id))];
+    const idsComPeso = Array.from(new Set((comPeso || []).map((d) => d.user_id)));
     query = query.in("plano_ativo", ["premium", "trial"]);
     if (idsComPeso.length > 0) query = query.not("id", "in", `(${idsComPeso.join(",")})`);
-  } else {
+  }
     query = query.in("plano_ativo", ["premium", "trial"]);
   }
 
