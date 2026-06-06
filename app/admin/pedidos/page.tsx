@@ -12,7 +12,7 @@ export default async function AdminPedidosPage() {
 
   const admin = createServiceClient();
 
-  const { data: pedidos } = await admin
+  const { data: raw } = await admin
     .from("pedidos")
     .select(`
       id, codigo, status, preco_total, cancelamento_motivo,
@@ -23,5 +23,14 @@ export default async function AdminPedidosPage() {
     `)
     .order("created_at", { ascending: false });
 
-  return <AdminPedidosClient pedidos={pedidos || []} />;
+  // Supabase returns joins as arrays; unbox to first element
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pedidos = (raw || []).map((p: any) => ({
+    ...p,
+    paciente: Array.isArray(p.paciente) ? (p.paciente[0] ?? null) : (p.paciente ?? null),
+    fornecedor: Array.isArray(p.fornecedor) ? (p.fornecedor[0] ?? null) : (p.fornecedor ?? null),
+    produto: Array.isArray(p.produto) ? (p.produto[0] ?? null) : (p.produto ?? null),
+  }));
+
+  return <AdminPedidosClient pedidos={pedidos} />;
 }
