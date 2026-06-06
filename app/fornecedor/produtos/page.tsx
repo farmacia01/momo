@@ -9,7 +9,7 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { TIPO_PRODUTO_LABEL, formatBRL } from "@/lib/fornecedores";
 import toast from "react-hot-toast";
-
+import { motion, AnimatePresence } from "framer-motion";
 const DOSES = [2.5, 5, 7.5, 10, 12.5, 15];
 
 type Produto = {
