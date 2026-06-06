@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { Clock, ShieldCheck, Mail } from "lucide-react";
 import { SignOutButton } from "./SignOutButton";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AguardandoPage() {
   const supabase = createServerClient();
   const { data: { session } } = await supabase.auth.getSession();

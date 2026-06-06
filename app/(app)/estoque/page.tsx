@@ -2,6 +2,8 @@ import { createServerClient } from "@/lib/supabase-server";
 import { EstoqueClient } from "./EstoqueClient";
 import { FornecedoresSection } from "./FornecedoresSection";
 
+export const dynamic = 'force-dynamic';
+
 export default async function EstoquePage() {
   const supabase = createServerClient();
   const { data: { session } } = await supabase.auth.getSession();

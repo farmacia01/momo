@@ -2,6 +2,8 @@ import { createServerClient } from "@/lib/supabase-server";
 import { DosesClient } from "./DosesClient";
 import { calcularProximaDose } from "@/lib/utils/dose";
 
+export const dynamic = 'force-dynamic';
+
 export default async function DosesPage() {
   const supabase = createServerClient();
   const { data: { session } } = await supabase.auth.getSession();
