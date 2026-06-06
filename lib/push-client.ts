@@ -48,26 +48,40 @@ export async function subscribeToPush(userId: string): Promise<void> {
   const permission = await Notification.requestPermission();
   if (permission !== "granted") throw new Error("Permissão de notificação negada.");
 
-  // Se não há SW registrado, tenta registrar manualmente como fallback.
-  const existing = await navigator.serviceWorker.getRegistration("/sw.js");
-  if (!existing) {
+  // Obtém ou registra o service worker
+  let reg = await navigator.serviceWorker.getRegistration("/sw.js");
+  if (!reg) {
     try {
-      await navigator.serviceWorker.register("/sw.js");
+      reg = await navigator.serviceWorker.register("/sw.js");
     } catch {
       throw new Error("Recarregue a página e tente ativar novamente.");
     }
   }
 
-  // Aguarda SW ativo com timeout de 15s para não travar indefinidamente.
-  const reg = await Promise.race([
-    navigator.serviceWorker.ready,
-    new Promise<never>((_, reject) =>
-      setTimeout(
+  // Aguarda worker ativo com timeout de 8s.
+  // Evita navigator.serviceWorker.ready que pode travar no mobile quando há
+  // um SW em estado "waiting" (versão antiga ainda controlando a página).
+  if (!reg.active) {
+    await new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(
         () => reject(new Error("Recarregue a página e tente ativar novamente.")),
-        15000
-      )
-    ),
-  ]);
+        8000
+      );
+      const sw = reg!.installing ?? reg!.waiting;
+      if (!sw) { clearTimeout(timer); resolve(); return; }
+      sw.addEventListener("statechange", function onState() {
+        const state = (sw as ServiceWorker).state;
+        if (state === "activated" || state === "installed") {
+          clearTimeout(timer);
+          resolve();
+        } else if (state === "redundant") {
+          clearTimeout(timer);
+          reject(new Error("Recarregue a página e tente ativar novamente."));
+        }
+      });
+    });
+    reg = (await navigator.serviceWorker.getRegistration("/sw.js")) ?? reg;
+  }
 
   let sub = await reg.pushManager.getSubscription();
   if (!sub) {
@@ -78,8 +92,6 @@ export async function subscribeToPush(userId: string): Promise<void> {
   }
 
   const json = sub.toJSON();
-  // Sem constraint única em endpoint: removemos qualquer registro antigo do
-  // mesmo endpoint (RLS limita às linhas do próprio usuário) e inserimos novo.
   await supabase.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
   const { error } = await supabase.from("push_subscriptions").insert({
     user_id: userId,
