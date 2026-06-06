@@ -77,8 +77,8 @@ export function AdminDashboardClient({
 }: AdminDashboardClientProps) {
   
   const cards = [
-    { label: "MRR", value: formatBRL(metrics.mrr), sub: "Receita Recorrente", icon: DollarSign, color: "#22c55e", trend: "+12%" },
-    { label: "Clientes Ativos", value: metrics.activeCustomers, sub: "Assinaturas Premium", icon: Users, color: "#3b82f6", trend: "+5%" },
+    { label: "MRR", value: formatBRL(metrics.mrr), sub: "Receita Recorrente", icon: DollarSign, color: "#22c55e" },
+    { label: "Clientes Ativos", value: metrics.activeCustomers, sub: "Assinaturas Premium", icon: Users, color: "#3b82f6" },
     { label: "Novos (Mês)", value: metrics.newThisMonth, sub: "Cadastros recentes", icon: UserPlus, color: "#8b5cf6" },
     { label: "Churn Rate", value: `${metrics.churnRate.toFixed(1)}%`, sub: "Cancelamentos", icon: UserMinus, color: "#f43f5e" },
   ];
