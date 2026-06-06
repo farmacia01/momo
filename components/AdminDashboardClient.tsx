@@ -148,11 +148,6 @@ export function AdminDashboardClient({
               <div className="h-10 w-10 rounded-xl flex items-center justify-center" style={{ background: `${card.color}15`, border: `1px solid ${card.color}25` }}>
                 <card.icon size={20} style={{ color: card.color }} strokeWidth={2.5} />
               </div>
-              {card.trend && (
-                <span className="text-[10px] font-black text-green-500 bg-green-500/10 px-2 py-1 rounded-lg">
-                  {card.trend}
-                </span>
-              )}
             </div>
             <p className="text-[11px] font-bold text-white/30 uppercase tracking-widest">{card.label}</p>
             <p className="text-[28px] font-black text-white tracking-tighter mt-1">{card.value}</p>
