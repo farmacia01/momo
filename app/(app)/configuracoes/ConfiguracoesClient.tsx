@@ -424,28 +424,33 @@ function NotificacoesSection({ userId }: { userId: string }) {
   async function togglePush() {
     if (pushBusy) return;
     if (!supported) {
-      toast.error("Notificações não são suportadas neste navegador.");
+      toast.error("Para usar notificações, instale o app na tela inicial do seu celular.", { duration: 5000 });
       return;
     }
     setPushBusy(true);
+    const loadingId = toast.loading(pushOn ? "Desativando..." : "Solicitando permissão...");
     try {
       if (pushOn) {
         await unsubscribeFromPush();
         setPushOn(false);
+        toast.dismiss(loadingId);
         toast.success("Notificações desativadas.");
       } else {
         if (typeof Notification !== "undefined" && Notification.permission === "denied") {
-          toast.error("Ative as notificações nas configurações do navegador.");
+          toast.dismiss(loadingId);
+          toast.error("Notificações bloqueadas. Ative nas configurações do navegador.", { duration: 5000 });
           return;
         }
         await subscribeToPush(userId);
         setPushOn(true);
+        toast.dismiss(loadingId);
         toast.success("Notificações ativadas!");
       }
     } catch (err: any) {
+      toast.dismiss(loadingId);
       const msg = String(err?.message || "");
-      if (msg.includes("negada")) {
-        toast.error("Ative as notificações nas configurações do navegador.");
+      if (msg.includes("negada") || msg.includes("denied")) {
+        toast.error("Notificações bloqueadas. Ative nas configurações do navegador.", { duration: 5000 });
       } else {
         toast.error(msg || "Não foi possível alterar as notificações.");
       }
@@ -480,10 +485,9 @@ function NotificacoesSection({ userId }: { userId: string }) {
       <ToggleRow
         icon={<Bell size={20} strokeWidth={2.5} />}
         title="Push e Alertas"
-        subtitle={supported ? "Notificações no seu dispositivo" : "Não suportado neste navegador"}
+        subtitle={supported ? "Notificações no seu dispositivo" : "Instale o app na tela inicial para ativar"}
         enabled={pushOn}
         busy={pushBusy}
-        disabled={!supported}
         onToggle={togglePush}
       />
 
