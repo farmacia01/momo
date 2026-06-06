@@ -29,8 +29,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div data-portal="admin" className="min-h-screen bg-[#0d0d0d] text-white">
       <AdminNav pendingCount={pendingCount || 0} />
-      <main className="md:pl-60 pb-[100px] md:pb-12">
-        <div className="max-w-6xl mx-auto px-5 pt-8">
+      <main className="md:pl-60 min-h-screen">
+        <div className="w-full px-6 pt-8 pb-32 md:pb-10">
           {children}
         </div>
       </main>
