@@ -87,7 +87,7 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
     id: string,
     newStatus: string,
     extra: Record<string, any> = {},
-    notify?: { userId?: string | null; payload?: Parameters<typeof sendPush>[1] }
+    evento?: string
   ) => {
     setUpdating(true);
     const { data, error } = await supabase.rpc("atualizar_status_pedido_fornecedor", {
@@ -98,9 +98,25 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
     });
     if (!error && data) {
       setPedidos((prev) => prev.map((p) => (p.id === id ? { ...p, ...data } : p)));
-      if (notify?.userId && notify.payload) {
-        await sendPush(notify.userId, notify.payload);
+      
+      // Notify via specialized route
+      if (evento) {
+        try {
+          const baseUrl = "https://momo-rust-nu.vercel.app";
+          await fetch(`${baseUrl}/api/push/venda`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              evento: evento,
+              pedidoId: id,
+              secret: "momo8878"
+            })
+          });
+        } catch (e) {
+          console.error("[PushVenda] Error triggering status update push:", e);
+        }
       }
+
       toast.success(`Pedido ${newStatus}!`);
       setShowAcceptModal(null);
       setShowRejectModal(null);
@@ -211,16 +227,8 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
               updateStatus(
                 showAcceptModal.id,
                 "confirmado",
-                {},
-                showAcceptModal.paciente_id
-                  ? {
-                      userId: showAcceptModal.paciente_id,
-                      payload: pedidoNotificacoes.aceito(
-                        showAcceptModal.codigo || "Pedido",
-                        format(new Date(date), "dd/MM/yyyy"),
-                      ),
-                    }
-                  : undefined,
+                { previsao_entrega: date },
+                "PEDIDO_ACEITO"
               )
             }
             loading={updating}
@@ -235,15 +243,7 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
                 showRejectModal.id,
                 "cancelado",
                 { cancelamento_motivo: reason },
-                showRejectModal.paciente_id
-                  ? {
-                      userId: showRejectModal.paciente_id,
-                      payload: pedidoNotificacoes.cancelado(
-                        showRejectModal.codigo || "Pedido",
-                        reason,
-                      ),
-                    }
-                  : undefined,
+                "PEDIDO_RECUSADO"
               )
             }
             loading={updating}
@@ -254,7 +254,7 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
   );
 }
 
-function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: any, onAccept: () => void, onReject: () => void, onUpdateStatus: (id: string, s: string, extra?: any, notify?: { userId?: string | null; payload?: Parameters<typeof sendPush>[1] }) => void }) {
+function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: any, onAccept: () => void, onReject: () => void, onUpdateStatus: (id: string, s: string, extra?: any, evento?: string) => void }) {
   const statusColor = STATUS_COLORS[pedido.status] || "#fff";
   const status = STATUS_PEDIDO[pedido.status as keyof typeof STATUS_PEDIDO];
 
@@ -324,15 +324,7 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
                 pedido.id,
                 "enviado",
                 track ? { codigo_rastreio: track } : {},
-                pedido.paciente_id
-                  ? {
-                      userId: pedido.paciente_id,
-                      payload: pedidoNotificacoes.enviado(
-                        pedido.codigo || "Pedido",
-                        track || "sem código de rastreio",
-                      ),
-                    }
-                  : undefined,
+                "MOTOBOY_SAIU"
               );
             }}
             className="w-full h-[38px] bg-[rgba(96,165,250,0.1)] border border-[rgba(96,165,250,0.2)] text-[#60a5fa] rounded-[10px] text-[11px] font-[700] flex items-center justify-center gap-2"

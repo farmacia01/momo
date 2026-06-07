@@ -49,6 +49,23 @@ export async function POST(req: NextRequest) {
             assinatura_expira_em: proximoVencimento.toISOString(),
           })
           .eq('id', profile.id)
+
+        // Envia notificação Push de confirmação
+        try {
+          const baseUrl = "https://momo-rust-nu.vercel.app";
+          await fetch(`${baseUrl}/api/push/send`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              userId: profile.id, 
+              title: "💎 Assinatura Premium Ativada!", 
+              body: "Parabéns! Seu acesso total ao Momo já está liberado.",
+              url: "/" 
+            })
+          });
+        } catch (e) {
+          console.error('[Cakto] Error sending welcome push:', e);
+        }
       }
       break
     }

@@ -323,12 +323,20 @@ function ConfirmarPedidoModal({
       if (insErr) throw insErr;
       const codigo = (data?.codigo as string) ?? "—";
 
-      // Notify the supplier (best-effort).
-      if (fornecedor.user_id) {
-        await sendPush(
-          fornecedor.user_id,
-          pedidoNotificacoes.novoPedidoParaFornecedor(codigo),
-        );
+      // Notify the supplier via the robust specialized route
+      try {
+        const baseUrl = "https://momo-rust-nu.vercel.app";
+        await fetch(`${baseUrl}/api/push/venda`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            evento: "NOVO_PEDIDO",
+            pedidoId: (data as any).id || codigo, // Expecting ID, but route handles lookup
+            secret: "momo8878"
+          })
+        });
+      } catch (e) {
+        console.error("[Push] Error calling specialized venda route:", e);
       }
 
       onSuccess(codigo);
