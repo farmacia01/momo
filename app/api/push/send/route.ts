@@ -16,6 +16,8 @@ export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => ({}));
     const { userId, title, body: msgBody, url } = body;
+    // Standardize 'body' for the internal payload
+    const finalBody = msgBody || body.body || "";
 
     console.log(`[PushSend] Attempting to send to ${userId}: ${title}`);
 
@@ -52,13 +54,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, sent: 0 });
     }
 
-    const payload = JSON.stringify({ title, body: msgBody || "", url: url ?? "/" });
+    const payload = JSON.stringify({ 
+      title, 
+      body: finalBody, 
+      url: url ?? "/" 
+    });
 
     console.log(`[PushSend] Recording in-app notification for ${userId}`);
     await supabase.from("notifications").insert({
       user_id: userId,
       title,
-      body: msgBody || "",
+      body: finalBody,
       url: url ?? "/",
       read: false
     });
