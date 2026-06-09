@@ -103,10 +103,12 @@ export function SelectInput({
   value,
   onChange,
   options,
+  placeholder,
 }: {
   value: string;
   onChange: (val: string) => void;
   options: { value: string; label: string }[];
+  placeholder?: string;
 }) {
   return (
     <div className="relative">
@@ -115,6 +117,11 @@ export function SelectInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
+        {placeholder && (
+          <option value="" disabled className="bg-surface text-muted">
+            {placeholder}
+          </option>
+        )}
         {options.map((opt) => (
           <option key={opt.value} value={opt.value} className="bg-surface text-text">
             {opt.label}
