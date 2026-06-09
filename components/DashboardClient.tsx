@@ -13,7 +13,7 @@ import { getTextoProximaDose, type CalculoDose } from "@/lib/utils/dose";
 import dynamic from "next/dynamic";
 import { SkeletonChart } from "@/components/ui/Skeleton";
 import { usePlano } from "@/hooks/usePlano";
-import { BlurPaywall } from "./BlurPaywall";
+import { PaywallCard } from "./PaywallCard";
 import { getPushStatus, pushSupported, subscribeToPush } from "@/lib/push-client";
 import toast from "react-hot-toast";
 import { useTheme } from "@/app/providers";
@@ -125,6 +125,33 @@ export function DashboardClient({
     : "linear-gradient(135deg, #fff4ed, #ffe8cc)";
   const lastDoseSubtextColor = isDark ? "rgba(255,255,255,0.4)" : "var(--color-text-muted)";
 
+  if (isExpirado) {
+    return (
+      <div className="space-y-5 pb-32">
+        <div className="flex justify-between items-center pt-1">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#ff6500" }}>
+              {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
+            </p>
+            <h1 className="text-[26px] font-bold tracking-tight leading-tight" style={{ color: "var(--color-text)" }}>
+              Olá, {firstName}
+            </h1>
+          </div>
+          <div
+            className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white"
+            style={{ background: "linear-gradient(135deg, #ff6500, #cc4c00)" }}
+          >
+            {initials}
+          </div>
+        </div>
+        <PaywallCard
+          recurso="Dashboard Momo Premium"
+          descricao="Assine para acompanhar doses, peso e evolução do seu tratamento."
+        />
+      </div>
+    );
+  }
+
   return (
     <m.div variants={container} initial="hidden" animate="show" className="space-y-5 pb-32">
 
@@ -199,7 +226,6 @@ export function DashboardClient({
           boxShadow: "0 8px 32px rgba(255,101,0,0.1)",
         }}
       >
-        <BlurPaywall ativo={isExpirado} mensagem="Veja suas doses semanais no plano Premium">
           <div className="flex items-center gap-2 mb-4">
             <div className="h-1.5 w-6 rounded-full" style={{ background: "#ff6500" }} />
             <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: heroSubtextColor }}>
@@ -207,12 +233,10 @@ export function DashboardClient({
             </p>
           </div>
           <WeekTracker doseDates={doses?.map(d => d.data_aplicacao) || []} nextDoseDate={calculoDose.data} />
-        </BlurPaywall>
       </m.div>
 
       {/* Metric Grid */}
-      <BlurPaywall ativo={isExpirado} mensagem="Acompanhe peso, dose e estoque">
-        <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3">
           <MetricCard
             variants={item}
             icon={<Calendar className="w-4 h-4" />}
@@ -268,7 +292,6 @@ export function DashboardClient({
             iconColor={totalAmpolas === 0 ? "#ef4444" : "#ff6500"}
           />
         </div>
-      </BlurPaywall>
 
       {/* Last Dose Card */}
       <m.div
@@ -276,7 +299,6 @@ export function DashboardClient({
         className="rounded-[20px] p-4"
         style={{ background: lastDoseCardBg, border: "1px solid rgba(255,101,0,0.2)" }}
       >
-        <BlurPaywall ativo={isExpirado} mensagem="Gerencie suas doses no plano Premium">
           <div className="flex w-full justify-between items-center">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: lastDoseSubtextColor }}>
@@ -299,7 +321,6 @@ export function DashboardClient({
               + Registrar
             </Link>
           </div>
-        </BlurPaywall>
       </m.div>
 
       {/* Weight Evolution */}
@@ -312,19 +333,15 @@ export function DashboardClient({
           <h3 className="text-[15px] font-bold" style={{ color: "var(--color-text)" }}>Evolução do peso</h3>
           <Link href="/saude" className="text-[11px] font-bold" style={{ color: "#ff6500" }}>Ver tudo</Link>
         </div>
-        <BlurPaywall ativo={isExpirado} mensagem="Veja a evolução do seu peso">
-          <DashboardChart data={weights} />
-        </BlurPaywall>
+        <DashboardChart data={weights} />
       </m.div>
 
       {/* Stats Row */}
-      <BlurPaywall ativo={isExpirado}>
-        <div className="grid grid-cols-3 gap-3">
-          <MiniStatCard variants={item} label="IMC atual" value={`${profile?.imc || '--'}`} delta="Normal" />
-          <MiniStatCard variants={item} label="Semanas" value={`${weeksCompleted}`} />
-          <MiniStatCard variants={item} label="Perdido" value={`${weightDelta}kg`} delta="total" />
-        </div>
-      </BlurPaywall>
+      <div className="grid grid-cols-3 gap-3">
+        <MiniStatCard variants={item} label="IMC atual" value={`${profile?.imc || '--'}`} delta="Normal" />
+        <MiniStatCard variants={item} label="Semanas" value={`${weeksCompleted}`} />
+        <MiniStatCard variants={item} label="Perdido" value={`${weightDelta}kg`} delta="total" />
+      </div>
 
       <ShareProgressDrawer open={shareOpen} onClose={() => setShareOpen(false)} data={shareData} />
     </m.div>

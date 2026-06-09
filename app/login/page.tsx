@@ -82,18 +82,15 @@ export default function LoginPage() {
 
         {/* Logo */}
         <div className="z-10 flex flex-col items-center gap-3 animate-fade-up">
-          <div
-            className="flex h-20 w-20 items-center justify-center rounded-[28px]"
-            style={{
-              background: "linear-gradient(135deg, #ff6500, #cc4c00)",
-              boxShadow: "0 8px 32px rgba(255,101,0,0.4)",
-            }}
-          >
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C9.5 5.5 7 8 7 12C7 15.314 9.686 18 13 18C16.314 18 19 15.314 19 12C19 8.5 16.5 6.5 14 4C13.5 3.5 12.5 2.5 12 2Z" fill="white" fillOpacity="0.9"/>
-              <path d="M8 14C8 16.209 9.791 18 12 18C10.895 18 10 17.105 10 16C10 14.5 11 13 12 12C11 12.5 8 12.5 8 14Z" fill="white" fillOpacity="0.5"/>
-            </svg>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="Momo"
+            width={88}
+            height={88}
+            className="rounded-[24px]"
+            style={{ boxShadow: "0 8px 32px rgba(255,101,0,0.45)" }}
+          />
           <div className="mt-1 text-center">
             <h1 className="text-5xl font-black tracking-tighter text-white" style={{ fontFamily: "var(--font-syne, sans-serif)" }}>
               Momo
