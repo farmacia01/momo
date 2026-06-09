@@ -30,6 +30,13 @@ export function DetalhePedidoClient({ initialPedido, isFornecedor }: { initialPe
   const [obsFornecedor, setObsFornecedor] = useState(pedido.observacoes_fornecedor || "");
   const router = useRouter();
 
+  const STATUS_EVENTO: Record<string, string> = {
+    confirmado: "PEDIDO_ACEITO",
+    cancelado:  "PEDIDO_RECUSADO",
+    enviado:    "MOTOBOY_SAIU",
+    entregue:   "ENTREGA_CONFIRMADA",
+  };
+
   const updateStatus = async (newStatus: string, extraData: Record<string, any> = {}) => {
     setLoading(true);
     const { data, error } = await supabase.rpc("atualizar_status_pedido_fornecedor", {
@@ -40,7 +47,23 @@ export function DetalhePedidoClient({ initialPedido, isFornecedor }: { initialPe
     });
     if (!error && data) {
       setPedido({ ...pedido, ...data });
-      toast.success(`Pedido ${newStatus}!`);
+      toast.success(
+        newStatus === "confirmado" ? "Pedido aceito! Cliente notificado." :
+        newStatus === "enviado"    ? "Pedido marcado como enviado!" :
+        newStatus === "entregue"   ? "Entrega confirmada!" :
+        "Pedido atualizado."
+      );
+
+      // Notifica o paciente sobre a mudança de status
+      const evento = STATUS_EVENTO[newStatus];
+      if (evento) {
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://momo-rust-nu.vercel.app";
+        fetch(`${baseUrl}/api/push/venda`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ evento, pedidoId: pedido.id, secret: "momo8878" }),
+        }).catch(() => {});
+      }
     } else {
       toast.error("Erro ao atualizar pedido.");
     }

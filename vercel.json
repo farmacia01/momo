@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/push/engine",
-      "schedule": "0 8,9,10,12,14,19,20 * * *"
+      "schedule": "0 8,9,10,12,14,19,20,21 * * *"
     }
   ],
   "headers": [

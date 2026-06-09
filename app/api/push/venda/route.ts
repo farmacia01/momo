@@ -168,22 +168,43 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: `Evento desconhecido: ${evento}` }, { status: 400 });
     }
 
+    // ── Detecta primeiro pedido do fornecedor ──────────────────────────
+    if (evento === "NOVO_PEDIDO" && fornecedorUserId) {
+      const { count } = await supabase
+        .from("pedidos")
+        .select("id", { count: "exact", head: true })
+        .eq("fornecedor_id", fornecedor?.id);
+      if ((count ?? 0) === 1) {
+        // É o primeiro pedido!
+        payloadFornecedor = PUSH_VENDAS.FORNECEDOR.PRIMEIRO_PEDIDO(nomeFarmacia);
+      }
+    }
+
     const enviados = { fornecedor: 0, paciente: 0 };
 
     if (payloadFornecedor && fornecedorUserId) {
       enviados.fornecedor = await enviarPush(fornecedorUserId, payloadFornecedor);
+      // Salva notif in-app para o fornecedor também
+      await supabase.from("notifications").insert({
+        user_id: fornecedorUserId,
+        title: payloadFornecedor.title,
+        body: payloadFornecedor.body,
+        url: payloadFornecedor.url,
+        tag: payloadFornecedor.tag ?? null,
+        read: false,
+      }).then(() => {}).catch(() => {});
     }
     if (payloadPaciente) {
       enviados.paciente = await enviarPush(pacienteUserId, payloadPaciente);
+      await supabase.from("notifications").insert({
+        user_id: pacienteUserId,
+        title: payloadPaciente.title,
+        body: payloadPaciente.body,
+        url: payloadPaciente.url,
+        tag: payloadPaciente.tag ?? null,
+        read: false,
+      }).then(() => {}).catch(() => {});
     }
-
-    await supabase.from("notifications").insert({
-      user_id: pacienteUserId,
-      title: payloadPaciente?.title ?? payloadFornecedor?.title ?? evento,
-      body: payloadPaciente?.body ?? payloadFornecedor?.body ?? "",
-      url: payloadPaciente?.url ?? "/meus-pedidos",
-      read: false,
-    });
 
     return NextResponse.json({ ok: true, evento, enviados });
   } catch (err: any) {

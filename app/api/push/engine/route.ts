@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase-server";
 import { NOTIFICACOES } from "@/lib/notificacoes-templates";
+import { PUSH_VENDAS } from "@/lib/notificacoes-vendas";
 import { format, parseISO, differenceInDays } from "date-fns";
 
 export const runtime = "nodejs";
@@ -208,6 +209,64 @@ export async function GET(req: Request) {
       }
     }
 
+    // ── FORNECEDORES: Resumo diário (21h) + Estoque baixo (10h) ──────
+    if (currentHour === 21 || currentHour === 10) {
+      const { data: fornecedores } = await supabase
+        .from("fornecedores")
+        .select("id, nome_fantasia, user_id")
+        .eq("status", "ativo")
+        .not("user_id", "is", null);
+
+      for (const forn of fornecedores ?? []) {
+        if (!forn.user_id) continue;
+
+        // Resumo do dia às 21h
+        if (currentHour === 21) {
+          if (await notSentTodayWithTag(supabase, forn.user_id, "resumo-dia", hojeStr)) {
+            const { data: pedidosDia } = await supabase
+              .from("pedidos")
+              .select("id, preco_total, status")
+              .eq("fornecedor_id", forn.id)
+              .gte("created_at", hojeStr);
+
+            const total = pedidosDia?.filter(p => p.status !== "cancelado").length ?? 0;
+            const valor = pedidosDia?.filter(p => p.status !== "cancelado")
+              .reduce((acc, p) => acc + (p.preco_total || 0), 0) ?? 0;
+
+            if (total > 0) {
+              await sendFornecedor(forn.user_id, {
+                ...PUSH_VENDAS.FORNECEDOR.RESUMO_DIA(total, valor),
+                tag: "resumo-dia",
+              });
+              logs.push(`${forn.user_id}:RESUMO_DIA`);
+            }
+          }
+        }
+
+        // Estoque baixo de produtos às 10h
+        if (currentHour === 10) {
+          const { data: produtos } = await supabase
+            .from("fornecedor_produtos")
+            .select("id, dose_mg, tipo_produto, estoque_disponivel")
+            .eq("fornecedor_id", forn.id)
+            .eq("ativo", true)
+            .lt("estoque_disponivel", 5);
+
+          for (const prod of produtos ?? []) {
+            const tag = `estoque-produto-${prod.id}`;
+            if (await notSentTodayWithTag(supabase, forn.user_id, tag, hojeStr)) {
+              const label = `Mounjaro ${prod.dose_mg}mg`;
+              await sendFornecedor(forn.user_id, {
+                ...PUSH_VENDAS.FORNECEDOR.ESTOQUE_PRODUTO_BAIXO(label, prod.estoque_disponivel),
+                tag,
+              });
+              logs.push(`${forn.user_id}:ESTOQUE_${prod.id}`);
+            }
+          }
+        }
+      }
+    }
+
     return NextResponse.json({ ok: true, hour: currentHour, processed: logs.length, logs });
 
   } catch (err: any) {
@@ -252,7 +311,7 @@ async function send(userId: string, payload: { title: string; body: string; url?
       body: JSON.stringify({
         userId,
         title: payload.title,
-        body: payload.body,  // campo correto — era msgBody antes (bug)
+        body: payload.body,
         url: payload.url ?? "/",
         tag: payload.tag,
       }),
@@ -261,3 +320,6 @@ async function send(userId: string, payload: { title: string; body: string; url?
     console.error(`[Engine] Send failed for ${userId}:`, e);
   }
 }
+
+// Alias para notificações de fornecedor (mesma lógica, URL de destino já vem no payload)
+const sendFornecedor = send;
