@@ -105,7 +105,7 @@ function PedidoCard({ pedido, index }: { pedido: PedidoComInfo, index: number })
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="bg-white rounded-[24px] shadow-premium overflow-hidden border-none"
+      className="bg-surface rounded-[24px] shadow-premium overflow-hidden border-none"
     >
       <div className="p-5">
         <div className="flex justify-between items-start mb-4">
@@ -117,13 +117,13 @@ function PedidoCard({ pedido, index }: { pedido: PedidoComInfo, index: number })
                 className="w-10 h-10 rounded-xl object-cover shadow-sm"
               />
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-forest font-bold text-xs">
+              <div className="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-ember font-bold text-xs">
                 {iniciais(fornecedorNome)}
               </div>
             )}
             <div>
-              <h3 className="text-sm font-bold text-gray-900 leading-tight">{fornecedorNome}</h3>
-              <p className="text-[11px] font-bold text-gray-400 mt-0.5">
+              <h3 className="text-sm font-bold text-text leading-tight">{fornecedorNome}</h3>
+              <p className="text-[11px] font-bold text-dim mt-0.5">
                 {format(parseISO(pedido.created_at), "d 'de' MMMM", { locale: ptBR })}
               </p>
             </div>
@@ -136,30 +136,30 @@ function PedidoCard({ pedido, index }: { pedido: PedidoComInfo, index: number })
           </div>
         </div>
 
-        <div className="flex items-center gap-4 bg-gray-50 rounded-2xl p-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-forest shadow-sm">
+        <div className="flex items-center gap-4 bg-surface-mid rounded-2xl p-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-ember shadow-sm">
             <Package size={20} strokeWidth={2.5} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-gray-900 truncate">
+            <p className="text-xs font-bold text-text truncate">
               {pedido.quantidade}x {pedido.produto ? TIPO_PRODUTO_LABEL[pedido.produto.tipo_produto] : "Produto"}
             </p>
-            <p className="text-[11px] font-medium text-gray-400">
+            <p className="text-[11px] font-medium text-dim">
               Dose: {pedido.produto?.dose_mg}mg {pedido.produto?.unidades_por_caixa ? `· ${pedido.produto.unidades_por_caixa}un` : ""}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-sm font-black text-gray-900">{formatBRL(pedido.preco_total)}</p>
+            <p className="text-sm font-black text-text">{formatBRL(pedido.preco_total)}</p>
           </div>
         </div>
 
         <div className="flex items-center justify-between pt-1">
-          <div className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+          <div className="text-[11px] font-bold text-dim uppercase tracking-widest">
             Cod: <span className="text-gray-600">{pedido.codigo || "---"}</span>
           </div>
           <Link 
             href={`/meus-pedidos/${pedido.id}`}
-            className="flex items-center gap-1 text-[11px] font-bold text-forest hover:underline"
+            className="flex items-center gap-1 text-[11px] font-bold text-ember hover:underline"
           >
             Ver detalhes <ChevronRight size={12} strokeWidth={3} />
           </Link>
@@ -167,12 +167,12 @@ function PedidoCard({ pedido, index }: { pedido: PedidoComInfo, index: number })
       </div>
       
       {pedido.codigo_rastreio && pedido.status === "enviado" && (
-        <div className="bg-forest px-5 py-2.5 flex items-center justify-between">
+        <div className="bg-ember px-5 py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-2 text-white">
             <Truck size={14} />
             <span className="text-[10px] font-bold uppercase tracking-wider">Objeto postado</span>
           </div>
-          <span className="text-[10px] font-black text-white/90 bg-white/20 px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-black text-white/90 bg-surface/20 px-2 py-0.5 rounded-full">
             {pedido.codigo_rastreio}
           </span>
         </div>

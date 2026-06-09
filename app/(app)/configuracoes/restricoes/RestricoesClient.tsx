@@ -88,10 +88,10 @@ export function RestricoesClient({
                 <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-xl">
                   {o.emoji}
                 </span>
-                <span className="flex-1 text-sm font-bold text-gray-900">{o.label}</span>
+                <span className="flex-1 text-sm font-bold text-text">{o.label}</span>
                 <span
                   className={`flex h-6 w-6 items-center justify-center rounded-lg border-2 transition-colors ${
-                    checked ? "border-forest bg-forest text-white" : "border-gray-200"
+                    checked ? "border-forest bg-ember text-white" : "border-gray-200"
                   }`}
                 >
                   {checked && <Check size={15} strokeWidth={3} />}
@@ -102,8 +102,8 @@ export function RestricoesClient({
         </div>
       </Card>
 
-      <div className="flex items-center gap-2 px-2 text-[11px] font-medium text-gray-400">
-        <Sparkles size={14} className="text-forest" />
+      <div className="flex items-center gap-2 px-2 text-[11px] font-medium text-dim">
+        <Sparkles size={14} className="text-ember" />
         Ao salvar, suas receitas são geradas novamente respeitando as restrições.
       </div>
 

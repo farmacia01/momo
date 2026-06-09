@@ -8,7 +8,7 @@ export function Card({
 }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={`rounded-[20px] bg-white px-5 py-[18px] ${className}`}
+      className={`rounded-[20px] bg-surface px-5 py-[18px] ${className}`}
       style={{ boxShadow: "var(--shadow-card)" }}
       {...rest}
     >

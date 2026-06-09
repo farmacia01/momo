@@ -84,12 +84,12 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
         }}
         animate={isRefreshing ? { y: 20, opacity: 1 } : {}}
       >
-        <div className="bg-white rounded-full p-2 shadow-xl border border-slate-100 flex items-center justify-center">
+        <div className="bg-surface rounded-full p-2 shadow-xl border border-surface-border flex items-center justify-center">
           <m.div
             animate={isRefreshing ? { rotate: 360 } : { rotate: pullDistance * 4 }}
             transition={isRefreshing ? { repeat: Infinity, duration: 1, ease: "linear" } : { type: "tween" }}
           >
-            <RefreshCw size={18} className="text-forest" strokeWidth={3} />
+            <RefreshCw size={18} className="text-ember" strokeWidth={3} />
           </m.div>
         </div>
       </m.div>

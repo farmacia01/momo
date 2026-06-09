@@ -119,7 +119,7 @@ export function UsuarioClient({
         <button
           onClick={handlePasswordReset}
           disabled={sendingReset}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-surface py-4 text-sm font-bold text-forest transition-colors hover:bg-surface-mid disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-surface py-4 text-sm font-bold text-ember transition-colors hover:bg-surface-mid disabled:opacity-50"
         >
           {sendingReset ? (
             <LoadingSpinner size="sm" />
@@ -129,7 +129,7 @@ export function UsuarioClient({
             </>
           )}
         </button>
-        <p className="mt-3 text-center text-[11px] font-medium text-gray-400">
+        <p className="mt-3 text-center text-[11px] font-medium text-dim">
           Enviaremos um link de redefinição para {email}
         </p>
       </Card>

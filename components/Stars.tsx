@@ -33,7 +33,7 @@ export function Stars({
         </span>
       )}
       {typeof count === "number" && (
-        <span className="text-xs text-slate-400">({count})</span>
+        <span className="text-xs text-dim">({count})</span>
       )}
     </div>
   );

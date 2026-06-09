@@ -12,7 +12,7 @@ export function DoseIndicator({ dose_mg, className = '' }: DoseIndicatorProps) {
       case 10: return 'bg-orange-100 text-orange-700 border-orange-200';
       case 12.5: return 'bg-red-100 text-red-700 border-red-200';
       case 15: return 'bg-rose-100 text-rose-700 border-rose-200';
-      default: return 'bg-gray-100 text-gray-700 border-gray-200';
+      default: return 'bg-surface-border text-gray-700 border-gray-200';
     }
   };
 

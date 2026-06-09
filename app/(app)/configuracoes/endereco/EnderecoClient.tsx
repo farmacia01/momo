@@ -116,7 +116,7 @@ export function EnderecoClient({
               maxLength={9}
             />
             {lookingUp && (
-              <Loader2 className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-forest" />
+              <Loader2 className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-ember" />
             )}
           </div>
         </Field>
@@ -163,7 +163,7 @@ export function EnderecoClient({
         <SaveButton loading={saving} onClick={handleSave}>
           Salvar endereço
         </SaveButton>
-        <p className="text-center text-[11px] font-medium text-gray-400">
+        <p className="text-center text-[11px] font-medium text-dim">
           Este endereço é usado como padrão ao fazer pedidos.
         </p>
       </Card>

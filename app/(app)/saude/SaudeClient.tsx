@@ -149,7 +149,7 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
   
   const imcAtual = medicoes[0]?.imc || 0;
   const getClassImc = (imc: number) => {
-    if (imc <= 0) return { label: "Sem dados", color: "text-slate-400", bg: "bg-slate-400" };
+    if (imc <= 0) return { label: "Sem dados", color: "text-dim", bg: "bg-slate-400" };
     if (imc < 18.5) return { label: "Abaixo do peso", color: "text-blue-500", bg: "bg-blue-500" };
     if (imc < 25) return { label: "Normal", color: "text-green-500", bg: "bg-green-500" };
     if (imc < 30) return { label: "Sobrepeso", color: "text-yellow-500", bg: "bg-yellow-500" };
@@ -184,9 +184,9 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white p-4 rounded-[10px] shadow-premium border border-slate-50 min-w-[120px]">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{data.fullDate}</p>
-          <p className="text-lg font-black text-slate-900">{data.peso} kg</p>
+        <div className="bg-surface p-4 rounded-[10px] shadow-premium border border-surface-border min-w-[120px]">
+          <p className="text-[10px] font-bold text-dim uppercase tracking-widest mb-1">{data.fullDate}</p>
+          <p className="text-lg font-black text-text">{data.peso} kg</p>
           {data.delta !== 0 && (
             <p className={`text-[10px] font-bold flex items-center gap-1 ${data.delta < 0 ? "text-green-500" : "text-red-400"}`}>
               {data.delta < 0 ? <TrendingDown size={10} /> : <TrendingUp size={10} />}
@@ -281,7 +281,7 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
             onClick={() => setShareOpen(true)}
             title="Compartilhar progresso"
             aria-label="Compartilhar progresso"
-            className="group relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-forest shadow-sm transition-transform active:scale-90"
+            className="group relative flex h-10 w-10 items-center justify-center rounded-full bg-surface text-ember shadow-sm transition-transform active:scale-90"
           >
             <Share2 className="h-5 w-5" />
             <span className="pointer-events-none absolute right-0 top-12 z-10 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
@@ -292,7 +292,7 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
       />
 
       <BlurPaywall ativo={isExpirado} mensagem="Acompanhe sua evolução e registre sintomas no Premium">
-        <div className="flex gap-2 p-1 bg-slate-100 rounded-full">
+        <div className="flex gap-2 p-1 bg-surface-border rounded-full">
           {(["Peso", "Pressão", "Sintomas"] as Tab[]).map(tab => {
             const isSoon = tab === "Pressão";
             return (
@@ -314,12 +314,12 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
                   setActiveTab(tab);
                 }}
                 className={`flex-1 py-2.5 rounded-full text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
-                  activeTab === tab ? "bg-forest text-white shadow-sm" : "text-slate-500 hover:bg-slate-50"
+                  activeTab === tab ? "bg-ember text-white shadow-sm" : "text-muted hover:bg-surface-mid"
                 } ${isSoon ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {tab}
                 {isSoon && (
-                  <span className="bg-slate-200 text-slate-500 text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none uppercase tracking-tighter">
+                  <span className="bg-slate-200 text-muted text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none uppercase tracking-tighter">
                     Em breve
                   </span>
                 )}
@@ -331,8 +331,8 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
         {activeTab === "Peso" && (
           <div className="space-y-6 page-transition-enter">
             {/* Hero Card "Peso Atual" */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-[#1c4d2e] to-[#2d7a4f] p-6 rounded-[24px] shadow-lg text-white">
-              <div className="absolute top-[-20px] right-[-20px] w-32 h-32 rounded-full bg-white/10 blur-2xl" />
+            <div className="relative overflow-hidden bg-gradient-to-br from-ember to-ember-dim p-6 rounded-[24px] shadow-lg text-white">
+              <div className="absolute top-[-20px] right-[-20px] w-32 h-32 rounded-full bg-surface/10 blur-2xl" />
               <p className="text-[11px] font-bold text-white/60 uppercase tracking-widest">PESO ATUAL</p>
               <div className="flex items-baseline gap-1 mt-2">
                 <span className="text-[52px] font-bold tracking-[-1.5px] leading-tight">
@@ -355,7 +355,7 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
                     </span>
                   )}
                 </div>
-                <div className="px-3 py-1 rounded-full bg-white/15 text-[10px] font-bold uppercase tracking-wider">
+                <div className="px-3 py-1 rounded-full bg-surface/15 text-[10px] font-bold uppercase tracking-wider">
                   Semana {semanasTratamento}
                 </div>
               </div>
@@ -363,38 +363,38 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
 
             {/* Mini Stats */}
             <div className="grid grid-cols-3 gap-3">
-              <div className="bg-white p-4 rounded-[20px] shadow-sm border border-slate-50 flex flex-col items-center justify-between">
-                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">IMC</p>
-                <p className="text-xl font-black text-slate-900 mt-1">{imcAtual ? imcAtual.toFixed(1) : "--"}</p>
+              <div className="bg-surface p-4 rounded-[20px] shadow-sm border border-surface-border flex flex-col items-center justify-between">
+                <p className="text-[9px] font-bold text-muted uppercase tracking-widest">IMC</p>
+                <p className="text-xl font-black text-text mt-1">{imcAtual ? imcAtual.toFixed(1) : "--"}</p>
                 <p className={`text-[10px] font-bold mt-1 ${infoImc.color}`}>{infoImc.label}</p>
-                <div className="w-full h-1 bg-slate-100 rounded-full mt-2 overflow-hidden">
+                <div className="w-full h-1 bg-surface-mid rounded-full mt-2 overflow-hidden">
                   <div 
                     className={`h-full ${infoImc.bg}`} 
                     style={{ width: imcAtual > 0 ? `${Math.min(100, Math.max(0, ((imcAtual - 15) / 20) * 100))}%` : '0%' }} 
                   />
                 </div>
               </div>
-              <div className="bg-white p-4 rounded-[20px] shadow-sm border border-slate-50 flex flex-col items-center">
-                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">PERDIDO</p>
-                <p className={`text-xl font-black mt-1 ${deltaPeso <= 0 ? "text-green-500" : "text-slate-900"}`}>
+              <div className="bg-surface p-4 rounded-[20px] shadow-sm border border-surface-border flex flex-col items-center">
+                <p className="text-[9px] font-bold text-muted uppercase tracking-widest">PERDIDO</p>
+                <p className={`text-xl font-black mt-1 ${deltaPeso <= 0 ? "text-green-500" : "text-text"}`}>
                   {deltaPeso <= 0 ? `−${Math.abs(deltaPeso).toFixed(1)}` : `+${deltaPeso.toFixed(1)}`} kg
                 </p>
-                <p className="text-[10px] font-bold text-slate-400 mt-1">desde o início</p>
+                <p className="text-[10px] font-bold text-muted mt-1">desde o início</p>
               </div>
-              <div className="bg-white p-4 rounded-[20px] shadow-sm border border-slate-50 flex flex-col items-center">
-                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">MÉDIA</p>
-                <p className={`text-xl font-black mt-1 ${mediaSemana <= 0 ? "text-slate-900" : "text-red-400"}`}>
+              <div className="bg-surface p-4 rounded-[20px] shadow-sm border border-surface-border flex flex-col items-center">
+                <p className="text-[9px] font-bold text-muted uppercase tracking-widest">MÉDIA</p>
+                <p className={`text-xl font-black mt-1 ${mediaSemana <= 0 ? "text-text" : "text-red-400"}`}>
                   {mediaSemana <= 0 ? `${Math.abs(mediaSemana).toFixed(1)}` : `+${mediaSemana.toFixed(1)}`}
                 </p>
-                <p className="text-[10px] font-bold text-slate-400 mt-1">kg / sem</p>
+                <p className="text-[10px] font-bold text-muted mt-1">kg / sem</p>
               </div>
             </div>
 
             {/* Gráfico */}
-            <div className="bg-white p-5 rounded-[24px] shadow-premium border border-slate-50">
+            <div className="bg-surface p-5 rounded-[24px] shadow-premium border border-surface-border">
               <div className="flex items-center justify-between mb-8">
-                <h3 className="text-sm font-bold text-slate-900">Evolução</h3>
-                <div className="flex gap-1 bg-slate-50 p-1 rounded-full">
+                <h3 className="text-sm font-bold text-text">Evolução</h3>
+                <div className="flex gap-1 bg-surface-mid p-1 rounded-full border border-surface-border">
                   {[
                     { label: "30d", val: 30 }, 
                     { label: "60d", val: 60 }, 
@@ -405,7 +405,7 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
                       key={p.label}
                       onClick={() => setPeriodoGrafico(p.val)}
                       className={`px-3 py-1 text-[10px] font-bold rounded-full transition-all ${
-                        periodoGrafico === p.val ? "bg-white text-forest shadow-sm" : "text-slate-400 hover:text-slate-600"
+                        periodoGrafico === p.val ? "bg-ember text-white shadow-sm" : "text-muted hover:text-text"
                       }`}
                     >
                       {p.label}
@@ -416,32 +416,32 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
 
               <div className="h-[220px] w-full relative">
                 {chartDataMedicoes.length < 2 && (
-                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/50 backdrop-blur-[1px]">
-                    <Scale className="text-slate-200 mb-2" size={32} />
-                    <p className="text-xs font-bold text-slate-400">Sem dados suficientes para este período</p>
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-surface/50 backdrop-blur-[1px]">
+                    <Scale className="text-muted mb-2" size={32} />
+                    <p className="text-xs font-bold text-muted">Sem dados suficientes</p>
                   </div>
                 )}
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartDataMedicoes}>
                     <defs>
                       <linearGradient id="colorPeso" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#1c4d2e" stopOpacity={0.15}/>
-                        <stop offset="95%" stopColor="#1c4d2e" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#ff6500" stopOpacity={0.15}/>
+                        <stop offset="95%" stopColor="#ff6500" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-surface-border)" />
                     <XAxis 
                       dataKey="name" 
                       axisLine={false} 
                       tickLine={false} 
-                      tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} 
+                      tick={{ fontSize: 10, fill: 'var(--color-text-dim)', fontWeight: 600 }} 
                       dy={10} 
                     />
                     <YAxis 
                       domain={['dataMin - 1', 'dataMax + 1']} 
                       axisLine={false} 
                       tickLine={false} 
-                      tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }}
+                      tick={{ fontSize: 10, fill: 'var(--color-text-dim)', fontWeight: 600 }}
                       ticks={yAxisTicks}
                     />
                     <Tooltip content={<CustomTooltip />} />
@@ -458,7 +458,7 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
                     <Area 
                       type="monotone" 
                       dataKey="peso" 
-                      stroke="#1c4d2e" 
+                      stroke="#ff6500" 
                       strokeWidth={3} 
                       fillOpacity={1} 
                       fill="url(#colorPeso)" 
@@ -467,12 +467,12 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
                         if (index === chartDataMedicoes.length - 1) {
                           return (
                             <g>
-                              <circle cx={cx} cy={cy} r={7} fill="rgba(28,77,46,0.2)" />
-                              <circle cx={cx} cy={cy} r={4} fill="#1c4d2e" stroke="#fff" strokeWidth={2} />
+                              <circle cx={cx} cy={cy} r={7} fill="rgba(255,101,0,0.2)" />
+                              <circle cx={cx} cy={cy} r={4} fill="#ff6500" stroke="var(--color-surface)" strokeWidth={2} />
                             </g>
                           );
                         }
-                        return <circle cx={cx} cy={cy} r={4} fill="#1c4d2e" stroke="#fff" strokeWidth={2} />;
+                        return <circle cx={cx} cy={cy} r={4} fill="#ff6500" stroke="var(--color-surface)" strokeWidth={2} />;
                       }}
                     />
                   </AreaChart>
@@ -482,82 +482,82 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
 
             {/* Conquistas - Scroll Horizontal */}
             <div className="space-y-4">
-              <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-1">Conquistas</h3>
+              <h3 className="text-[11px] font-bold text-muted uppercase tracking-widest px-1">Conquistas</h3>
               <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
                 {/* 1ª Pesagem */}
-                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${hasFirstWeight ? "bg-amber-50" : "bg-slate-100"}`}>
-                  <div className={`p-2 rounded-full ${hasFirstWeight ? "bg-amber-100 text-amber-600" : "text-slate-400"}`}>
+                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${hasFirstWeight ? "bg-amber-500/10" : "bg-surface"}`}>
+                  <div className={`p-2 rounded-full ${hasFirstWeight ? "bg-amber-500/20 text-amber-500" : "text-muted"}`}>
                     <Scale size={20} />
                   </div>
-                  <p className={`text-[11px] font-black leading-tight ${hasFirstWeight ? "text-amber-800" : "text-slate-400"}`}>1ª PESAGEM</p>
+                  <p className={`text-[11px] font-black leading-tight ${hasFirstWeight ? "text-amber-500" : "text-muted"}`}>1ª PESAGEM</p>
                   {!hasFirstWeight && (
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200">
-                      <div className="h-full bg-slate-400 w-0" />
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-surface-border">
+                      <div className="h-full bg-muted w-0" />
                     </div>
                   )}
                 </div>
 
                 {/* 5kg */}
-                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${isLost5kg ? "bg-indigo-50" : "bg-slate-100"}`}>
-                  <div className={`p-2 rounded-full ${isLost5kg ? "bg-indigo-100 text-indigo-600" : "text-slate-400"}`}>
+                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${isLost5kg ? "bg-indigo-500/10" : "bg-surface"}`}>
+                  <div className={`p-2 rounded-full ${isLost5kg ? "bg-indigo-500/20 text-indigo-500" : "text-muted"}`}>
                     <TrendingDown size={20} />
                   </div>
-                  <p className={`text-[11px] font-black leading-tight ${isLost5kg ? "text-indigo-800" : "text-slate-400"}`}>5KG PERDIDOS</p>
+                  <p className={`text-[11px] font-black leading-tight ${isLost5kg ? "text-indigo-500" : "text-muted"}`}>5KG PERDIDOS</p>
                   {!isLost5kg && (
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200">
-                      <div className="h-full bg-indigo-400" style={{ width: `${Math.min(100, (Math.abs(deltaPeso) / 5) * 100)}%` }} />
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-surface-border">
+                      <div className="h-full bg-indigo-500" style={{ width: `${Math.min(100, (Math.abs(deltaPeso) / 5) * 100)}%` }} />
                     </div>
                   )}
                 </div>
 
                 {/* 10kg */}
-                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${isLost10kg ? "bg-blue-50" : "bg-slate-100"}`}>
-                  <div className={`p-2 rounded-full ${isLost10kg ? "bg-blue-100 text-blue-600" : "text-slate-400"}`}>
+                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${isLost10kg ? "bg-blue-500/10" : "bg-surface"}`}>
+                  <div className={`p-2 rounded-full ${isLost10kg ? "bg-blue-500/20 text-blue-500" : "text-muted"}`}>
                     <Target size={20} />
                   </div>
-                  <p className={`text-[11px] font-black leading-tight ${isLost10kg ? "text-blue-800" : "text-slate-400"}`}>10KG PERDIDOS</p>
+                  <p className={`text-[11px] font-black leading-tight ${isLost10kg ? "text-blue-500" : "text-muted"}`}>10KG PERDIDOS</p>
                   {!isLost10kg && (
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200">
-                      <div className="h-full bg-blue-400" style={{ width: `${Math.min(100, (Math.abs(deltaPeso) / 10) * 100)}%` }} />
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-surface-border">
+                      <div className="h-full bg-blue-500" style={{ width: `${Math.min(100, (Math.abs(deltaPeso) / 10) * 100)}%` }} />
                     </div>
                   )}
                 </div>
 
                 {/* 1 Mês */}
-                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${isOneMonth ? "bg-pink-50" : "bg-slate-100"}`}>
-                  <div className={`p-2 rounded-full ${isOneMonth ? "bg-pink-100 text-pink-600" : "text-slate-400"}`}>
+                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${isOneMonth ? "bg-pink-500/10" : "bg-surface"}`}>
+                  <div className={`p-2 rounded-full ${isOneMonth ? "bg-pink-500/20 text-pink-500" : "text-muted"}`}>
                     <Trophy size={20} />
                   </div>
-                  <p className={`text-[11px] font-black leading-tight ${isOneMonth ? "text-pink-800" : "text-slate-400"}`}>1 MÊS</p>
+                  <p className={`text-[11px] font-black leading-tight ${isOneMonth ? "text-pink-500" : "text-muted"}`}>1 MÊS</p>
                   {!isOneMonth && (
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200">
-                      <div className="h-full bg-pink-400" style={{ width: `${Math.min(100, (diasTratamento / 30) * 100)}%` }} />
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-surface-border">
+                      <div className="h-full bg-pink-500" style={{ width: `${Math.min(100, (diasTratamento / 30) * 100)}%` }} />
                     </div>
                   )}
                 </div>
 
                 {/* 10 semanas */}
-                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${isTenWeeks ? "bg-purple-50" : "bg-slate-100"}`}>
-                  <div className={`p-2 rounded-full ${isTenWeeks ? "bg-purple-100 text-purple-600" : "text-slate-400"}`}>
+                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${isTenWeeks ? "bg-purple-500/10" : "bg-surface"}`}>
+                  <div className={`p-2 rounded-full ${isTenWeeks ? "bg-purple-500/20 text-purple-500" : "text-muted"}`}>
                     <Star size={20} />
                   </div>
-                  <p className={`text-[11px] font-black leading-tight ${isTenWeeks ? "text-purple-800" : "text-slate-400"}`}>10 SEMANAS</p>
+                  <p className={`text-[11px] font-black leading-tight ${isTenWeeks ? "text-purple-500" : "text-muted"}`}>10 SEMANAS</p>
                   {!isTenWeeks && (
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200">
-                      <div className="h-full bg-purple-400" style={{ width: `${Math.min(100, (semanasTratamento / 10) * 100)}%` }} />
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-surface-border">
+                      <div className="h-full bg-purple-500" style={{ width: `${Math.min(100, (semanasTratamento / 10) * 100)}%` }} />
                     </div>
                   )}
                 </div>
 
                 {/* IMC < 30 */}
-                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${isImcOk ? "bg-emerald-50" : "bg-slate-100"}`}>
-                  <div className={`p-2 rounded-full ${isImcOk ? "bg-emerald-100 text-emerald-600" : "text-slate-400"}`}>
+                <div className={`flex-shrink-0 w-[110px] h-[110px] rounded-[20px] p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all relative overflow-hidden ${isImcOk ? "bg-emerald-500/10" : "bg-surface"}`}>
+                  <div className={`p-2 rounded-full ${isImcOk ? "bg-emerald-500/20 text-emerald-500" : "text-muted"}`}>
                     <Activity size={20} />
                   </div>
-                  <p className={`text-[11px] font-black leading-tight ${isImcOk ? "text-emerald-800" : "text-slate-400"}`}>IMC &lt; 30</p>
+                  <p className={`text-[11px] font-black leading-tight ${isImcOk ? "text-emerald-500" : "text-muted"}`}>IMC &lt; 30</p>
                   {!isImcOk && (
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200">
-                      <div className="h-full bg-emerald-400" style={{ width: `${imcAtual > 0 ? Math.min(100, (30 / imcAtual) * 100) : 0}%` }} />
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-surface-border">
+                      <div className="h-full bg-emerald-500" style={{ width: `${imcAtual > 0 ? Math.min(100, (30 / imcAtual) * 100) : 0}%` }} />
                     </div>
                   )}
                 </div>
@@ -566,7 +566,7 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
 
             <button 
               onClick={() => setShowMedicaoForm(true)}
-              className="w-full h-[52px] bg-[#1c4d2e] text-white rounded-full font-bold text-sm shadow-lg shadow-forest/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
+              className="w-full h-[52px] bg-ember text-white rounded-full font-bold text-sm shadow-ember flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
             >
               <Plus size={18} strokeWidth={2.5} />
               Nova Medição
@@ -576,11 +576,11 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
 
         {activeTab === "Pressão" && (
           <div className="space-y-6 page-transition-enter flex flex-col items-center justify-center py-12 text-center">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 mb-4">
+            <div className="w-16 h-16 bg-surface-border rounded-full flex items-center justify-center text-dim mb-4">
               <Activity size={32} />
             </div>
-            <h3 className="text-lg font-bold text-slate-900">Em breve</h3>
-            <p className="text-sm text-slate-500 max-w-[240px] mt-1">
+            <h3 className="text-lg font-bold text-text">Em breve</h3>
+            <p className="text-sm text-muted max-w-[240px] mt-1">
               Esta funcionalidade está sendo desenvolvida para trazer métricas ainda mais precisas.
             </p>
           </div>
@@ -600,9 +600,9 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
                 <button 
                   key={s.id}
                   onClick={() => { setTipoSintoma(s.id); setShowSintomaForm(true); }}
-                  className="flex flex-col items-center justify-center gap-3 p-6 bg-white rounded-[24px] border border-slate-50 shadow-sm active:bg-forest active:text-white transition-colors group"
+                  className="flex flex-col items-center justify-center gap-3 p-6 bg-surface rounded-[24px] border border-surface-border shadow-sm active:bg-ember active:text-white transition-colors group"
                 >
-                  <div className="p-3 bg-slate-50 rounded-full group-active:bg-white/20 text-forest group-active:text-white transition-colors">
+                  <div className="p-3 bg-surface-mid rounded-full group-active:bg-surface/20 text-ember group-active:text-white transition-colors">
                     {s.icon}
                   </div>
                   <span className="text-sm font-bold">{s.label}</span>
@@ -622,10 +622,10 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
               <div className="w-10 h-1 bg-slate-300 rounded-full mx-auto mb-4" />
               <div className="px-6 flex justify-between items-center">
                 <div>
-                  <h2 className="text-[18px] font-bold text-slate-900">Nova Medição</h2>
-                  <p className="text-xs font-medium text-slate-400 capitalize">{format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}</p>
+                  <h2 className="text-[18px] font-bold text-text">Nova Medição</h2>
+                  <p className="text-xs font-medium text-dim capitalize">{format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}</p>
                 </div>
-                <button onClick={() => setShowMedicaoForm(false)} className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+                <button onClick={() => setShowMedicaoForm(false)} className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-muted">
                   <X size={18} />
                 </button>
               </div>
@@ -633,15 +633,15 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
 
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6 pb-24">
               {/* Grupo 1: Peso */}
-              <div className="bg-white p-5 rounded-[20px] shadow-sm flex flex-col items-center gap-4">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">PESO (KG)</p>
+              <div className="bg-surface p-5 rounded-[20px] shadow-sm flex flex-col items-center gap-4">
+                <p className="text-[10px] font-bold text-dim uppercase tracking-widest">PESO (KG)</p>
                 <input 
                   type="number" 
                   step="0.1" 
                   value={peso} 
                   onChange={e => setPeso(e.target.value)} 
                   placeholder="00.0"
-                  className="text-[42px] font-bold text-slate-900 text-center bg-transparent border-none outline-none focus:ring-0 w-full"
+                  className="text-[42px] font-bold text-text text-center bg-transparent border-none outline-none focus:ring-0 w-full"
                 />
                 
                 {currentIMCRealTime > 0 && (
@@ -656,7 +656,7 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
                       key={val}
                       type="button"
                       onClick={() => setPeso(prev => (Math.max(0, (parseFloat(prev) || 0) + val)).toFixed(1))}
-                      className="flex-1 py-2 rounded-xl bg-slate-50 text-slate-600 text-xs font-bold active:bg-slate-100"
+                      className="flex-1 py-2 rounded-xl bg-surface-mid text-slate-600 text-xs font-bold active:bg-surface-border"
                     >
                       {val > 0 ? `+${val}` : val}
                     </button>
@@ -668,13 +668,13 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
               <div className="space-y-3">
                 <button 
                   onClick={() => setShowMeasures(!showMeasures)}
-                  className="w-full flex items-center justify-between text-slate-400 text-[11px] font-bold uppercase tracking-widest px-1"
+                  className="w-full flex items-center justify-between text-dim text-[11px] font-bold uppercase tracking-widest px-1"
                 >
                   Adicionar medidas corporais
                   {showMeasures ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 </button>
                 {showMeasures && (
-                  <div className="bg-white p-5 rounded-[20px] shadow-sm animate-fade-in">
+                  <div className="bg-surface p-5 rounded-[20px] shadow-sm animate-fade-in">
                     <div className="flex items-center justify-between gap-4">
                       <label className="text-xs font-bold text-slate-600 whitespace-nowrap">Circunferência Abdominal (cm)</label>
                       <input 
@@ -682,7 +682,7 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
                         value={circAbdominal} 
                         onChange={e => setCircAbdominal(e.target.value)} 
                         placeholder="00"
-                        className="w-20 bg-slate-50 border-none rounded-xl py-2 px-3 text-right text-sm font-bold focus:ring-2 focus:ring-forest/20"
+                        className="w-20 bg-surface-mid border-none rounded-xl py-2 px-3 text-right text-sm font-bold focus:ring-2 focus:ring-forest/20"
                       />
                     </div>
                   </div>
@@ -693,32 +693,32 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
               <div className="space-y-3">
                 <button 
                   onClick={() => setShowPressure(!showPressure)}
-                  className="w-full flex items-center justify-between text-slate-400 text-[11px] font-bold uppercase tracking-widest px-1"
+                  className="w-full flex items-center justify-between text-dim text-[11px] font-bold uppercase tracking-widest px-1"
                 >
                   Adicionar pressão arterial
                   {showPressure ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 </button>
                 {showPressure && (
-                  <div className="bg-white p-5 rounded-[20px] shadow-sm animate-fade-in space-y-4">
+                  <div className="bg-surface p-5 rounded-[20px] shadow-sm animate-fade-in space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Sistólica</label>
+                        <label className="text-[10px] font-bold text-dim uppercase tracking-wider">Sistólica</label>
                         <input 
                           type="number" 
                           value={pressaoSis} 
                           onChange={e => setPressaoSis(e.target.value)} 
                           placeholder="120"
-                          className="w-full bg-slate-50 border-none rounded-xl py-3 px-4 text-center text-lg font-bold focus:ring-2 focus:ring-forest/20"
+                          className="w-full bg-surface-mid border-none rounded-xl py-3 px-4 text-center text-lg font-bold focus:ring-2 focus:ring-forest/20"
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Diastólica</label>
+                        <label className="text-[10px] font-bold text-dim uppercase tracking-wider">Diastólica</label>
                         <input 
                           type="number" 
                           value={pressaoDia} 
                           onChange={e => setPressaoDia(e.target.value)} 
                           placeholder="80"
-                          className="w-full bg-slate-50 border-none rounded-xl py-3 px-4 text-center text-lg font-bold focus:ring-2 focus:ring-forest/20"
+                          className="w-full bg-surface-mid border-none rounded-xl py-3 px-4 text-center text-lg font-bold focus:ring-2 focus:ring-forest/20"
                         />
                       </div>
                     </div>
@@ -732,9 +732,9 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
               </div>
 
               {/* Grupo 4: Humor e Energia */}
-              <div className="bg-white p-5 rounded-[20px] shadow-sm space-y-6">
+              <div className="bg-surface p-5 rounded-[20px] shadow-sm space-y-6">
                 <div className="space-y-3">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">HUMOR</p>
+                  <p className="text-[10px] font-bold text-dim uppercase tracking-widest">HUMOR</p>
                   <div className="flex justify-between items-center">
                     {[
                       { val: 'ruim', emoji: '😔', label: 'Ruim' },
@@ -749,10 +749,10 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
                         onClick={() => setHumor(h.val as Medicao['humor'])}
                         className={`flex flex-col items-center gap-1 transition-all ${humor === h.val ? "scale-110" : "opacity-40 grayscale-[50%]"}`}
                       >
-                        <span className={`text-2xl p-2 rounded-full border-2 ${humor === h.val ? "border-forest bg-forest/5" : "border-transparent"}`}>
+                        <span className={`text-2xl p-2 rounded-full border-2 ${humor === h.val ? "border-forest bg-ember/5" : "border-transparent"}`}>
                           {h.emoji}
                         </span>
-                        <span className="text-[9px] font-bold text-slate-500">{h.label}</span>
+                        <span className="text-[9px] font-bold text-muted">{h.label}</span>
                       </button>
                     ))}
                   </div>
@@ -760,8 +760,8 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
 
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ENERGIA</p>
-                    <span className="text-sm font-black text-forest">{energia} / 10</span>
+                    <p className="text-[10px] font-bold text-dim uppercase tracking-widest">ENERGIA</p>
+                    <span className="text-sm font-black text-ember">{energia} / 10</span>
                   </div>
                   <div className="px-2">
                     <input 
@@ -771,7 +771,7 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
                       onChange={e => setEnergia(parseInt(e.target.value))} 
                       className="w-full h-1.5 bg-gradient-to-r from-red-400 via-yellow-400 to-green-500 rounded-full appearance-none cursor-pointer range-slider"
                     />
-                    <div className="flex justify-between mt-2 text-[9px] font-bold text-slate-400">
+                    <div className="flex justify-between mt-2 text-[9px] font-bold text-dim">
                       <span>SEM ENERGIA</span>
                       <span>COM TUDO</span>
                     </div>
@@ -781,22 +781,22 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
 
               {/* Grupo 5: Observações */}
               <div className="space-y-3">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">OBSERVAÇÕES (OPCIONAL)</p>
+                <p className="text-[10px] font-bold text-dim uppercase tracking-widest px-1">OBSERVAÇÕES (OPCIONAL)</p>
                 <textarea 
                   value={obsMedicao}
                   onChange={e => setObsMedicao(e.target.value)}
                   placeholder="Como foi seu dia? Algo diferente?"
                   rows={3}
-                  className="w-full bg-white border-none rounded-[20px] p-4 text-sm font-medium focus:ring-2 focus:ring-forest/20 shadow-sm"
+                  className="w-full bg-surface border-none rounded-[20px] p-4 text-sm font-medium focus:ring-2 focus:ring-forest/20 shadow-sm"
                 />
               </div>
             </div>
 
-            <div className="flex-shrink-0 p-6 bg-white border-t border-slate-100">
+            <div className="flex-shrink-0 p-6 bg-surface border-t border-surface-border">
               <button 
                 onClick={handleMedicaoSubmit}
                 disabled={loading}
-                className="w-full h-[52px] bg-forest text-white rounded-full font-bold shadow-lg shadow-forest/20 active:scale-[0.98] transition-all flex items-center justify-center"
+                className="w-full h-[52px] bg-ember text-white rounded-full font-bold shadow-lg shadow-forest/20 active:scale-[0.98] transition-all flex items-center justify-center"
               >
                 {loading ? <LoadingSpinner size="sm" /> : "Salvar medição"}
               </button>
@@ -809,14 +809,14 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
       {showSintomaForm && (
         <div className="fixed inset-0 z-[100] flex items-end justify-center">
           <div className="absolute inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm" onClick={() => setShowSintomaForm(false)} />
-          <div className="relative z-[101] w-full max-w-md bg-white rounded-t-[32px] p-6 shadow-xl animate-slide-up pb-10">
+          <div className="relative z-[101] w-full max-w-md bg-surface rounded-t-[32px] p-6 shadow-xl animate-slide-up pb-10">
             <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6" />
             <h2 className="text-xl font-bold mb-6">Registrar Sintoma</h2>
             <form onSubmit={handleSintomaSubmit} className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-400 uppercase ml-1">Intensidade (1-10)</label>
+                <label className="text-xs font-bold text-dim uppercase ml-1">Intensidade (1-10)</label>
                 <input type="range" min="1" max="10" value={intensidade} onChange={e => setIntensidade(e.target.value)} className="w-full accent-forest mt-2" />
-                <div className="flex justify-between text-[10px] text-slate-400 font-bold px-1">
+                <div className="flex justify-between text-[10px] text-dim font-bold px-1">
                   <span>LEVE</span><span>MODERADO</span><span>INTENSO</span>
                 </div>
               </div>

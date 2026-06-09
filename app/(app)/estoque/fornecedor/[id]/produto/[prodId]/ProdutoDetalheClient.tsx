@@ -150,7 +150,7 @@ export function ProdutoDetalheClient({
         </button>
 
         <div className="absolute left-1/2 -translate-x-1/2 top-12">
-          <div className="relative w-[80px] h-[80px] rounded-[16px] bg-white/15 border border-white/20 flex items-center justify-center backdrop-blur-md overflow-visible">
+          <div className="relative w-[80px] h-[80px] rounded-[16px] bg-surface/15 border border-white/20 flex items-center justify-center backdrop-blur-md overflow-visible">
             {produto.foto_url ? (
               <img src={produto.foto_url} alt="Produto" className="w-full h-full object-cover rounded-[16px]" />
             ) : (
@@ -176,18 +176,18 @@ export function ProdutoDetalheClient({
 
       {/* Info Card */}
       <div className="relative px-6 -mt-6">
-        <div className="bg-white rounded-[20px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.1)] space-y-4">
+        <div className="bg-surface rounded-[20px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.1)] space-y-4">
           
           <button onClick={scrollToAvaliacoes} className="flex items-center gap-1.5 active:scale-95 transition-transform">
             <div className="flex text-amber-400">
               {[1,2,3,4,5].map(i => <Star key={i} size={14} fill="currentColor" />)}
             </div>
-            <span className="text-[11px] font-bold text-slate-400">({avaliacoes.length} avaliações)</span>
+            <span className="text-[11px] font-bold text-dim">({avaliacoes.length} avaliações)</span>
           </button>
 
           <div>
             <h1 className="text-[18px] font-bold text-[#111] leading-tight">Mounjaro {produto.dose_mg}mg</h1>
-            <p className="text-[11px] font-medium text-slate-400 mt-1 uppercase tracking-widest">
+            <p className="text-[11px] font-medium text-dim mt-1 uppercase tracking-widest">
               Ampola avulsa · {fornecedor.nome_fantasia || fornecedor.razao_social}
             </p>
           </div>
@@ -196,7 +196,7 @@ export function ProdutoDetalheClient({
             <span className="text-[24px] font-bold text-[#1c4d2e] tracking-tight">{formatBRL(price)}</span>
             {hasPromo && (
               <>
-                <span className="text-sm text-slate-400 line-through mb-1">{formatBRL(produto.preco)}</span>
+                <span className="text-sm text-dim line-through mb-1">{formatBRL(produto.preco)}</span>
                 <span className="bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md mb-1.5">
                   -{promoPercent}%
                 </span>
@@ -204,10 +204,10 @@ export function ProdutoDetalheClient({
             )}
           </div>
 
-          <div className="h-[1px] bg-slate-100 w-full" />
+          <div className="h-[1px] bg-surface-border w-full" />
 
           <div className="flex items-center justify-between pt-1">
-            <span className="text-sm font-bold text-slate-900">Quantidade</span>
+            <span className="text-sm font-bold text-text">Quantidade</span>
             <div className="flex items-center bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl p-1 gap-4">
               <button 
                 onClick={() => setQuantidade(Math.max(1, quantidade - 1))}
@@ -229,13 +229,13 @@ export function ProdutoDetalheClient({
 
       {/* Entrega */}
       <div className="px-6 mt-8 space-y-3">
-        <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-1">Tipo de entrega</h3>
+        <h3 className="text-[11px] font-bold text-dim uppercase tracking-widest px-1">Tipo de entrega</h3>
 
         {fornecedor.oferece_frete_full && (
           <button 
             onClick={() => setTipoEntrega("motoboy")}
-            className={`w-full bg-white rounded-[16px] p-4 flex items-start gap-4 transition-all text-left ${
-              tipoEntrega === "motoboy" ? "border-2 border-[#1c4d2e] shadow-md shadow-[#1c4d2e]/10" : "border border-slate-100"
+            className={`w-full bg-surface rounded-[16px] p-4 flex items-start gap-4 transition-all text-left ${
+              tipoEntrega === "motoboy" ? "border-2 border-[#1c4d2e] shadow-md shadow-[#1c4d2e]/10" : "border border-surface-border"
             }`}
           >
             <div className="w-10 h-10 rounded-xl bg-[#fef3c7] flex items-center justify-center text-[#d97706] shrink-0">
@@ -243,10 +243,10 @@ export function ProdutoDetalheClient({
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <p className="text-[12px] font-bold text-slate-900">Frete Full — Motoboy</p>
+                <p className="text-[12px] font-bold text-text">Frete Full — Motoboy</p>
                 <span className="bg-green-50 text-green-700 text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md">Rápido</span>
               </div>
-              <p className="text-[10px] font-medium text-slate-400 mt-1">Entrega hoje em ~{fornecedor.tempo_entrega_minutos || 60} min</p>
+              <p className="text-[10px] font-medium text-dim mt-1">Entrega hoje em ~{fornecedor.tempo_entrega_minutos || 60} min</p>
             </div>
             <p className="text-xs font-bold text-[#1c4d2e]">{Number(fornecedor.taxa_motoboy) > 0 ? formatBRL(fornecedor.taxa_motoboy) : "Grátis"}</p>
           </button>
@@ -254,16 +254,16 @@ export function ProdutoDetalheClient({
 
         <button 
           onClick={() => setTipoEntrega("padrao")}
-          className={`w-full bg-white rounded-[16px] p-4 flex items-start gap-4 transition-all text-left ${
-            tipoEntrega === "padrao" ? "border-2 border-[#1c4d2e] shadow-md shadow-[#1c4d2e]/10" : "border border-slate-100"
+          className={`w-full bg-surface rounded-[16px] p-4 flex items-start gap-4 transition-all text-left ${
+            tipoEntrega === "padrao" ? "border-2 border-[#1c4d2e] shadow-md shadow-[#1c4d2e]/10" : "border border-surface-border"
           }`}
         >
           <div className="w-10 h-10 rounded-xl bg-[#f0fdf4] flex items-center justify-center text-[#16a34a] shrink-0">
             <Truck size={20} strokeWidth={2.5} />
           </div>
           <div className="flex-1">
-            <p className="text-[12px] font-bold text-slate-900">Entrega Padrão</p>
-            <p className="text-[10px] font-medium text-slate-400 mt-1">2 a 5 dias úteis</p>
+            <p className="text-[12px] font-bold text-text">Entrega Padrão</p>
+            <p className="text-[10px] font-medium text-dim mt-1">2 a 5 dias úteis</p>
           </div>
           <p className="text-xs font-bold text-[#1c4d2e]">Grátis</p>
         </button>
@@ -272,13 +272,13 @@ export function ProdutoDetalheClient({
       {/* COD */}
       {fornecedor.aceita_cod && (
         <div className="px-6 mt-4">
-          <div className="bg-white rounded-[16px] border border-slate-100 p-4 flex items-center justify-between">
+          <div className="bg-surface rounded-[16px] border border-surface-border p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#fef9c3] flex items-center justify-center text-[#ca8a04]">
                 <Banknote size={20} strokeWidth={2.5} />
               </div>
               <div>
-                <p className="text-[12px] font-bold text-slate-900">Pagar na Entrega (COD)</p>
+                <p className="text-[12px] font-bold text-text">Pagar na Entrega (COD)</p>
                 {fornecedor.cod_taxa_percentual > 0 && (
                    <p className="text-[10px] font-medium text-amber-600 mt-0.5">Adicional de {fornecedor.cod_taxa_percentual}%</p>
                 )}
@@ -289,7 +289,7 @@ export function ProdutoDetalheClient({
               onClick={() => setUsarCod(!usarCod)}
               className={`w-12 h-7 rounded-full relative transition-colors ${usarCod ? "bg-[#1c4d2e]" : "bg-slate-200"}`}
             >
-              <div className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform ${usarCod ? "translate-x-5" : ""}`} />
+              <div className={`absolute top-1 left-1 w-5 h-5 bg-surface rounded-full transition-transform ${usarCod ? "translate-x-5" : ""}`} />
             </button>
           </div>
         </div>
@@ -297,15 +297,15 @@ export function ProdutoDetalheClient({
 
       {/* Avaliações */}
       <div ref={avaliacoesRef} className="px-6 mt-10 space-y-6">
-        <h3 className="text-[14px] font-bold text-slate-900 px-1">Avaliações do Produto</h3>
+        <h3 className="text-[14px] font-bold text-text px-1">Avaliações do Produto</h3>
 
-        <div className="bg-white rounded-[20px] border border-slate-100 p-6 flex gap-6 items-center">
+        <div className="bg-surface rounded-[20px] border border-surface-border p-6 flex gap-6 items-center">
           <div className="text-center">
-            <p className="text-4xl font-black text-slate-900">{fornecedor.avaliacao_media?.toFixed(1) || "5.0"}</p>
+            <p className="text-4xl font-black text-text">{fornecedor.avaliacao_media?.toFixed(1) || "5.0"}</p>
             <div className="flex text-amber-400 justify-center my-1">
               {[1,2,3,4,5].map(i => <Star key={i} size={12} fill="currentColor" />)}
             </div>
-            <p className="text-[10px] font-bold text-slate-400">{avaliacoes.length} avaliações</p>
+            <p className="text-[10px] font-bold text-dim">{avaliacoes.length} avaliações</p>
           </div>
           
           <div className="flex-1 space-y-1.5">
@@ -314,8 +314,8 @@ export function ProdutoDetalheClient({
               const pct = avaliacoes.length ? (count / avaliacoes.length) * 100 : (star === 5 ? 100 : 0);
               return (
                 <div key={star} className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-slate-500 w-3">{star}</span>
-                  <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <span className="text-[10px] font-bold text-muted w-3">{star}</span>
+                  <div className="flex-1 h-1.5 bg-surface-border rounded-full overflow-hidden">
                     <div className="h-full bg-amber-400 rounded-full" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
@@ -326,17 +326,17 @@ export function ProdutoDetalheClient({
 
         <div className="space-y-4">
           {avaliacoes.length === 0 ? (
-            <p className="text-xs text-slate-400 text-center py-4">Este produto ainda não possui avaliações.</p>
+            <p className="text-xs text-dim text-center py-4">Este produto ainda não possui avaliações.</p>
           ) : (
             avaliacoes.map((av) => (
-              <div key={av.id} className="bg-white rounded-[16px] border border-slate-100 p-4 space-y-3">
+              <div key={av.id} className="bg-surface rounded-[16px] border border-surface-border p-4 space-y-3">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">
+                    <div className="w-8 h-8 rounded-full bg-surface-border flex items-center justify-center text-xs font-bold text-muted">
                       {av.paciente?.nome?.substring(0, 2).toUpperCase() || "US"}
                     </div>
                     <div>
-                      <p className="text-[11px] font-bold text-slate-900">{av.paciente?.nome || "Usuário Anônimo"}</p>
+                      <p className="text-[11px] font-bold text-text">{av.paciente?.nome || "Usuário Anônimo"}</p>
                       <div className="flex text-amber-400 mt-0.5">
                         {[...Array(5)].map((_, i) => (
                           <Star key={i} size={10} fill={i < av.nota ? "currentColor" : "none"} className={i >= av.nota ? "text-slate-200" : ""} />
@@ -344,7 +344,7 @@ export function ProdutoDetalheClient({
                       </div>
                     </div>
                   </div>
-                  <span className="text-[10px] font-medium text-slate-400">
+                  <span className="text-[10px] font-medium text-dim">
                     {formatDistanceToNow(new Date(av.criado_em), { addSuffix: true, locale: ptBR })}
                   </span>
                 </div>
@@ -356,7 +356,7 @@ export function ProdutoDetalheClient({
                 {av.fotos_url && av.fotos_url.length > 0 && (
                   <div className="flex gap-2 pt-1">
                     {av.fotos_url.map((url: string, i: number) => (
-                      <div key={i} className="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden border border-slate-200">
+                      <div key={i} className="w-12 h-12 rounded-lg bg-surface-border overflow-hidden border border-slate-200">
                         <img src={url} alt="Avaliação" className="w-full h-full object-cover" />
                       </div>
                     ))}

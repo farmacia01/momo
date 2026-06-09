@@ -134,7 +134,7 @@ export default function AssistentePage() {
         </p>
       </div>
 
-      <div className="flex flex-1 flex-col overflow-hidden rounded-[28px] border-none bg-white shadow-premium">
+      <div className="flex flex-1 flex-col overflow-hidden rounded-[28px] border-none bg-surface shadow-premium">
         <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto p-5 scroll-smooth">
           <AnimatePresence initial={false}>
             {messages.map((message) => (
@@ -146,7 +146,7 @@ export default function AssistentePage() {
               >
                 <div
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl shadow-sm ${
-                    message.role === "user" ? "bg-white text-forest" : "bg-forest text-white"
+                    message.role === "user" ? "bg-surface text-ember" : "bg-ember text-white"
                   }`}
                 >
                   {message.role === "user" ? (
@@ -159,7 +159,7 @@ export default function AssistentePage() {
                   className={`max-w-[85%] rounded-[18px] px-4 py-3.5 shadow-[0_1px_8px_rgba(0,0,0,0.06)] ${
                     message.role === "user"
                       ? "rounded-tr-none bg-[#1c4d2e] text-white max-w-[80%] self-end"
-                      : "rounded-tl-none bg-white border border-[#f0f0f0] text-gray-800"
+                      : "rounded-tl-none bg-surface border border-[#f0f0f0] text-gray-800"
                   }`}
                 >
                   {message.role === "assistant" ? (
@@ -192,10 +192,10 @@ export default function AssistentePage() {
 
           {isLoading && (
             <div className="flex gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-forest text-white shadow-sm">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-ember text-white shadow-sm">
                 <Bot size={16} strokeWidth={2.5} />
               </div>
-              <div className="rounded-[18px] rounded-tl-none bg-white border border-[#f0f0f0] px-4 py-3 shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
+              <div className="rounded-[18px] rounded-tl-none bg-surface border border-[#f0f0f0] px-4 py-3 shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
                 <div className="flex gap-1.5 items-center h-4">
                   {[0, 1, 2].map((i) => (
                     <div 
@@ -210,7 +210,7 @@ export default function AssistentePage() {
           )}
         </div>
 
-        <div className="fixed bottom-[70px] left-0 right-0 z-[45] border-t border-gray-100 bg-white p-4">
+        <div className="fixed bottom-[70px] left-0 right-0 z-[45] border-t border-gray-100 bg-surface p-4">
           <div className="mx-auto w-full max-w-md px-4">
           {messages.length <= 1 && !isLoading && (
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
@@ -219,7 +219,7 @@ export default function AssistentePage() {
                   key={suggestion}
                   type="button"
                   onClick={() => setInput(suggestion)}
-                  className="whitespace-nowrap rounded-full border border-gray-100 bg-gray-50 px-4 py-2 text-[11px] font-bold text-gray-500 transition-all hover:bg-surface hover:text-forest"
+                  className="whitespace-nowrap rounded-full border border-gray-100 bg-surface-mid px-4 py-2 text-[11px] font-bold text-muted transition-all hover:bg-surface hover:text-ember"
                 >
                   {suggestion}
                 </button>
@@ -233,14 +233,14 @@ export default function AssistentePage() {
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
                 placeholder="Pergunte qualquer coisa..."
-                className="h-14 w-full rounded-2xl bg-gray-50 pl-5 pr-12 text-sm font-medium transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-forest/10"
+                className="h-14 w-full rounded-2xl bg-surface-mid pl-5 pr-12 text-sm font-medium transition-all focus:bg-surface focus:outline-none focus:ring-2 focus:ring-forest/10"
               />
               <Sparkles className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-300" />
             </div>
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-forest text-white shadow-lg shadow-forest/20 transition-all active:scale-95 disabled:opacity-50"
+              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-ember text-white shadow-lg shadow-forest/20 transition-all active:scale-95 disabled:opacity-50"
             >
               <Send size={20} strokeWidth={2.5} />
             </button>

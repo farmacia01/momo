@@ -34,7 +34,7 @@ import {
   unsubscribeFromPush,
 } from "@/lib/push-client";
 import { exportarDadosCsv } from "@/lib/export-dados";
-import { SectionLabel, Card } from "./ui";
+import { SectionLabel, Card, Divider } from "./ui";
 
 interface Props {
   userId: string;
@@ -182,7 +182,7 @@ export function ConfiguracoesClient({
       {/* SAIR DA CONTA */}
       <button
         onClick={() => setSignOutOpen(true)}
-        className="flex w-full items-center justify-center gap-2 rounded-full py-4 text-sm font-bold text-red-500 transition-colors hover:bg-red-50"
+        className="flex w-full items-center justify-center gap-2 rounded-full py-4 text-sm font-bold text-red-500 transition-colors hover:bg-red-50/10"
       >
         <LogOut size={18} /> Sair da conta
       </button>
@@ -197,17 +197,13 @@ export function ConfiguracoesClient({
 
 /* ---------- Menu rows ---------- */
 
-function Divider() {
-  return <div className="mx-4 h-px bg-gray-50" />;
-}
-
 function NavItem({
   icon,
   title,
   subtitle,
   onClick,
-  iconClassName = "text-forest",
-  titleClassName = "text-gray-900",
+  iconClassName = "text-ember",
+  titleClassName = "text-text",
   hideChevron,
 }: {
   icon: React.ReactNode;
@@ -219,16 +215,19 @@ function NavItem({
   hideChevron?: boolean;
 }) {
   return (
-    <button onClick={onClick} className="group flex w-full items-center gap-4 p-4 text-left">
-      <div className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-surface ${iconClassName}`}>
+    <button onClick={onClick} className="group flex w-full items-center gap-4 p-4 text-left active:bg-surface-mid/50 transition-colors">
+      <div 
+        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${iconClassName}`}
+        style={{ background: "var(--color-bg)" }}
+      >
         {icon}
       </div>
       <div className="flex-1">
         <h3 className={`text-sm font-bold ${titleClassName}`}>{title}</h3>
-        {subtitle && <p className="text-[11px] font-medium text-gray-400">{subtitle}</p>}
+        {subtitle && <p className="text-[11px] font-medium text-muted">{subtitle}</p>}
       </div>
       {!hideChevron && (
-        <ChevronRight className="h-5 w-5 text-gray-300 transition-colors group-hover:text-forest" />
+        <ChevronRight className="h-5 w-5 text-dim transition-colors group-hover:text-ember" />
       )}
     </button>
   );
@@ -245,11 +244,14 @@ function InfoRow({
 }) {
   return (
     <div className="flex w-full items-center gap-4 p-4">
-      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-forest">
+      <div 
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-ember"
+        style={{ background: "var(--color-bg)" }}
+      >
         {icon}
       </div>
-      <h3 className="flex-1 text-sm font-bold text-gray-900">{title}</h3>
-      <span className="text-sm font-semibold text-gray-400">{value}</span>
+      <h3 className="flex-1 text-sm font-bold text-text">{title}</h3>
+      <span className="text-sm font-semibold text-muted">{value}</span>
     </div>
   );
 }
@@ -268,13 +270,16 @@ function LinkRow({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex w-full items-center gap-4 p-4"
+      className="group flex w-full items-center gap-4 p-4 active:bg-surface-mid/50 transition-colors"
     >
-      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-forest">
+      <div 
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-ember"
+        style={{ background: "var(--color-bg)" }}
+      >
         {icon}
       </div>
-      <h3 className="flex-1 text-sm font-bold text-gray-900">{title}</h3>
-      <ChevronRight className="h-5 w-5 text-gray-300 transition-colors group-hover:text-forest" />
+      <h3 className="flex-1 text-sm font-bold text-text">{title}</h3>
+      <ChevronRight className="h-5 w-5 text-dim transition-colors group-hover:text-ember" />
     </a>
   );
 }
@@ -301,18 +306,21 @@ function ExportItem({ userId }: { userId: string }) {
     <button
       onClick={handleExport}
       disabled={busy}
-      className="group flex w-full items-center gap-4 p-4 text-left"
+      className="group flex w-full items-center gap-4 p-4 text-left active:bg-surface-mid/50 transition-colors"
     >
-      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-forest">
+      <div 
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-ember"
+        style={{ background: "var(--color-bg)" }}
+      >
         {busy ? <LoadingSpinner size="sm" /> : <Download size={20} strokeWidth={2.5} />}
       </div>
       <div className="flex-1">
-        <h3 className="text-sm font-bold text-gray-900">Exportar meus dados</h3>
-        <p className="text-[11px] font-medium text-gray-400">
+        <h3 className="text-sm font-bold text-text">Exportar meus dados</h3>
+        <p className="text-[11px] font-medium text-muted">
           Baixe um CSV com doses, medições e sintomas
         </p>
       </div>
-      <ChevronRight className="h-5 w-5 text-gray-300 transition-colors group-hover:text-forest" />
+      <ChevronRight className="h-5 w-5 text-dim transition-colors group-hover:text-ember" />
     </button>
   );
 }
@@ -348,7 +356,6 @@ const DIAS = [
 ];
 
 function NotificacoesSection({ userId }: { userId: string }) {
-  // pushSupported() checks window/navigator — must run client-side only
   const [supported, setSupported] = useState(false);
   useEffect(() => { setSupported(pushSupported()); }, []);
 
@@ -408,18 +415,9 @@ function NotificacoesSection({ userId }: { userId: string }) {
       dicas_dieta: next.dicas_dieta,
     };
     if (configId) {
-      const { error } = await supabase
-        .from("configuracoes_notificacao")
-        .update(payload)
-        .eq("id", configId);
-      if (error) toast.error("Erro ao salvar.");
+      await supabase.from("configuracoes_notificacao").update(payload).eq("id", configId);
     } else {
-      const { data, error } = await supabase
-        .from("configuracoes_notificacao")
-        .insert({ user_id: userId, ...payload })
-        .select("id")
-        .single();
-      if (error) toast.error("Erro ao salvar.");
+      const { data } = await supabase.from("configuracoes_notificacao").insert({ user_id: userId, ...payload }).select("id").single();
       if (data) setConfigId(data.id);
     }
   }
@@ -427,40 +425,35 @@ function NotificacoesSection({ userId }: { userId: string }) {
   async function togglePush() {
     if (pushBusy) return;
     if (!supported) {
-      toast.error("Para usar notificações, instale o app na tela inicial do seu celular.", { duration: 5000 });
+      toast.error("Para usar notificações, instale o app na tela inicial.");
       return;
     }
 
-    // Se for ativar, pedir permissão ANTES de qualquer await (contexto de gesto do usuário)
     if (!pushOn && typeof Notification !== "undefined") {
       if (Notification.permission === "denied") {
-        toast.error("Notificações bloqueadas. Ative nas configurações do navegador.", { duration: 5000 });
+        toast.error("Notificações bloqueadas. Ative nas configurações.");
         return;
       }
       if (Notification.permission !== "granted") {
         const perm = await Notification.requestPermission();
-        if (perm !== "granted") {
-          toast.error("Permissão negada. Ative nas configurações do navegador.", { duration: 5000 });
-          return;
-        }
+        if (perm !== "granted") return;
       }
     }
 
     setPushBusy(true);
-    const loadingId = toast.loading(pushOn ? "Desativando..." : "Ativando notificações...");
+    const loadingId = toast.loading(pushOn ? "Desativando..." : "Ativando...");
     try {
       if (pushOn) {
         await unsubscribeFromPush();
         setPushOn(false);
-        toast.success("Notificações desativadas.");
+        toast.success("Desativado.");
       } else {
         await subscribeToPush(userId);
         setPushOn(true);
-        toast.success("Notificações ativadas!");
+        toast.success("Ativado!");
       }
     } catch (err: any) {
-      const msg = String(err?.message || "");
-      toast.error(msg || "Não foi possível alterar as notificações.");
+      toast.error("Erro ao alterar notificações.");
     } finally {
       toast.dismiss(loadingId);
       setPushBusy(false);
@@ -474,26 +467,19 @@ function NotificacoesSection({ userId }: { userId: string }) {
     if (patch.ativo !== undefined) setAlertaAtivo(patch.ativo);
 
     if (alertaId) {
-      await supabase
-        .from("alertas_estoque")
-        .update({ quantidade_minima: nextMin, ativo: nextAtivo })
-        .eq("id", alertaId);
+      await supabase.from("alertas_estoque").update({ quantidade_minima: nextMin, ativo: nextAtivo }).eq("id", alertaId);
     } else {
-      const { data } = await supabase
-        .from("alertas_estoque")
-        .insert({ user_id: userId, quantidade_minima: nextMin, ativo: nextAtivo })
-        .select("id")
-        .single();
+      const { data } = await supabase.from("alertas_estoque").insert({ user_id: userId, quantidade_minima: nextMin, ativo: nextAtivo }).select("id").single();
       if (data) setAlertaId(data.id);
     }
   }
 
   return (
-    <Card className="divide-y divide-gray-50">
+    <Card className="divide-y" style={{ borderColor: "var(--color-surface-border)" }}>
       <ToggleRow
         icon={<Bell size={20} strokeWidth={2.5} />}
         title="Push e Alertas"
-        subtitle={supported ? "Notificações no seu dispositivo" : "Instale o app na tela inicial para ativar"}
+        subtitle={supported ? "Notificações no seu dispositivo" : "Instale o app para ativar"}
         enabled={pushOn}
         busy={pushBusy}
         onToggle={togglePush}
@@ -508,11 +494,11 @@ function NotificacoesSection({ userId }: { userId: string }) {
         expand={
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+              <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-muted">
                 Dia da semana
               </label>
               <select
-                className="input-standard appearance-none bg-gray-50"
+                className="input-standard appearance-none"
                 value={String(config.dia_semana_dose ?? 1)}
                 onChange={(e) => persistConfig({ dia_semana_dose: Number(e.target.value) })}
               >
@@ -524,12 +510,12 @@ function NotificacoesSection({ userId }: { userId: string }) {
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+              <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-muted">
                 Horário
               </label>
               <input
                 type="time"
-                className="input-standard bg-gray-50"
+                className="input-standard"
                 value={config.horario_dose ?? "09:00"}
                 onChange={(e) => persistConfig({ horario_dose: e.target.value })}
               />
@@ -547,7 +533,7 @@ function NotificacoesSection({ userId }: { userId: string }) {
         onToggle={() => persistAlerta({ ativo: !alertaAtivo })}
         expand={
           <div className="space-y-1.5">
-            <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+            <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-muted">
               Alertar quando restar
             </label>
             <div className="flex items-center gap-3">
@@ -555,11 +541,11 @@ function NotificacoesSection({ userId }: { userId: string }) {
                 type="number"
                 min={1}
                 inputMode="numeric"
-                className="input-standard w-24 bg-gray-50"
+                className="input-standard w-24"
                 value={estoqueMin}
                 onChange={(e) => persistAlerta({ quantidade_minima: Number(e.target.value) || 1 })}
               />
-              <span className="text-sm font-medium text-gray-500">ampola(s)</span>
+              <span className="text-sm font-medium text-muted">ampola(s)</span>
             </div>
           </div>
         }
@@ -609,25 +595,28 @@ function ToggleRow({
   const expandRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className={`transition-colors ${disabled ? "opacity-50" : "active:bg-slate-50"}`}>
+    <div className={`transition-colors ${disabled ? "opacity-50" : "active:bg-surface-mid/50"}`} style={{ borderBottomColor: "var(--color-surface-border)" }}>
       <div 
         className={`flex items-center gap-4 p-4 cursor-pointer ${disabled || busy ? "cursor-not-allowed" : ""}`}
         onClick={() => !(disabled || busy) && onToggle()}
       >
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-surface text-forest">
+        <div 
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-ember"
+          style={{ background: "var(--color-bg)" }}
+        >
           {icon}
         </div>
         <div className="flex-1">
-          <p className="text-sm font-bold text-gray-900">{title}</p>
-          {subtitle && <p className="text-[11px] font-medium text-gray-400">{subtitle}</p>}
+          <p className="text-sm font-bold text-text">{title}</p>
+          {subtitle && <p className="text-[11px] font-medium text-muted">{subtitle}</p>}
         </div>
         <div
           className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
-            enabled ? "bg-forest" : "bg-gray-200"
+            enabled ? "bg-ember" : "bg-dim/20"
           }`}
         >
           <span
-            className={`absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
+            className={`absolute left-1 top-1 h-5 w-5 rounded-full bg-surface shadow-sm transition-transform ${
               enabled ? "translate-x-5" : ""
             }`}
           />
@@ -663,11 +652,8 @@ function SignOutModal({ onClose }: { onClose: () => void }) {
     setBusy(true);
     try {
       await supabase.auth.signOut();
-      // Limpa qualquer estado local persistido.
-      try {
-        localStorage.clear();
-        sessionStorage.clear();
-      } catch {}
+      localStorage.clear();
+      sessionStorage.clear();
       window.location.href = "/login";
     } catch {
       toast.error("Erro ao sair.");
@@ -677,11 +663,11 @@ function SignOutModal({ onClose }: { onClose: () => void }) {
 
   return (
     <ModalShell onClose={onClose}>
-      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 text-red-500">
         <LogOut size={26} />
       </div>
-      <h3 className="text-center text-lg font-bold text-gray-900">Tem certeza que quer sair?</h3>
-      <p className="mt-1 text-center text-sm text-gray-500">
+      <h3 className="text-center text-lg font-bold text-text">Tem certeza que quer sair?</h3>
+      <p className="mt-1 text-center text-sm text-muted">
         Você precisará entrar novamente para acessar sua conta.
       </p>
       <div className="mt-6 space-y-3">
@@ -695,7 +681,7 @@ function SignOutModal({ onClose }: { onClose: () => void }) {
         <button
           onClick={onClose}
           disabled={busy}
-          className="w-full rounded-full py-3 text-sm font-bold text-gray-500"
+          className="w-full rounded-full py-3 text-sm font-bold text-muted"
         >
           Cancelar
         </button>
@@ -714,15 +700,10 @@ function DeleteAccountModal({ email, onClose }: { email: string; onClose: () => 
     setBusy(true);
     try {
       const res = await fetch("/api/conta/excluir", { method: "POST" });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body?.error || "Erro ao excluir conta.");
-      }
+      if (!res.ok) throw new Error("Erro ao excluir conta.");
       await supabase.auth.signOut();
-      try {
-        localStorage.clear();
-        sessionStorage.clear();
-      } catch {}
+      localStorage.clear();
+      sessionStorage.clear();
       window.location.href = "/login";
     } catch (err: any) {
       toast.error(err?.message || "Erro ao excluir conta.");
@@ -732,21 +713,20 @@ function DeleteAccountModal({ email, onClose }: { email: string; onClose: () => 
 
   return (
     <ModalShell onClose={busy ? undefined : onClose}>
-      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 text-red-500">
         <AlertTriangle size={26} />
       </div>
-      <h3 className="text-center text-lg font-bold text-red-600">Excluir minha conta</h3>
-      <p className="mt-2 text-center text-sm font-medium text-red-500">
-        Esta ação é permanente. Todos os seus dados ({email}) — doses, medições,
-        sintomas e pedidos — serão apagados e não poderão ser recuperados.
+      <h3 className="text-center text-lg font-bold text-red-500">Excluir minha conta</h3>
+      <p className="mt-2 text-center text-sm font-medium text-red-400">
+        Esta ação é permanente. Todos os seus dados ({email}) serão apagados.
       </p>
 
       <div className="mt-5 space-y-1.5">
-        <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+        <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-dim">
           Digite DELETE para confirmar
         </label>
         <input
-          className="input-standard bg-gray-50 text-center font-bold tracking-widest"
+          className="input-standard text-center font-bold tracking-widest"
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           placeholder="DELETE"
@@ -758,14 +738,14 @@ function DeleteAccountModal({ email, onClose }: { email: string; onClose: () => 
         <button
           onClick={handleDelete}
           disabled={!canDelete || busy}
-          className="w-full rounded-full bg-red-500 py-4 text-sm font-bold text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-full bg-red-500 py-4 text-sm font-bold text-white transition-colors hover:bg-red-600 disabled:opacity-40"
         >
           {busy ? "Excluindo..." : "Excluir permanentemente"}
         </button>
         <button
           onClick={onClose}
           disabled={busy}
-          className="w-full rounded-full py-3 text-sm font-bold text-gray-500"
+          className="w-full rounded-full py-3 text-sm font-bold text-muted"
         >
           Cancelar
         </button>
@@ -783,11 +763,12 @@ function ModalShell({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 sm:items-center"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm rounded-[28px] bg-white p-6 shadow-2xl animate-fade-up"
+        className="w-full max-w-sm rounded-[28px] p-6 shadow-2xl animate-fade-up"
+        style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

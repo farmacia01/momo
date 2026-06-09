@@ -167,14 +167,14 @@ export function ShareProgressDrawer({ open, onClose, data }: Props) {
           <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-slate-300" />
           <div className="flex items-start justify-between px-6 pb-3">
             <div>
-              <h2 className="text-[18px] font-bold text-slate-900">Compartilhar progresso</h2>
-              <p className="text-xs font-medium text-slate-400">
+              <h2 className="text-[18px] font-bold text-text">Compartilhar progresso</h2>
+              <p className="text-xs font-medium text-dim">
                 Mostre sua jornada para quem importa
               </p>
             </div>
             <button
               onClick={onClose}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-slate-500"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-muted"
               aria-label="Fechar"
             >
               <X size={18} />
@@ -205,7 +205,7 @@ export function ShareProgressDrawer({ open, onClose, data }: Props) {
 
           {/* Seleção do que mostrar */}
           <div>
-            <p className="mb-2 ml-1 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+            <p className="mb-2 ml-1 text-[11px] font-bold uppercase tracking-widest text-dim">
               O que mostrar
             </p>
             <div className="flex flex-wrap gap-2">
@@ -223,14 +223,14 @@ export function ShareProgressDrawer({ open, onClose, data }: Props) {
               <button
                 onClick={handleSaveImage}
                 disabled={busy}
-                className="flex items-center justify-center gap-2 rounded-full bg-white py-3.5 text-sm font-bold text-slate-700 shadow-sm transition-all active:scale-[0.97] disabled:opacity-50"
+                className="flex items-center justify-center gap-2 rounded-full bg-surface py-3.5 text-sm font-bold text-slate-700 shadow-sm transition-all active:scale-[0.97] disabled:opacity-50"
               >
                 <Download size={18} /> Salvar imagem
               </button>
               <button
                 onClick={handleShare}
                 disabled={busy}
-                className="flex items-center justify-center gap-2 rounded-full bg-forest py-3.5 text-sm font-bold text-white shadow-sm transition-all active:scale-[0.97] disabled:opacity-50"
+                className="flex items-center justify-center gap-2 rounded-full bg-ember py-3.5 text-sm font-bold text-white shadow-sm transition-all active:scale-[0.97] disabled:opacity-50"
               >
                 <Share2 size={18} /> Compartilhar
               </button>
@@ -433,13 +433,13 @@ function OptionPill({
       onClick={onClick}
       className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold transition-all ${
         active
-          ? "bg-forest text-white shadow-sm"
-          : "bg-white text-slate-500 shadow-sm"
+          ? "bg-ember text-white shadow-sm"
+          : "bg-surface text-muted shadow-sm"
       }`}
     >
       <span
         className={`flex h-4 w-4 items-center justify-center rounded-full border-2 ${
-          active ? "border-white bg-white/20" : "border-slate-300"
+          active ? "border-white bg-surface/20" : "border-slate-300"
         }`}
       >
         {active && <Check size={11} strokeWidth={3.5} />}

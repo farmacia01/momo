@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -12,7 +13,6 @@ const config: Config = {
         display: ["var(--font-syne)", "Syne", "system-ui", "sans-serif"],
       },
       colors: {
-        // Ember orange palette
         brand: {
           50: "#fff4ed",
           100: "#ffe6d5",
@@ -25,22 +25,24 @@ const config: Config = {
           800: "#a33c00",
           900: "#7a2e00",
         },
-        ember: "#ff6500",
-        "ember-light": "#ff7a1a",
-        "ember-dim": "#cc4c00",
-        // Dark surfaces
-        surface: "#1a1a1a",
-        "surface-mid": "#222222",
-        "surface-border": "#2d2d2d",
-        bg: "#0d0d0d",
+        ember: "var(--color-ember)",
+        "ember-light": "var(--color-ember-light)",
+        "ember-dim": "var(--color-ember-dim)",
+        surface: "var(--color-surface)",
+        "surface-mid": "var(--color-surface-mid)",
+        "surface-border": "var(--color-surface-border)",
+        bg: "var(--color-bg)",
+        text: "var(--color-text)",
+        muted: "var(--color-text-muted)",
+        dim: "var(--color-text-dim)",
         // Keep forest as alias to ember for compatibility
-        forest: "#ff6500",
-        "forest-light": "#ff7a1a",
+        forest: "var(--color-ember)",
+        "forest-light": "var(--color-ember-light)",
       },
       boxShadow: {
-        premium: "0 2px 16px rgba(0,0,0,0.4)",
-        dose: "0 4px 16px rgba(255,101,0,0.3)",
-        ember: "0 8px 32px rgba(255,101,0,0.25)",
+        premium: "var(--shadow-card)",
+        dose: "var(--shadow-ember)",
+        ember: "var(--shadow-ember)",
       },
       keyframes: {
         fadeUp: {

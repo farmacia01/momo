@@ -93,11 +93,11 @@ export function AdminNotificacoesClient({ historico: initialHistorico }: { histo
             onClick={() => setActiveTab(cat.key)}
             className={`flex items-center gap-2 px-5 py-3 rounded-[16px] text-[13px] font-bold transition-all whitespace-nowrap ${
               activeTab === cat.key 
-              ? "bg-white text-black shadow-lg" 
-              : "text-white/40 hover:text-white/60 hover:bg-white/5"
+              ? "bg-surface text-black shadow-lg" 
+              : "text-white/40 hover:text-white/60 hover:bg-surface/5"
             }`}
           >
-            <cat.icon size={16} className={activeTab === cat.key ? "text-slate-900" : cat.color} />
+            <cat.icon size={16} className={activeTab === cat.key ? "text-text" : cat.color} />
             {cat.label}
           </button>
         ))}
@@ -123,7 +123,7 @@ export function AdminNotificacoesClient({ historico: initialHistorico }: { histo
                   <div key={key} className="a-card p-5 flex flex-col justify-between group">
                     <div>
                       <div className="flex justify-between items-start mb-4">
-                        <div className="h-8 w-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 group-hover:text-white transition-colors">
+                        <div className="h-8 w-8 rounded-lg bg-surface/5 flex items-center justify-center text-white/40 group-hover:text-white transition-colors">
                           <Bell size={16} />
                         </div>
                         <div className="flex items-center gap-2">
@@ -165,12 +165,12 @@ export function AdminNotificacoesClient({ historico: initialHistorico }: { histo
                       <button 
                         onClick={() => handleDisparar(key, activeTab)}
                         disabled={!!sending}
-                        className="flex-1 h-10 rounded-xl bg-white text-black text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-slate-200 transition-colors disabled:opacity-50"
+                        className="flex-1 h-10 rounded-xl bg-surface text-black text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-slate-200 transition-colors disabled:opacity-50"
                       >
                         {sending === key ? <Clock size={14} className="animate-spin" /> : <Send size={14} />}
                         Disparar agora
                       </button>
-                      <button className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors">
+                      <button className="h-10 w-10 rounded-xl bg-surface/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors">
                         <Info size={14} />
                       </button>
                     </div>
@@ -192,10 +192,10 @@ export function AdminNotificacoesClient({ historico: initialHistorico }: { histo
             <p className="text-[11px] text-white/30 mt-1 mb-4">Sincronizado com n8n (momo-rust-nu)</p>
             
             <div className="space-y-3">
-              <label className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+              <label className="flex items-center justify-between p-3 rounded-xl bg-surface/[0.02] border border-white/[0.04]">
                 <span className="text-[11px] font-bold text-white/60 uppercase">Envio Automático</span>
                 <div className="h-5 w-10 bg-green-500 rounded-full relative">
-                  <div className="absolute right-1 top-1 h-3 w-3 bg-white rounded-full" />
+                  <div className="absolute right-1 top-1 h-3 w-3 bg-surface rounded-full" />
                 </div>
               </label>
               <div className="p-3 rounded-xl bg-amber-500/5 border border-amber-500/10 flex items-start gap-3">
@@ -209,7 +209,7 @@ export function AdminNotificacoesClient({ historico: initialHistorico }: { histo
 
           {/* Histórico Recente */}
           <div className="a-card p-0 overflow-hidden">
-            <div className="p-5 border-b border-white/5 bg-white/[0.01]">
+            <div className="p-5 border-b border-white/5 bg-surface/[0.01]">
                <h4 className="text-[12px] font-bold text-white/60 uppercase tracking-widest">Logs de Disparo</h4>
             </div>
             <div className="divide-y divide-white/[0.02]">
@@ -217,7 +217,7 @@ export function AdminNotificacoesClient({ historico: initialHistorico }: { histo
                 <div className="p-10 text-center text-white/20 text-[11px] font-medium">Nenhum log disponível</div>
               ) : (
                 historico.map((h) => (
-                  <div key={h.id} className="p-4 hover:bg-white/[0.01] transition-colors">
+                  <div key={h.id} className="p-4 hover:bg-surface/[0.01] transition-colors">
                     <div className="flex justify-between items-start mb-1">
                       <p className="text-[12px] font-bold text-white truncate max-w-[150px]">{h.titulo}</p>
                       <span className="text-[10px] font-black text-green-500">{h.total_enviado} envios</span>

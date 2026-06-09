@@ -124,7 +124,7 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
         <div className="flex items-center gap-4 mb-6">
           <button 
             onClick={() => router.back()}
-            className="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white"
+            className="h-10 w-10 rounded-full bg-surface/10 backdrop-blur-md flex items-center justify-center text-white"
           >
             <ChevronLeft size={20} />
           </button>
@@ -135,14 +135,14 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
         </div>
 
         {p.status === 'enviado' && p.codigo_rastreio && (
-          <div className="bg-white/10 border border-white/20 rounded-2xl p-4 flex items-center justify-between backdrop-blur-sm">
+          <div className="bg-surface/10 border border-white/20 rounded-2xl p-4 flex items-center justify-between backdrop-blur-sm">
             <div className="space-y-0.5">
               <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Código de rastreio</p>
               <p className="text-sm font-mono font-bold text-white tracking-wider">{p.codigo_rastreio}</p>
             </div>
             <button 
               onClick={() => copyToClipboard(p.codigo_rastreio || "")}
-              className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center text-white"
+              className="h-10 w-10 rounded-xl bg-surface/10 flex items-center justify-center text-white"
             >
               <Copy size={16} />
             </button>
@@ -152,7 +152,7 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
 
       {/* Timeline Card */}
       <div className="px-6 -mt-10">
-        <div className="bg-white rounded-[24px] p-6 shadow-xl shadow-black/5 border border-slate-50">
+        <div className="bg-surface rounded-[24px] p-6 shadow-xl shadow-black/5 border border-surface-border">
           <div className="space-y-8">
             {steps.map((step, idx) => {
               const status = getStepStatus(step.key);
@@ -173,8 +173,8 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
                       <div className={`
                         relative z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500
                         ${status === 'done' ? 'bg-[#1c4d2e] text-white' : 
-                          status === 'active' ? 'bg-white border-2 border-[#1c4d2e]' : 
-                          'bg-slate-100 text-slate-300'}
+                          status === 'active' ? 'bg-surface border-2 border-[#1c4d2e]' : 
+                          'bg-surface-border text-slate-300'}
                       `}>
                         {status === 'active' ? (
                           <div className="w-2.5 h-2.5 bg-[#1c4d2e] rounded-full" />
@@ -184,16 +184,16 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
                       </div>
                     </div>
                     {!isLast && (
-                      <div className={`w-0.5 h-10 my-1 rounded-full ${status === 'done' ? 'bg-[#1c4d2e]' : 'bg-slate-100'}`} />
+                      <div className={`w-0.5 h-10 my-1 rounded-full ${status === 'done' ? 'bg-[#1c4d2e]' : 'bg-surface-border'}`} />
                     )}
                   </div>
                   <div className="pt-1.5 flex-1">
                     <div className="flex justify-between items-start">
-                      <p className={`text-sm font-bold tracking-tight ${status === 'future' ? 'text-slate-300' : 'text-slate-900'}`}>
+                      <p className={`text-sm font-bold tracking-tight ${status === 'future' ? 'text-slate-300' : 'text-text'}`}>
                         {step.label}
                       </p>
                       {status === 'done' && (
-                        <span className="text-[10px] font-bold text-slate-400">
+                        <span className="text-[10px] font-bold text-dim">
                           {p[`${step.key}_at`] ? format(new Date(p[`${step.key}_at`]), "HH:mm") : ""}
                         </span>
                       )}
@@ -223,10 +223,10 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
             animate={{ opacity: 1, y: 0 }}
             className="px-6 mt-6"
           >
-            <div className="bg-white rounded-[24px] p-5 shadow-lg shadow-black/5 border border-slate-50 space-y-4">
+            <div className="bg-surface rounded-[24px] p-5 shadow-lg shadow-black/5 border border-surface-border space-y-4">
               <div>
-                <h3 className="text-sm font-black text-slate-900">Confirmar recebimento</h3>
-                <p className="text-[11px] font-medium text-slate-400 mt-0.5">
+                <h3 className="text-sm font-black text-text">Confirmar recebimento</h3>
+                <p className="text-[11px] font-medium text-dim mt-0.5">
                   Digite o código de 6 letras que o motoboy vai mostrar
                 </p>
               </div>
@@ -241,7 +241,7 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
                   value={confirmCode}
                   onChange={(e) => setConfirmCode(e.target.value.toUpperCase())}
                   placeholder="Ex: AB3K7X"
-                  className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl pl-12 pr-4 text-sm font-mono font-bold tracking-[0.2em] focus:outline-none focus:ring-2 focus:ring-[#1c4d2e]/10 transition-all"
+                  className="w-full h-14 bg-surface-mid border border-surface-border rounded-2xl pl-12 pr-4 text-sm font-mono font-bold tracking-[0.2em] focus:outline-none focus:ring-2 focus:ring-[#1c4d2e]/10 transition-all"
                 />
               </div>
 
@@ -259,31 +259,31 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
 
       {/* Order Info */}
       <div className="px-6 mt-6 space-y-4">
-        <div className="bg-white rounded-[20px] p-4 border border-slate-50 shadow-sm flex items-center gap-4">
-          <div className="h-12 w-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 shrink-0">
+        <div className="bg-surface rounded-[20px] p-4 border border-surface-border shadow-sm flex items-center gap-4">
+          <div className="h-12 w-12 rounded-xl bg-surface-mid flex items-center justify-center text-dim shrink-0">
             <Package size={24} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-slate-900 truncate">
+            <p className="text-sm font-bold text-text truncate">
               {p.quantidade}x {TIPO_PRODUTO_LABEL[p.produto.tipo_produto]}
             </p>
-            <p className="text-[11px] font-medium text-slate-400">Mounjaro {p.produto.dose_mg}mg</p>
+            <p className="text-[11px] font-medium text-dim">Mounjaro {p.produto.dose_mg}mg</p>
           </div>
           <div className="text-right">
-            <p className="text-sm font-black text-slate-900">{formatBRL(p.preco_total)}</p>
+            <p className="text-sm font-black text-text">{formatBRL(p.preco_total)}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-[20px] p-4 border border-slate-50 shadow-sm flex items-start gap-4">
-          <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 shrink-0">
+        <div className="bg-surface rounded-[20px] p-4 border border-surface-border shadow-sm flex items-start gap-4">
+          <div className="h-10 w-10 rounded-full bg-surface-mid flex items-center justify-center text-dim shrink-0">
             <MapPin size={18} />
           </div>
           <div className="min-w-0">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Endereço de entrega</p>
-            <p className="text-[13px] font-bold text-slate-900 leading-snug">
+            <p className="text-[10px] font-bold text-dim uppercase tracking-widest mb-0.5">Endereço de entrega</p>
+            <p className="text-[13px] font-bold text-text leading-snug">
               {p.endereco_entrega?.logradouro}, {p.endereco_entrega?.numero}
             </p>
-            <p className="text-[11px] font-medium text-slate-400 mt-0.5">
+            <p className="text-[11px] font-medium text-dim mt-0.5">
               {p.endereco_entrega?.bairro} · {p.endereco_entrega?.cidade}/{p.endereco_entrega?.estado}
             </p>
           </div>
@@ -368,7 +368,7 @@ function RatingModal({ pedido, onClose }: { pedido: any; onClose: () => void }) 
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="relative w-full max-w-sm bg-white rounded-[32px] p-8 shadow-2xl"
+        className="relative w-full max-w-sm bg-surface rounded-[32px] p-8 shadow-2xl"
       >
         <button 
           onClick={onClose}
@@ -383,8 +383,8 @@ function RatingModal({ pedido, onClose }: { pedido: any; onClose: () => void }) 
           </div>
           
           <div className="space-y-1">
-            <h3 className="text-lg font-black text-slate-900">Como foi sua experiência?</h3>
-            <p className="text-xs text-slate-400">Conte sobre a entrega e o produto</p>
+            <h3 className="text-lg font-black text-text">Como foi sua experiência?</h3>
+            <p className="text-xs text-dim">Conte sobre a entrega e o produto</p>
           </div>
 
           {/* Stars */}
@@ -402,14 +402,14 @@ function RatingModal({ pedido, onClose }: { pedido: any; onClose: () => void }) 
           <textarea 
             value={comentario}
             onChange={(e) => setComentario(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm text-slate-900 focus:outline-none min-h-[80px]"
+            className="w-full bg-surface-mid border border-surface-border rounded-2xl p-4 text-sm text-text focus:outline-none min-h-[80px]"
             placeholder="O que você achou?"
           />
 
           {/* Photo upload */}
           <div className="grid grid-cols-3 gap-3">
              {fotos.map((f, i) => (
-               <div key={i} className="aspect-square rounded-xl bg-slate-100 overflow-hidden relative">
+               <div key={i} className="aspect-square rounded-xl bg-surface-border overflow-hidden relative">
                  <img src={URL.createObjectURL(f)} className="w-full h-full object-cover" />
                </div>
              ))}

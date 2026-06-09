@@ -90,7 +90,7 @@ export function AdminUsuariosClient({ usuarios: initial }: { usuarios: Usuario[]
         </div>
         <div className="flex gap-4">
           <div className="text-right">
-             <p className="text-[10px] font-bold text-forest uppercase tracking-widest">Pacientes</p>
+             <p className="text-[10px] font-bold text-ember uppercase tracking-widest">Pacientes</p>
              <p className="text-lg font-black text-white">{usuarios.filter(u => !u.is_fornecedor).length}</p>
           </div>
           <div className="text-right">
@@ -124,7 +124,7 @@ export function AdminUsuariosClient({ usuarios: initial }: { usuarios: Usuario[]
 
           return (
             <motion.div key={u.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * 0.03, 0.3) }} className="a-card px-4 py-3 flex items-center gap-3 group hover:border-[rgba(255,255,255,0.15)] transition-all">
-              <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 border ${u.is_fornecedor ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-forest/10 border-forest/20 text-forest'}`}>
+              <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 border ${u.is_fornecedor ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-ember/10 border-forest/20 text-ember'}`}>
                 {u.is_fornecedor ? <Store size={16} /> : <UserIcon size={16} />}
               </div>
               <div className="flex-1 min-w-0">

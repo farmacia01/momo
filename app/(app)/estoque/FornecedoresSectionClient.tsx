@@ -64,14 +64,14 @@ export function FornecedoresSectionClient({
 
         {/* Search Bar Overlay */}
         <div className="absolute left-6 right-6 -bottom-6">
-          <div className="bg-white border border-slate-100 shadow-xl shadow-forest/10 rounded-2xl flex items-center gap-3 px-4 py-3.5 transition-all focus-within:ring-2 focus-within:ring-[#1c4d2e]/20">
+          <div className="bg-surface border border-surface-border shadow-xl shadow-forest/10 rounded-2xl flex items-center gap-3 px-4 py-3.5 transition-all focus-within:ring-2 focus-within:ring-[#1c4d2e]/20">
             <Search size={18} className="text-slate-300" />
             <input 
               type="text"
               placeholder="Buscar farmácia ou produto..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-transparent border-none text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+              className="w-full bg-transparent border-none text-sm text-text placeholder:text-dim focus:outline-none"
             />
           </div>
         </div>
@@ -88,7 +88,7 @@ export function FornecedoresSectionClient({
             className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
               activeFilter === f.label 
                 ? "bg-[#1c4d2e] text-white shadow-md shadow-forest/20" 
-                : "bg-white border border-slate-100 text-slate-500 hover:bg-slate-50"
+                : "bg-surface border border-surface-border text-muted hover:bg-surface-mid"
             }`}
           >
             {f.label}
@@ -103,11 +103,11 @@ export function FornecedoresSectionClient({
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center py-16 bg-white rounded-[24px] border border-dashed border-slate-200"
+              className="text-center py-16 bg-surface rounded-[24px] border border-dashed border-slate-200"
             >
               <MapPin className="mx-auto text-slate-200 mb-4" size={40} />
-              <p className="text-slate-500 font-bold">Nenhum fornecedor disponível</p>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-muted font-bold">Nenhum fornecedor disponível</p>
+              <p className="text-xs text-dim mt-1">
                 {cidade ? `Na região de ${cidade}` : "Ajuste seus filtros ou busca"}
               </p>
             </motion.div>
@@ -122,7 +122,7 @@ export function FornecedoresSectionClient({
               >
                 <Link
                   href={`/estoque/fornecedor/${f.id}`}
-                  className="block bg-white rounded-[20px] overflow-hidden shadow-premium border border-slate-50 active:scale-[0.98] transition-transform"
+                  className="block bg-surface rounded-[20px] overflow-hidden shadow-premium border border-surface-border active:scale-[0.98] transition-transform"
                 >
                   {/* Banner */}
                   <div className="relative h-20 bg-gradient-to-br from-[#e8f5ee] to-[#cce8d9]">
@@ -157,16 +157,16 @@ export function FornecedoresSectionClient({
                   <div className="p-4 space-y-3">
                     <div className="flex justify-between items-start gap-4">
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-[15px] font-bold text-slate-900 truncate leading-tight">
+                        <h4 className="text-[15px] font-bold text-text truncate leading-tight">
                           {nomeFornecedor(f)}
                         </h4>
                         <div className="flex items-center gap-1.5 mt-1">
                           <Star size={12} className="text-amber-400 fill-amber-400" />
-                          <span className="text-[11px] font-bold text-slate-900">{f.avaliacao_media?.toFixed(1) || "5.0"}</span>
-                          <span className="text-[11px] font-medium text-slate-400">({f.total_pedidos || 0})</span>
+                          <span className="text-[11px] font-bold text-text">{f.avaliacao_media?.toFixed(1) || "5.0"}</span>
+                          <span className="text-[11px] font-medium text-dim">({f.total_pedidos || 0})</span>
                         </div>
                       </div>
-                      <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300">
+                      <div className="h-8 w-8 rounded-full bg-surface-mid flex items-center justify-center text-slate-300">
                         <ChevronRight size={18} />
                       </div>
                     </div>
@@ -180,11 +180,11 @@ export function FornecedoresSectionClient({
                       </span>
                     </div>
 
-                    <div className="h-[1px] bg-slate-50 w-full" />
+                    <div className="h-[1px] bg-surface-mid w-full" />
 
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">A partir de</p>
+                        <p className="text-[10px] font-bold text-dim uppercase tracking-widest leading-none">A partir de</p>
                         <p className="text-[15px] font-black text-[#1c4d2e] mt-1">
                           {f.preco_minimo ? formatBRL(f.preco_minimo) : "Consulte"}
                         </p>

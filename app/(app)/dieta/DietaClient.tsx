@@ -102,28 +102,28 @@ export function DietaClient({
 
       <BlurPaywall ativo={isExpirado} mensagem="Acompanhe sua dieta e tenha cardápios com IA no Premium">
         {/* Hero Card */}
-        <div className="bg-white p-6 rounded-[24px] shadow-premium border-none">
+        <div className="bg-surface p-6 rounded-[24px] shadow-premium border-none">
           <div className="flex items-center gap-3 mb-4">
-            <div className="h-10 w-10 rounded-full bg-forest/10 text-forest flex items-center justify-center">
+            <div className="h-10 w-10 rounded-full bg-ember/10 text-ember flex items-center justify-center">
               <Leaf size={20} />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Fase atual</p>
-              <h2 className="text-base font-bold text-slate-900 mt-0.5">Fase {fase}: {plano.nome}</h2>
+              <p className="text-[10px] font-bold text-dim uppercase tracking-widest leading-none">Fase atual</p>
+              <h2 className="text-base font-bold text-text mt-0.5">Fase {fase}: {plano.nome}</h2>
             </div>
           </div>
           
           <div className="flex justify-between items-end mb-2">
-            <p className="text-sm font-bold text-slate-900">{totaisHoje.calorias} <span className="text-slate-400 font-medium">/ {plano.caloriasMax} kcal</span></p>
-            <p className="text-xs font-bold text-forest">{progressoPct}%</p>
+            <p className="text-sm font-bold text-text">{totaisHoje.calorias} <span className="text-dim font-medium">/ {plano.caloriasMax} kcal</span></p>
+            <p className="text-xs font-bold text-ember">{progressoPct}%</p>
           </div>
-          <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-            <div className="h-full bg-forest rounded-full transition-all duration-500" style={{ width: `${progressoPct}%` }} />
+          <div className="h-2.5 w-full bg-surface-border rounded-full overflow-hidden">
+            <div className="h-full bg-ember rounded-full transition-all duration-500" style={{ width: `${progressoPct}%` }} />
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex p-1 bg-white rounded-full shadow-premium gap-1 overflow-x-auto scrollbar-hide">
+        <div className="flex p-1 bg-surface rounded-full shadow-premium gap-1 overflow-x-auto scrollbar-hide">
           {(["Hoje", "Plano", "Receitas"] as Tab[]).map(t => {
             const isSoon = t === "Receitas";
             return (
@@ -145,7 +145,7 @@ export function DietaClient({
                   setTab(t);
                 }}
                 className={`flex-1 min-w-[70px] py-2.5 rounded-full text-[12px] font-bold transition-all flex items-center justify-center gap-1.5 ${
-                  tab === t ? "bg-forest text-white shadow-lg shadow-forest/20" : "text-gray-400 hover:bg-gray-50"
+                  tab === t ? "bg-ember text-white shadow-lg shadow-forest/20" : "text-dim hover:bg-surface-mid"
                 } ${isSoon ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {t === "Receitas" ? (
@@ -154,7 +154,7 @@ export function DietaClient({
                   </span>
                 ) : t}
                 {isSoon && (
-                  <span className="bg-slate-100 text-slate-400 text-[8px] font-black px-1.5 py-0.5 rounded-full leading-none uppercase tracking-tighter shrink-0">
+                  <span className="bg-surface-border text-dim text-[8px] font-black px-1.5 py-0.5 rounded-full leading-none uppercase tracking-tighter shrink-0">
                     Breve
                   </span>
                 )}
@@ -166,7 +166,7 @@ export function DietaClient({
         <div className="page-transition-enter">
           {tab === "Hoje" && (
             <div className="space-y-6">
-              <div className="bg-white p-5 rounded-[24px] shadow-premium flex items-center justify-between">
+              <div className="bg-surface p-5 rounded-[24px] shadow-premium flex items-center justify-between">
                 <div className="w-[120px] h-[120px]">
                   <MacroRing 
                     macros={{
@@ -189,7 +189,7 @@ export function DietaClient({
               {/* Add meal */}
               <button
                 onClick={() => setShowForm(true)}
-                className="fixed bottom-[70px] left-5 right-5 z-[45] z-45 flex items-center justify-center gap-2 rounded-2xl bg-forest py-3.5 text-sm font-bold text-white shadow-lg shadow-forest/20 transition-transform active:scale-[0.98]"
+                className="fixed bottom-[70px] left-5 right-5 z-[45] z-45 flex items-center justify-center gap-2 rounded-2xl bg-ember py-3.5 text-sm font-bold text-white shadow-lg shadow-forest/20 transition-transform active:scale-[0.98]"
               >
                 <Plus size={18} /> Registrar refeição
               </button>
@@ -200,11 +200,11 @@ export function DietaClient({
                    <EmptyState icon={<Utensils />} title="Nada ainda" description="Registre sua primeira refeição do dia." />
                  ) : (
                    refeicoesHoje.map(r => (
-                     <div key={r.id} className="bg-white p-4 rounded-[20px] shadow-premium flex justify-between items-center">
+                     <div key={r.id} className="bg-surface p-4 rounded-[20px] shadow-premium flex justify-between items-center">
                        <div>
-                         <p className="text-[10px] font-bold text-forest uppercase tracking-wider">{TIPO_REFEICAO_LABEL[r.tipo]}</p>
-                         <p className="text-sm font-bold text-gray-900">{r.descricao}</p>
-                         <p className="text-[11px] text-gray-400 mt-0.5">{r.calorias_estimadas} kcal · P:{r.proteinas_g}g C:{r.carboidratos_g}g</p>
+                         <p className="text-[10px] font-bold text-ember uppercase tracking-wider">{TIPO_REFEICAO_LABEL[r.tipo]}</p>
+                         <p className="text-sm font-bold text-text">{r.descricao}</p>
+                         <p className="text-[11px] text-dim mt-0.5">{r.calorias_estimadas} kcal · P:{r.proteinas_g}g C:{r.carboidratos_g}g</p>
                        </div>
                        <button onClick={() => handleDelete(r.id)} className="p-2 text-gray-300 hover:text-red-500 transition-colors"><Trash2 size={16} /></button>
                      </div>
@@ -221,8 +221,8 @@ export function DietaClient({
                 <Sparkles size={40} />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-900">Receitas com IA</h3>
-                <p className="text-sm text-slate-500 max-w-[260px] mx-auto mt-1">
+                <h3 className="text-lg font-bold text-text">Receitas com IA</h3>
+                <p className="text-sm text-muted max-w-[260px] mx-auto mt-1">
                   Estamos finalizando o nosso motor de inteligência artificial para gerar cardápios perfeitos para sua fase do Mounjaro.
                 </p>
               </div>
@@ -289,10 +289,10 @@ function RefeicaoForm({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/40 p-0 sm:items-center sm:p-6">
-      <div className="relative z-[101] w-full max-w-md max-h-[90vh] overflow-y-auto rounded-t-[32px] bg-white p-6 animate-slide-up sm:rounded-[32px]">
+      <div className="relative z-[101] w-full max-w-md max-h-[90vh] overflow-y-auto rounded-t-[32px] bg-surface p-6 animate-slide-up sm:rounded-[32px]">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-black text-slate-900">Registrar refeição</h2>
-          <button onClick={onClose} className="p-2 text-slate-400"><X size={20} /></button>
+          <h2 className="text-lg font-black text-text">Registrar refeição</h2>
+          <button onClick={onClose} className="p-2 text-dim"><X size={20} /></button>
         </div>
 
         <div className="space-y-4">
@@ -305,7 +305,7 @@ function RefeicaoForm({
                   type="button"
                   onClick={() => setForm({ ...form, tipo: t })}
                   className={`py-2.5 rounded-xl text-[11px] font-bold transition-all ${
-                    form.tipo === t ? "bg-forest text-white shadow-md" : "bg-slate-50 text-slate-600"
+                    form.tipo === t ? "bg-ember text-white shadow-md" : "bg-surface-mid text-slate-600"
                   }`}
                 >
                   {TIPO_REFEICAO_LABEL[t]}
@@ -334,7 +334,7 @@ function RefeicaoForm({
           <button
             onClick={handleSubmit}
             disabled={saving}
-            className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-forest text-base font-bold text-white shadow-lg active:scale-95 disabled:opacity-70"
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-ember text-base font-bold text-white shadow-lg active:scale-95 disabled:opacity-70"
           >
             {saving ? <LoadingSpinner size="sm" /> : "Salvar refeição"}
           </button>
@@ -458,8 +458,8 @@ function ReceitasIA({
             onClick={() => setFiltro(f.key)}
             className={`shrink-0 px-4 py-2 rounded-full text-[12px] font-bold whitespace-nowrap transition-all ${
               filtro === f.key
-                ? "bg-forest text-white shadow-lg shadow-forest/20"
-                : "bg-white text-gray-500 shadow-premium"
+                ? "bg-ember text-white shadow-lg shadow-forest/20"
+                : "bg-surface text-muted shadow-premium"
             }`}
           >
             {f.label}
@@ -470,7 +470,7 @@ function ReceitasIA({
       {loading ? (
         <div className="grid grid-cols-2 gap-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-[20px] shadow-premium overflow-hidden">
+            <div key={i} className="bg-surface rounded-[20px] shadow-premium overflow-hidden">
               <div className="skeleton h-20 w-full" />
               <div className="p-3 space-y-2">
                 <div className="skeleton h-3.5 w-4/5 rounded-full" />
@@ -497,7 +497,7 @@ function ReceitasIA({
           <button
             onClick={() => carregarReceitas(true)}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border border-forest text-forest text-sm font-bold active:scale-[0.98] transition-transform disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border border-forest text-ember text-sm font-bold active:scale-[0.98] transition-transform disabled:opacity-50"
           >
             <Sparkles size={16} /> Gerar novas receitas
           </button>
@@ -515,7 +515,7 @@ function ReceitaCard({ receita, onClick }: { receita: ReceitaIA; onClick: () => 
   return (
     <button
       onClick={onClick}
-      className="bg-white rounded-[20px] shadow-premium overflow-hidden text-left active:scale-[0.98] transition-transform"
+      className="bg-surface rounded-[20px] shadow-premium overflow-hidden text-left active:scale-[0.98] transition-transform"
     >
       {/* Topo colorido por tipo */}
       <div
@@ -523,23 +523,23 @@ function ReceitaCard({ receita, onClick }: { receita: ReceitaIA; onClick: () => 
         style={{ backgroundColor: TIPO_COR[receita.tipo] ?? "#f1f5f9" }}
       >
         <span className="text-[36px] leading-none">{receita.emoji}</span>
-        <span className="absolute top-2 right-2 bg-white text-gray-700 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+        <span className="absolute top-2 right-2 bg-surface text-gray-700 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
           ⏱ {receita.tempo_preparo}min
         </span>
       </div>
 
       <div className="p-3 space-y-2">
-        <p className="text-[14px] font-bold text-gray-900 leading-tight line-clamp-2">{receita.nome}</p>
+        <p className="text-[14px] font-bold text-text leading-tight line-clamp-2">{receita.nome}</p>
         <div className="flex flex-wrap gap-1.5">
           <span className="bg-amber-50 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
             🔥 {receita.calorias} kcal
           </span>
-          <span className="bg-forest/10 text-forest text-[10px] font-bold px-2 py-0.5 rounded-full">
+          <span className="bg-ember/10 text-ember text-[10px] font-bold px-2 py-0.5 rounded-full">
             💪 {receita.proteinas}g
           </span>
         </div>
         {receita.dica_mounjaro && (
-          <p className="bg-forest/10 text-forest text-[10px] font-medium leading-snug rounded-lg px-2 py-1.5 line-clamp-2">
+          <p className="bg-ember/10 text-ember text-[10px] font-medium leading-snug rounded-lg px-2 py-1.5 line-clamp-2">
             💡 {receita.dica_mounjaro}
           </p>
         )}
@@ -555,7 +555,7 @@ function ReceitaDrawer({ receita, onClose }: { receita: ReceitaIA; onClose: () =
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md bg-white rounded-t-[32px] sm:rounded-[32px] max-h-[90vh] overflow-y-auto animate-slide-up"
+        className="w-full max-w-md bg-surface rounded-t-[32px] sm:rounded-[32px] max-h-[90vh] overflow-y-auto animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header colorido */}
@@ -566,7 +566,7 @@ function ReceitaDrawer({ receita, onClose }: { receita: ReceitaIA; onClose: () =
           <span className="text-[48px] leading-none">{receita.emoji}</span>
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 p-2 rounded-full bg-white/70 text-slate-600"
+            className="absolute top-3 right-3 p-2 rounded-full bg-surface/70 text-slate-600"
           >
             <X size={18} />
           </button>
@@ -574,19 +574,19 @@ function ReceitaDrawer({ receita, onClose }: { receita: ReceitaIA; onClose: () =
 
         <div className="p-6 space-y-6">
           <div>
-            <h2 className="text-lg font-black text-slate-900 leading-tight">{receita.nome}</h2>
+            <h2 className="text-lg font-black text-text leading-tight">{receita.nome}</h2>
             <div className="flex flex-wrap items-center gap-2 mt-2">
-              <span className="flex items-center gap-1 bg-slate-100 text-slate-600 text-[11px] font-bold px-2.5 py-1 rounded-full">
+              <span className="flex items-center gap-1 bg-surface-border text-slate-600 text-[11px] font-bold px-2.5 py-1 rounded-full">
                 <Timer size={12} /> {receita.tempo_preparo} min
               </span>
-              <span className="bg-slate-100 text-slate-600 text-[11px] font-bold px-2.5 py-1 rounded-full capitalize">
+              <span className="bg-surface-border text-slate-600 text-[11px] font-bold px-2.5 py-1 rounded-full capitalize">
                 {receita.dificuldade}
               </span>
             </div>
           </div>
 
           {/* Macros */}
-          <div className="flex justify-between items-center bg-gray-50 rounded-2xl p-4">
+          <div className="flex justify-between items-center bg-surface-mid rounded-2xl p-4">
             {[
               { label: "Kcal", val: receita.calorias },
               { label: "Prot", val: `${receita.proteinas}g` },
@@ -594,25 +594,25 @@ function ReceitaDrawer({ receita, onClose }: { receita: ReceitaIA; onClose: () =
               { label: "Gord", val: `${receita.gorduras}g` },
             ].map((m, i, arr) => (
               <div key={m.label} className={`text-center flex-1 ${i < arr.length - 1 ? "border-r border-gray-200" : ""}`}>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{m.label}</p>
-                <p className="text-sm font-black text-gray-900">{m.val}</p>
+                <p className="text-[10px] font-bold text-dim uppercase tracking-widest">{m.label}</p>
+                <p className="text-sm font-black text-text">{m.val}</p>
               </div>
             ))}
           </div>
 
           {receita.dica_mounjaro && (
-            <div className="bg-forest/10 rounded-2xl p-4">
-              <p className="text-[10px] font-black text-forest uppercase tracking-[0.2em] mb-1">Dica Mounjaro</p>
-              <p className="text-sm text-forest/90 leading-relaxed font-medium">💡 {receita.dica_mounjaro}</p>
+            <div className="bg-ember/10 rounded-2xl p-4">
+              <p className="text-[10px] font-black text-ember uppercase tracking-[0.2em] mb-1">Dica Mounjaro</p>
+              <p className="text-sm text-ember/90 leading-relaxed font-medium">💡 {receita.dica_mounjaro}</p>
             </div>
           )}
 
           <div>
-            <h5 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Ingredientes</h5>
+            <h5 className="text-[11px] font-black text-dim uppercase tracking-[0.2em] mb-3">Ingredientes</h5>
             <ul className="space-y-2">
               {receita.ingredientes.map((ing, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-gray-700 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-forest mt-1.5 shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-ember mt-1.5 shrink-0" />
                   {ing}
                 </li>
               ))}
@@ -620,11 +620,11 @@ function ReceitaDrawer({ receita, onClose }: { receita: ReceitaIA; onClose: () =
           </div>
 
           <div>
-            <h5 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Modo de preparo</h5>
+            <h5 className="text-[11px] font-black text-dim uppercase tracking-[0.2em] mb-3">Modo de preparo</h5>
             <div className="space-y-4">
               {receita.modo_preparo.map((step, i) => (
                 <div key={i} className="flex gap-4">
-                  <span className="w-6 h-6 rounded-lg bg-surface text-forest text-[11px] font-black flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="w-6 h-6 rounded-lg bg-surface text-ember text-[11px] font-black flex items-center justify-center shrink-0 shadow-sm">
                     {i + 1}
                   </span>
                   <p className="text-sm text-gray-600 leading-relaxed pt-0.5">{step}</p>
@@ -635,7 +635,7 @@ function ReceitaDrawer({ receita, onClose }: { receita: ReceitaIA; onClose: () =
 
           {receita.beneficios?.length > 0 && (
             <div>
-              <h5 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Benefícios</h5>
+              <h5 className="text-[11px] font-black text-dim uppercase tracking-[0.2em] mb-3">Benefícios</h5>
               <div className="flex flex-wrap gap-2">
                 {receita.beneficios.map((b, i) => (
                   <span key={i} className="flex items-center gap-1 bg-green-50 text-green-700 text-[11px] font-bold px-2.5 py-1 rounded-full">
@@ -656,9 +656,9 @@ function MacroLegend({ color, label, value }: { color: string, label: string, va
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <div className={`h-2 w-2 rounded-full ${color}`} />
-        <span className="text-xs font-medium text-slate-500">{label}</span>
+        <span className="text-xs font-medium text-muted">{label}</span>
       </div>
-      <span className="text-xs font-bold text-slate-900">{value}</span>
+      <span className="text-xs font-bold text-text">{value}</span>
     </div>
   );
 }
@@ -667,12 +667,12 @@ function MeuPlano({ fase }: { fase: FaseMounjaro }) {
   const plano = PLANOS[fase];
   return (
     <div className="space-y-4">
-      <div className="bg-white p-5 rounded-[24px] shadow-premium">
-        <h3 className="font-bold text-slate-900 mb-2">{plano.foco}</h3>
+      <div className="bg-surface p-5 rounded-[24px] shadow-premium">
+        <h3 className="font-bold text-text mb-2">{plano.foco}</h3>
         <p className="text-sm text-slate-600 leading-relaxed">{plano.resumo}</p>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-[24px] shadow-premium">
+        <div className="bg-surface p-4 rounded-[24px] shadow-premium">
            <h4 className="text-[10px] font-bold text-green-700 uppercase tracking-widest mb-3">Recomendados</h4>
            <ul className="text-xs text-slate-600 space-y-2">
              {plano.alimentosRecomendados.slice(0, 5).map(a => (
@@ -683,7 +683,7 @@ function MeuPlano({ fase }: { fase: FaseMounjaro }) {
              ))}
            </ul>
         </div>
-        <div className="bg-white p-4 rounded-[24px] shadow-premium">
+        <div className="bg-surface p-4 rounded-[24px] shadow-premium">
            <h4 className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-3">Evitar</h4>
            <ul className="text-xs text-slate-600 space-y-2">
              {plano.alimentosEvitar.slice(0, 5).map(a => (

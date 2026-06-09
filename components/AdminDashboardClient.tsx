@@ -104,7 +104,7 @@ export function AdminDashboardClient({
             <p className="text-[10px] font-bold text-[rgba(255,255,255,0.3)] uppercase tracking-widest">Sincronização</p>
             <p className="text-[12px] text-white/70 font-mono">{format(new Date(), "HH:mm:ss")}</p>
           </div>
-          <button className="h-10 px-4 rounded-xl bg-white text-black text-xs font-bold flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-white/5">
+          <button className="h-10 px-4 rounded-xl bg-surface text-black text-xs font-bold flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-white/5">
             <Zap size={14} fill="black" />
             Exportar Dados
           </button>
@@ -166,7 +166,7 @@ export function AdminDashboardClient({
               <p className="text-[13px] text-white/30 mt-1">Faturamento bruto mensal consolidado</p>
             </div>
             <div className="flex gap-2">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface/5 border border-white/10">
                 <div className="h-2 w-2 rounded-full bg-green-500" />
                 <span className="text-[10px] font-bold text-white/60 uppercase">Real</span>
               </div>
@@ -254,7 +254,7 @@ export function AdminDashboardClient({
 
           <div className="space-y-3">
             {planDistribution.map((p, i) => (
-              <div key={p.name} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+              <div key={p.name} className="flex items-center justify-between p-3 rounded-xl bg-surface/[0.02] border border-white/[0.04]">
                 <div className="flex items-center gap-3">
                   <div className="w-2.5 h-2.5 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.5)]" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                   <span className="text-[12px] font-bold text-white/60">{p.name}</span>
@@ -286,7 +286,7 @@ export function AdminDashboardClient({
                { label: "7 Dias", val: metrics.activeUsers7d, color: "bg-purple-500" },
                { label: "30 Dias", val: metrics.activeUsers30d, color: "bg-green-500" }
              ].map(eng => (
-               <div key={eng.label} className="flex-1 p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] text-center">
+               <div key={eng.label} className="flex-1 p-5 rounded-2xl bg-surface/[0.02] border border-white/[0.05] text-center">
                   <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-2">{eng.label}</p>
                   <p className="text-[24px] font-black text-white tracking-tighter leading-none">{eng.val}</p>
                   <div className={`h-1 w-8 ${eng.color} rounded-full mx-auto mt-4 opacity-40`} />
@@ -307,7 +307,7 @@ export function AdminDashboardClient({
 
         {/* Recent Customers List */}
         <motion.div variants={item} className="a-card p-0 overflow-hidden flex flex-col">
-          <div className="p-8 border-b border-white/[0.05] flex justify-between items-center bg-white/[0.01]">
+          <div className="p-8 border-b border-white/[0.05] flex justify-between items-center bg-surface/[0.01]">
             <h4 className="text-[16px] font-bold text-white tracking-tight">Últimos Assinantes</h4>
             <button className="text-[11px] font-bold text-white/40 hover:text-white transition-colors flex items-center gap-1 uppercase tracking-widest">
               Ver lista
@@ -317,7 +317,7 @@ export function AdminDashboardClient({
           
           <div className="divide-y divide-white/[0.03]">
             {recentCustomers.map((customer, i) => (
-              <div key={i} className="px-8 py-5 flex items-center justify-between hover:bg-white/[0.02] transition-colors cursor-pointer group">
+              <div key={i} className="px-8 py-5 flex items-center justify-between hover:bg-surface/[0.02] transition-colors cursor-pointer group">
                 <div className="flex items-center gap-4">
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center font-bold text-white/60 text-xs">
                     {customer.nome.substring(0, 1)}
@@ -344,7 +344,7 @@ export function AdminDashboardClient({
             ))}
           </div>
           
-          <div className="p-4 bg-white/[0.02] mt-auto">
+          <div className="p-4 bg-surface/[0.02] mt-auto">
              <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-white/20 uppercase tracking-widest">
                 <ShieldCheck size={12} />
                 Transações Seguras via Cakto

@@ -23,7 +23,11 @@ export function PageHeader({
           <button
             onClick={() => (onBack ? onBack() : router.back())}
             className="flex h-10 w-10 items-center justify-center rounded-full transition-transform active:scale-90"
-            style={{ background: "#1a1a1a", color: "#9ca3af", border: "1px solid #2d2d2d" }}
+            style={{ 
+              background: "var(--color-surface)", 
+              color: "var(--color-text-muted)", 
+              border: "1px solid var(--color-surface-border)" 
+            }}
             aria-label="Voltar"
           >
             <ArrowLeft className="h-5 w-5" strokeWidth={1.5} />
@@ -31,7 +35,7 @@ export function PageHeader({
         )}
       </div>
 
-      <h1 className="absolute left-1/2 -translate-x-1/2 text-base font-bold text-white whitespace-nowrap">
+      <h1 className="absolute left-1/2 -translate-x-1/2 text-base font-bold text-text whitespace-nowrap">
         {title}
       </h1>
 
