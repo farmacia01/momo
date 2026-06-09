@@ -32,7 +32,7 @@ export default async function FornecedorLayout({ children }: { children: React.R
   }
 
   return (
-    <div data-portal="fornecedor" className="app-container min-h-screen bg-[#0d0d0d] text-white">
+    <div data-portal="fornecedor" className="app-container min-h-screen bg-bg text-text transition-colors duration-300">
       <main className="mx-auto w-full max-w-lg px-6 pb-[100px] pt-8">
         {children}
       </main>

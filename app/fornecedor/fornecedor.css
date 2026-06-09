@@ -1,26 +1,33 @@
 [data-portal="fornecedor"] {
-  --f-bg:       #0d0d0d;
-  --f-bg2:      #111111;
-  --f-bg3:      #1a1a1a;
-  --f-border:   rgba(255,255,255,0.07);
-  --f-border2:  rgba(255,255,255,0.12);
-  --f-text:     #ffffff;
-  --f-text2:    rgba(255,255,255,0.55);
-  --f-text3:    rgba(255,255,255,0.28);
-  --f-ember:    #ff6500;
-  --f-ember-bg: rgba(255,101,0,0.1);
+  /* Dynamic mapping to global tokens */
+  --f-bg:       var(--color-bg);
+  --f-bg2:      var(--color-surface);
+  --f-bg3:      var(--color-surface-mid);
+  --f-border:   var(--color-surface-border);
+  --f-border2:  var(--color-surface-border);
+  --f-text:     var(--color-text);
+  --f-text2:    var(--color-text-muted);
+  --f-text3:    var(--color-text-dim);
+  
+  --f-ember:    var(--color-ember);
+  --f-ember-bg: var(--color-ember-glow);
   --f-ember-bd: rgba(255,101,0,0.2);
-  --f-green:    #22c55e;
+  
+  --f-green:    var(--color-success);
   --f-green-bg: rgba(34,197,94,0.1);
   --f-green-bd: rgba(34,197,94,0.2);
+  
   --f-blue:     #60a5fa;
   --f-blue-bg:  rgba(96,165,250,0.1);
-  --f-yellow:   #fbbf24;
+  
+  --f-yellow:   var(--color-warning);
   --f-yellow-bg:rgba(251,191,36,0.1);
-  --f-red:      #f87171;
+  
+  --f-red:      var(--color-danger);
   --f-red-bg:   rgba(248,113,113,0.1);
-  --f-radius:   18px;
-  --f-radius-lg:24px;
+  
+  --f-radius:   var(--radius-lg);
+  --f-radius-lg:var(--radius-xl);
 }
 
 [data-portal="fornecedor"] body {
@@ -32,26 +39,28 @@
   background: var(--f-bg2);
   border: 1px solid var(--f-border);
   border-radius: var(--f-radius);
+  box-shadow: var(--shadow-card);
 }
 
 .f-card-lg {
   background: var(--f-bg2);
   border: 1px solid var(--f-border);
   border-radius: var(--f-radius-lg);
+  box-shadow: var(--shadow-card);
 }
 
 .f-text-muted {
-  color: var(--f-text3);
+  color: var(--f-text2);
 }
 
 .f-badge-active {
   background: var(--f-ember-bg);
   border: 1px solid var(--f-ember-bd);
   color: var(--f-ember);
-  border-radius: 999px;
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: 700;
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+  font-size: 10px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
 }

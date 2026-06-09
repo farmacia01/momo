@@ -26,12 +26,12 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 
 const STATUS_COLORS: Record<string, string> = {
-  novo: "#ff6500",
-  confirmado: "#22c55e",
+  novo: "var(--color-ember)",
+  confirmado: "var(--color-success)",
   enviado: "#60a5fa",
-  entregue: "rgba(255,255,255,0.15)",
-  pendente: "#fbbf24",
-  cancelado: "#f87171",
+  entregue: "var(--color-text-dim)",
+  pendente: "var(--color-warning)",
+  cancelado: "var(--color-danger)",
 };
 
 export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string }) {
@@ -54,13 +54,13 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
         (payload) => {
           setPedidos((prev) => [payload.new, ...prev]);
           toast.custom((t) => (
-            <div className={`${t.visible ? "animate-fade-up" : "animate-fade-out"} bg-[#111111] border border-[rgba(255,101,0,0.3)] p-4 rounded-2xl shadow-2xl flex items-center gap-3`}>
-              <div className="h-10 w-10 rounded-full bg-[rgba(255,101,0,0.1)] flex items-center justify-center text-[#ff6500]">
+            <div className={`${t.visible ? "animate-fade-up" : "animate-fade-out"} bg-surface border border-ember/30 p-4 rounded-2xl shadow-2xl flex items-center gap-3`}>
+              <div className="h-10 w-10 rounded-full bg-ember/10 flex items-center justify-center text-ember">
                 <ShoppingBag size={20} />
               </div>
               <div>
-                <p className="text-white font-bold text-sm">Novo pedido!</p>
-                <p className="text-[rgba(255,255,255,0.4)] text-xs">{payload.new.codigo}</p>
+                <p className="text-text font-bold text-sm">Novo pedido!</p>
+                <p className="text-muted text-xs">{payload.new.codigo}</p>
               </div>
             </div>
           ));
@@ -151,19 +151,19 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-[22px] font-[800] text-white tracking-[-0.5px]">Gestão de Pedidos</h2>
-        <p className="text-[12px] font-medium text-[rgba(255,255,255,0.3)] mt-0.5">Gerencie suas vendas em tempo real</p>
+        <h2 className="text-[22px] font-[800] text-text tracking-[-0.5px]">Gestão de Pedidos</h2>
+        <p className="text-[12px] font-medium text-muted mt-0.5">Gerencie suas vendas em tempo real</p>
       </div>
 
       {/* Search Bar */}
-      <div className="bg-[#111] border border-[rgba(255,255,255,0.08)] rounded-[14px] flex items-center gap-[10px] px-[14px] py-[11px]">
-        <Search size={16} className="text-[rgba(255,255,255,0.25)]" />
+      <div className="bg-surface-mid border border-surface-border rounded-[14px] flex items-center gap-[10px] px-[14px] py-[11px]">
+        <Search size={16} className="text-text-dim" />
         <input 
           type="text"
           placeholder="Buscar código ou produto..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="bg-transparent border-none text-[13px] text-white placeholder-[rgba(255,255,255,0.25)] w-full focus:outline-none"
+          className="bg-transparent border-none text-[13px] text-text placeholder-text-dim w-full focus:outline-none"
         />
       </div>
 
@@ -175,13 +175,13 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
             onClick={() => setFilterStatus(status)}
             className={`flex items-center gap-2 px-[12px] py-[8px] rounded-full text-[11px] font-[700] uppercase tracking-[0.3px] transition-all whitespace-nowrap ${
               filterStatus === status
-                ? "bg-[#ff6500] text-white"
-                : "bg-[rgba(255,255,255,0.06)] text-[rgba(255,255,255,0.35)] border border-[rgba(255,255,255,0.06)]"
+                ? "bg-ember text-white shadow-ember"
+                : "bg-surface text-muted border border-surface-border"
             }`}
           >
             {status}
             <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] ${
-              filterStatus === status ? "bg-black/20 text-white" : "bg-white/5 text-[rgba(255,255,255,0.2)]"
+              filterStatus === status ? "bg-black/20 text-white" : "bg-surface-mid text-text-dim"
             }`}>
               {count}
             </span>
@@ -189,7 +189,7 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
         ))}
       </div>
 
-      <div className="h-[1px] w-full bg-[rgba(255,255,255,0.05)]" />
+      <div className="h-px w-full bg-surface-border" />
 
       {/* Orders List */}
       <div className="space-y-3">
@@ -198,10 +198,10 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center py-20 bg-[#111] rounded-[18px] border border-dashed border-[rgba(255,255,255,0.08)]"
+              className="text-center py-20 bg-surface rounded-[18px] border border-dashed border-surface-border"
             >
-              <ShoppingBag className="mx-auto text-[rgba(255,255,255,0.1)] mb-4" size={36} />
-              <p className="text-[rgba(255,255,255,0.2)] text-[13px]">Nenhum pedido aqui</p>
+              <ShoppingBag className="mx-auto text-text-dim/50 mb-4" size={36} />
+              <p className="text-text-dim text-[13px]">Nenhum pedido aqui</p>
             </motion.div>
           ) : (
             filteredPedidos.map((pedido, i) => (
@@ -255,7 +255,7 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
 }
 
 function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: any, onAccept: () => void, onReject: () => void, onUpdateStatus: (id: string, s: string, extra?: any, evento?: string) => void }) {
-  const statusColor = STATUS_COLORS[pedido.status] || "#fff";
+  const statusColor = STATUS_COLORS[pedido.status] || "var(--color-text)";
   const status = STATUS_PEDIDO[pedido.status as keyof typeof STATUS_PEDIDO];
 
   return (
@@ -264,7 +264,7 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="bg-[#111] border border-[rgba(255,255,255,0.07)] rounded-[16px] p-[14px] relative overflow-hidden"
+      className="bg-surface border border-surface-border rounded-[16px] p-[14px] relative overflow-hidden shadow-card"
     >
       {/* Lateral Status Bar */}
       <div 
@@ -275,12 +275,12 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
       <div className="space-y-3 pl-1">
         {/* ROW 1: Código + Valor */}
         <div className="flex items-center justify-between">
-          <h3 className="text-[13px] font-bold text-white">{pedido.codigo}</h3>
-          <p className="text-[15px] font-[800] text-white">{formatBRL(pedido.preco_total)}</p>
+          <h3 className="text-[13px] font-bold text-text">{pedido.codigo}</h3>
+          <p className="text-[15px] font-[800] text-text">{formatBRL(pedido.preco_total)}</p>
         </div>
 
         {/* ROW 2: Descrição */}
-        <p className="text-[11px] font-medium text-[rgba(255,255,255,0.4)]">
+        <p className="text-[11px] font-medium text-muted">
           Mounjaro {pedido.dose_mg || pedido.produto?.dose_mg}mg · {pedido.produto ? TIPO_PRODUTO_LABEL[pedido.produto.tipo_produto] : "Produto"} × {pedido.quantidade}
         </p>
 
@@ -292,7 +292,7 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
           >
             {status?.label || pedido.status}
           </div>
-          <p className="text-[10px] font-medium text-[rgba(255,255,255,0.25)] flex items-center gap-1">
+          <p className="text-[10px] font-medium text-text-dim flex items-center gap-1">
             <Clock size={10} />
             {formatDistanceToNow(new Date(pedido.created_at), { addSuffix: true, locale: ptBR })}
           </p>
@@ -303,13 +303,13 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
           <div className="flex gap-2 mt-[10px]">
             <button 
               onClick={onAccept}
-              className="flex-1 h-[38px] rounded-[10px] text-[12px] font-[700] flex items-center justify-center gap-2 active:scale-[0.98] transition-all text-white" style={{ background: "linear-gradient(135deg, #ff6500, #e05500)", boxShadow: "0 4px 12px rgba(255,101,0,0.3)" }}
+              className="flex-1 h-[38px] rounded-[10px] text-[12px] font-[700] flex items-center justify-center gap-2 active:scale-[0.98] transition-all text-white" style={{ background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))", boxShadow: "var(--shadow-ember)" }}
             >
               <Check size={13} strokeWidth={3} /> Aceitar
             </button>
             <button 
               onClick={onReject}
-              className="flex-1 h-[38px] bg-[rgba(248,113,113,0.1)] border border-[rgba(248,113,113,0.2)] text-[#f87171] rounded-[10px] text-[12px] font-[700] flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
+              className="flex-1 h-[38px] bg-danger/10 border border-danger/20 text-danger rounded-[10px] text-[12px] font-[700] flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
             >
               <X size={13} strokeWidth={3} /> Recusar
             </button>
@@ -327,7 +327,7 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
                 "MOTOBOY_SAIU"
               );
             }}
-            className="w-full h-[38px] bg-[rgba(96,165,250,0.1)] border border-[rgba(96,165,250,0.2)] text-[#60a5fa] rounded-[10px] text-[11px] font-[700] flex items-center justify-center gap-2"
+            className="w-full h-[38px] bg-blue-500/10 border border-blue-500/20 text-blue-500 rounded-[10px] text-[11px] font-[700] flex items-center justify-center gap-2"
           >
             <Truck size={14} /> MARCAR COMO ENVIADO
           </button>
@@ -336,7 +336,7 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
         {pedido.status !== "novo" && pedido.status !== "confirmado" && (
            <Link 
              href={`/fornecedor/pedidos/${pedido.id}`}
-             className="w-full h-[38px] bg-[rgba(255,255,255,0.03)] text-[rgba(255,255,255,0.3)] rounded-[10px] text-[10px] font-[700] uppercase tracking-widest flex items-center justify-center gap-2"
+             className="w-full h-[38px] bg-surface-mid text-muted rounded-[10px] text-[10px] font-[700] uppercase tracking-widest flex items-center justify-center gap-2"
            >
              Ver detalhes <ArrowUpRight size={12} />
            </Link>
@@ -363,30 +363,30 @@ function AcceptDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, on
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="relative w-full max-w-lg bg-[#111] rounded-t-[24px] border-t border-[rgba(255,255,255,0.08)] p-6 pb-12"
+        className="relative w-full max-w-lg bg-bg rounded-t-[24px] border-t border-surface-border p-6 pb-12 shadow-2xl"
       >
-        <div className="w-[40px] h-[4px] bg-[rgba(255,255,255,0.1)] rounded-full mx-auto mb-6" />
+        <div className="w-[40px] h-[4px] bg-surface-border rounded-full mx-auto mb-6" />
         
-        <h3 className="text-[18px] font-bold text-white mb-2">Confirmar pedido</h3>
-        <p className="text-[13px] text-[rgba(255,255,255,0.4)] mb-6">
+        <h3 className="text-[18px] font-bold text-text mb-2">Confirmar pedido</h3>
+        <p className="text-[13px] text-muted mb-6">
           {pedido.codigo} · {formatBRL(pedido.preco_total)}
         </p>
 
         <div className="space-y-6">
           <div>
-            <label className="text-[11px] font-bold text-[rgba(255,255,255,0.2)] uppercase tracking-widest mb-2 block">Previsão de entrega</label>
+            <label className="text-[11px] font-bold text-text-dim uppercase tracking-widest mb-2 block">Previsão de entrega</label>
             <input 
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full h-14 bg-[#1a1a1a] border border-[rgba(255,255,255,0.05)] rounded-[16px] px-4 text-white focus:outline-none focus:border-[rgba(255,101,0,0.3)]"
+              className="w-full h-14 bg-surface-mid border border-surface-border rounded-[16px] px-4 text-text focus:outline-none focus:border-ember/30 transition-colors"
             />
           </div>
 
           <button 
             onClick={() => onConfirm(date)}
             disabled={loading}
-            className="w-full h-[52px] rounded-full font-[700] text-[15px] text-white active:scale-[0.98] transition-all disabled:opacity-50" style={{ background: "linear-gradient(135deg, #ff6500, #e05500)", boxShadow: "0 8px 24px rgba(255,101,0,0.35)" }}
+            className="w-full h-[52px] rounded-full font-[700] text-[15px] text-white active:scale-[0.98] transition-all disabled:opacity-50" style={{ background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))", boxShadow: "var(--shadow-ember)" }}
           >
             {loading ? "Processando..." : "Confirmar aceite"}
           </button>
@@ -416,15 +416,15 @@ function RejectDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, on
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="relative w-full max-w-lg bg-[#111] rounded-t-[24px] border-t border-[rgba(255,255,255,0.08)] p-6 pb-12"
+        className="relative w-full max-w-lg bg-bg rounded-t-[24px] border-t border-surface-border p-6 pb-12 shadow-2xl"
       >
-        <div className="w-[40px] h-[4px] bg-[rgba(255,255,255,0.1)] rounded-full mx-auto mb-6" />
+        <div className="w-[40px] h-[4px] bg-surface-border rounded-full mx-auto mb-6" />
         
-        <h3 className="text-[18px] font-bold text-white mb-6">Recusar pedido</h3>
+        <h3 className="text-[18px] font-bold text-text mb-6">Recusar pedido</h3>
 
         <div className="space-y-6">
           <div>
-            <label className="text-[11px] font-bold text-[rgba(255,255,255,0.2)] uppercase tracking-widest mb-3 block">Motivo da recusa</label>
+            <label className="text-[11px] font-bold text-text-dim uppercase tracking-widest mb-3 block">Motivo da recusa</label>
             <div className="space-y-2">
               {reasons.map((r) => (
                 <button
@@ -432,8 +432,8 @@ function RejectDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, on
                   onClick={() => setReason(r)}
                   className={`w-full h-12 rounded-[14px] px-4 text-left text-[13px] font-medium transition-all ${
                     reason === r 
-                      ? "bg-[#f87171]/10 text-[#f87171] border border-[#f87171]/20" 
-                      : "bg-[#1a1a1a] text-[rgba(255,255,255,0.4)] border border-transparent"
+                      ? "bg-danger/10 text-danger border border-danger/20" 
+                      : "bg-surface-mid text-muted border border-transparent"
                   }`}
                 >
                   {r}
@@ -447,14 +447,14 @@ function RejectDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, on
               placeholder="Descreva o motivo..."
               value={other}
               onChange={(e) => setOther(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-[rgba(255,255,255,0.05)] rounded-[16px] p-4 text-white text-[13px] focus:outline-none min-h-[80px]"
+              className="w-full bg-surface-mid border border-surface-border rounded-[16px] p-4 text-text text-[13px] focus:outline-none min-h-[80px]"
             />
           )}
 
           <button 
             onClick={() => onConfirm(reason === "Outro" ? other : reason)}
             disabled={loading}
-            className="w-full h-[52px] bg-[rgba(248,113,113,0.1)] border border-[rgba(248,113,113,0.2)] text-[#f87171] rounded-full font-[700] text-[15px] active:scale-[0.98] transition-all disabled:opacity-50"
+            className="w-full h-[52px] bg-danger/10 border border-danger/20 text-danger rounded-full font-[700] text-[15px] active:scale-[0.98] transition-all disabled:opacity-50"
           >
             {loading ? "Processando..." : "Confirmar recusa"}
           </button>

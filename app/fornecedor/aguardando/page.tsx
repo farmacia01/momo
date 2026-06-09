@@ -23,43 +23,43 @@ export default async function AguardandoPage() {
   const nome = fornecedor.nome_fantasia || fornecedor.razao_social;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#0d0d0d] text-white px-6 py-12">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-bg text-text px-6 py-12 transition-colors duration-300">
       <div className="w-full max-w-md text-center">
         <div
           className={`mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl ${
-            suspenso ? "bg-[#f87171]/10 text-[#f87171]" : "bg-[#fbbf24]/10 text-[#fbbf24]"
+            suspenso ? "bg-danger/10 text-danger" : "bg-warning/10 text-warning"
           }`}
         >
           <Clock size={40} strokeWidth={2.5} />
         </div>
 
-        <h1 className="text-2xl font-black text-white tracking-tight">
+        <h1 className="text-2xl font-black text-text tracking-tight">
           {suspenso ? "Conta suspensa" : "Cadastro em análise"}
         </h1>
-        <p className="mt-3 text-sm leading-relaxed text-[rgba(255,255,255,0.4)]">
+        <p className="mt-3 text-sm leading-relaxed text-muted">
           {suspenso ? (
             <>
-              A conta de <strong className="text-white">{nome}</strong> está temporariamente suspensa. Entre em contato com o suporte para
+              A conta de <strong className="text-text">{nome}</strong> está temporariamente suspensa. Entre em contato com o suporte para
               regularizar sua situação.
             </>
           ) : (
             <>
-              Recebemos o cadastro de <strong className="text-white">{nome}</strong>. Para garantir a segurança dos pacientes, novos
+              Recebemos o cadastro de <strong className="text-text">{nome}</strong>. Para garantir a segurança dos pacientes, novos
               fornecedores passam por uma análise documental manual antes de aparecerem na busca.
             </>
           )}
         </p>
 
         <div className="mt-8 space-y-3 text-left">
-          <div className="flex items-start gap-3 rounded-2xl bg-[#111111] border border-[rgba(255,255,255,0.07)] p-4">
-            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#ff6500]" />
-            <p className="text-xs leading-relaxed text-[rgba(255,255,255,0.6)]">
+          <div className="flex items-start gap-3 rounded-2xl bg-surface border border-surface-border p-4 shadow-card">
+            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-ember" />
+            <p className="text-xs leading-relaxed text-muted">
               Verificamos os dados da empresa (CNPJ, documentação e regiões de entrega).
             </p>
           </div>
-          <div className="flex items-start gap-3 rounded-2xl bg-[#111111] border border-[rgba(255,255,255,0.07)] p-4">
-            <Mail className="mt-0.5 h-5 w-5 shrink-0 text-[#ff6500]" />
-            <p className="text-xs leading-relaxed text-[rgba(255,255,255,0.6)]">
+          <div className="flex items-start gap-3 rounded-2xl bg-surface border border-surface-border p-4 shadow-card">
+            <Mail className="mt-0.5 h-5 w-5 shrink-0 text-ember" />
+            <p className="text-xs leading-relaxed text-muted">
               Você receberá um e-mail assim que a análise for concluída.
             </p>
           </div>

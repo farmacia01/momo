@@ -10,10 +10,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const RAIOS = [10, 20, 30, 50, 100];
 
-const inputCls = "block h-12 w-full rounded-2xl px-4 text-sm text-white focus:outline-none transition-all";
+const inputCls = "block h-12 w-full rounded-2xl px-4 text-sm text-text focus:outline-none transition-all";
 const inputStyle = {
-  background: "#1a1a1a",
-  border: "1px solid rgba(255,255,255,0.07)",
+  background: "var(--color-surface-mid)",
+  border: "1px solid var(--color-surface-border)",
 } as const;
 
 export default function FornecedorCadastroPage() {
@@ -95,32 +95,32 @@ export default function FornecedorCadastroPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col px-6 py-10" style={{ background: "#0d0d0d" }}>
+    <div className="flex min-h-screen flex-col px-6 py-10 bg-bg text-text transition-colors duration-300">
       <div className="mx-auto w-full max-w-md pb-20">
         {/* Header */}
         <div className="mb-8 flex items-start gap-4">
           <div
-            className="flex h-12 w-12 items-center justify-center rounded-2xl text-[#ff6500] shrink-0"
-            style={{ background: "rgba(255,101,0,0.1)" }}
+            className="flex h-12 w-12 items-center justify-center rounded-2xl text-ember shrink-0"
+            style={{ background: "var(--color-ember-glow)" }}
           >
             <Store size={24} strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="text-xl font-black text-white">Torne-se um Fornecedor</h1>
-            <p className="text-sm text-[rgba(255,255,255,0.4)] mt-0.5">Complete os dados da sua empresa para começar a vender.</p>
+            <h1 className="text-xl font-black text-text">Torne-se um Fornecedor</h1>
+            <p className="text-sm text-muted mt-0.5">Complete os dados da sua empresa para começar a vender.</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Company Data */}
-          <div className="rounded-[24px] p-5 space-y-4" style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.07)" }}>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[rgba(255,255,255,0.28)]">Dados da Empresa</p>
+          <div className="rounded-[24px] p-5 space-y-4 bg-surface border border-surface-border shadow-card">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-text-dim">Dados da Empresa</p>
             <DarkInput label="Razão Social" name="razao_social" value={form.razao_social} onChange={handleChange} placeholder="Nome jurídico da empresa" />
             <DarkInput label="Nome Fantasia" name="nome_fantasia" value={form.nome_fantasia} onChange={handleChange} placeholder="Como o cliente te vê" />
             <DarkInput label="CNPJ" name="cnpj" value={form.cnpj} onChange={handleChange} placeholder="00.000.000/0001-00" />
 
             <div>
-              <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-[rgba(255,255,255,0.28)] ml-1">Tipo de Negócio</label>
+              <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-text-dim ml-1">Tipo de Negócio</label>
               <div className="grid grid-cols-3 gap-2">
                 {["farmacia", "distribuidor", "fabricante"].map((t) => (
                   <button
@@ -130,8 +130,8 @@ export default function FornecedorCadastroPage() {
                     className="rounded-xl py-3 text-[11px] font-bold capitalize transition-all"
                     style={
                       form.tipo === t
-                        ? { background: "linear-gradient(135deg, #ff6500, #e05500)", color: "white" }
-                        : { background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.5)" }
+                        ? { background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))", color: "white", boxShadow: "var(--shadow-ember)" }
+                        : { background: "var(--color-surface-mid)", border: "1px solid var(--color-surface-border)", color: "var(--color-text-muted)" }
                     }
                   >
                     {t}
@@ -142,8 +142,8 @@ export default function FornecedorCadastroPage() {
           </div>
 
           {/* Location & Delivery */}
-          <div className="rounded-[24px] p-5 space-y-5" style={{ background: "#111111", border: "1px solid rgba(255,255,255,0.07)" }}>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[rgba(255,255,255,0.28)]">Localização e Entrega</p>
+          <div className="rounded-[24px] p-5 space-y-5 bg-surface border border-surface-border shadow-card">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-text-dim">Localização e Entrega</p>
 
             <div className="grid grid-cols-2 gap-4">
               <DarkInput label="Cidade" name="endereco_cidade" value={form.endereco_cidade} onChange={handleChange} placeholder="Ex: Belo Horizonte" />
@@ -152,10 +152,10 @@ export default function FornecedorCadastroPage() {
 
             <DarkInput label="Prazo médio de entrega (dias)" name="prazo_entrega_dias" type="number" value={form.prazo_entrega_dias} onChange={handleChange} placeholder="Ex: 3" />
 
-            <div className="h-px" style={{ background: "rgba(255,255,255,0.05)" }} />
+            <div className="h-px bg-surface-border" />
 
             <div>
-              <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-[rgba(255,255,255,0.28)] ml-1">Raio de entrega</label>
+              <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-text-dim ml-1">Raio de entrega</label>
               <div className="flex flex-wrap gap-2">
                 {RAIOS.map((km) => (
                   <button
@@ -165,8 +165,8 @@ export default function FornecedorCadastroPage() {
                     className="px-4 py-2 rounded-xl text-xs font-bold transition-all"
                     style={
                       form.raio_entrega_km === km
-                        ? { background: "#ff6500", color: "white" }
-                        : { background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.4)" }
+                        ? { background: "var(--color-ember)", color: "white", boxShadow: "var(--shadow-ember)" }
+                        : { background: "var(--color-surface-mid)", border: "1px solid var(--color-surface-border)", color: "var(--color-text-dim)" }
                     }
                   >
                     {km}km
@@ -176,7 +176,7 @@ export default function FornecedorCadastroPage() {
             </div>
 
             <div>
-              <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-[rgba(255,255,255,0.28)] ml-1">Cidades adicionais (opcional)</label>
+              <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-text-dim ml-1">Cidades adicionais (opcional)</label>
               <div className="flex gap-2">
                 <input
                   placeholder="Ex: Contagem, MG"
@@ -189,8 +189,8 @@ export default function FornecedorCadastroPage() {
                 <button
                   type="button"
                   onClick={addCidade}
-                  className="h-12 w-12 rounded-2xl flex items-center justify-center active:scale-90 transition-transform text-[#ff6500]"
-                  style={{ background: "rgba(255,101,0,0.1)" }}
+                  className="h-12 w-12 rounded-2xl flex items-center justify-center active:scale-90 transition-transform text-ember"
+                  style={{ background: "var(--color-ember-glow)" }}
                 >
                   <Plus size={20} />
                 </button>
@@ -204,15 +204,13 @@ export default function FornecedorCadastroPage() {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
                       key={cidade}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white"
-                      style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-text bg-surface-mid border border-surface-border"
                     >
                       {cidade}
                       <button
                         type="button"
                         onClick={() => removeCidade(cidade)}
-                        className="transition-colors"
-                        style={{ color: "rgba(255,255,255,0.3)" }}
+                        className="text-text-dim hover:text-danger transition-colors"
                       >
                         <X size={14} />
                       </button>
@@ -224,9 +222,9 @@ export default function FornecedorCadastroPage() {
           </div>
 
           {/* Info Banner */}
-          <div className="p-4 rounded-2xl flex gap-3" style={{ background: "rgba(255,101,0,0.06)", border: "1px solid rgba(255,101,0,0.15)" }}>
-            <ShieldCheck className="w-5 h-5 text-[#ff6500] shrink-0 mt-0.5" />
-            <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <div className="p-4 rounded-2xl flex gap-3 bg-ember/5 border border-ember/15">
+            <ShieldCheck className="w-5 h-5 text-ember shrink-0 mt-0.5" />
+            <p className="text-xs leading-relaxed text-muted">
               Para garantir a segurança dos pacientes, novos fornecedores passam por uma análise documental manual antes de aparecerem na busca.
             </p>
           </div>
@@ -235,7 +233,7 @@ export default function FornecedorCadastroPage() {
             type="submit"
             disabled={loading}
             className="flex h-14 w-full items-center justify-center gap-2 rounded-full text-base font-bold text-white active:scale-95 disabled:opacity-70 transition-all"
-            style={{ background: "linear-gradient(135deg, #ff6500, #e05500)", boxShadow: "0 8px 24px rgba(255,101,0,0.35)" }}
+            style={{ background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))", boxShadow: "var(--shadow-ember)" }}
           >
             {loading ? <LoadingSpinner size="sm" color="white" /> : "Enviar cadastro"}
           </button>
@@ -248,11 +246,11 @@ export default function FornecedorCadastroPage() {
 function DarkInput({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div>
-      <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest ml-1 text-[rgba(255,255,255,0.28)]">{label}</label>
+      <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest ml-1 text-text-dim">{label}</label>
       <input
         {...props}
-        className="block h-12 w-full rounded-2xl px-4 text-sm text-white focus:outline-none transition-all"
-        style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.07)" }}
+        className="block h-12 w-full rounded-2xl px-4 text-sm text-text focus:outline-none transition-all"
+        style={{ background: "var(--color-surface-mid)", border: "1px solid var(--color-surface-border)" }}
       />
     </div>
   );

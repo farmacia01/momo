@@ -10,9 +10,9 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 const RAIOS = [10, 20, 30, 50, 100];
 
 const inputStyle = {
-  background: "#1a1a1a",
-  border: "1px solid rgba(255,255,255,0.07)",
-  color: "white",
+  background: "var(--color-surface-mid)",
+  border: "1px solid var(--color-surface-border)",
+  color: "var(--color-text)",
   borderRadius: "16px",
   height: "48px",
   padding: "0 16px",
@@ -85,27 +85,27 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
     <div className="space-y-6 pb-32">
       {/* Header */}
       <div>
-        <h2 className="text-[22px] font-[800] text-white tracking-[-0.5px]">Configurações</h2>
-        <p className="text-[12px] font-medium text-[rgba(255,255,255,0.3)] mt-0.5">Gerencie o perfil da sua empresa</p>
+        <h2 className="text-[22px] font-[800] text-text tracking-[-0.5px]">Configurações</h2>
+        <p className="text-[12px] font-medium text-muted mt-0.5">Gerencie o perfil da sua empresa</p>
       </div>
 
       {/* Profile Card */}
-      <div className="f-card p-6 space-y-6">
-        <div className="flex items-center gap-4 pb-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+      <div className="f-card p-6 space-y-6 shadow-card">
+        <div className="flex items-center gap-4 pb-5 border-b border-surface-border">
           <div
-            className="h-14 w-14 rounded-2xl flex items-center justify-center text-[#ff6500]"
-            style={{ background: "rgba(255,101,0,0.1)" }}
+            className="h-14 w-14 rounded-2xl flex items-center justify-center text-ember"
+            style={{ background: "var(--color-ember-glow)" }}
           >
             <Store size={28} strokeWidth={2.5} />
           </div>
           <div>
-            <h2 className="text-base font-black text-white leading-tight">{initial.razao_social}</h2>
-            <p className="text-[10px] font-bold text-[rgba(255,255,255,0.3)] uppercase tracking-widest mt-1">CNPJ {initial.cnpj}</p>
+            <h2 className="text-base font-black text-text leading-tight">{initial.razao_social}</h2>
+            <p className="text-[10px] font-bold text-text-dim uppercase tracking-widest mt-1">CNPJ {initial.cnpj}</p>
           </div>
         </div>
 
         <div className="space-y-5">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[rgba(255,255,255,0.28)]">Dados Públicos</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-text-dim">Dados Públicos</p>
           <DarkField label="Nome Fantasia">
             <input name="nome_fantasia" value={form.nome_fantasia} onChange={handleChange} style={inputStyle} placeholder="Como os clientes te conhecem" />
           </DarkField>
@@ -131,10 +131,10 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
       </div>
 
       {/* Delivery Area Card */}
-      <div className="f-card p-6 space-y-6">
+      <div className="f-card p-6 space-y-6 shadow-card">
         <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-[#ff6500] animate-pulse" />
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[rgba(255,255,255,0.28)]">Logística e Entrega</p>
+          <div className="h-2 w-2 rounded-full bg-ember animate-pulse" />
+          <p className="text-[10px] font-bold uppercase tracking-widest text-text-dim">Logística e Entrega</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -146,11 +146,11 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
           </DarkField>
         </div>
 
-        <div className="h-px" style={{ background: "rgba(255,255,255,0.05)" }} />
+        <div className="h-px bg-surface-border" />
 
         <DarkField label="Sede / Cidade Base">
           <div className="relative">
-            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-[rgba(255,255,255,0.2)]" size={16} />
+            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-text-dim" size={16} />
             <input
               readOnly
               value={`${initial.endereco_cidade}, ${initial.endereco_estado}`}
@@ -160,7 +160,7 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
         </DarkField>
 
         <div>
-          <label className="mb-2.5 block text-[10px] font-bold uppercase tracking-widest ml-1 text-[rgba(255,255,255,0.28)]">Raio de atendimento</label>
+          <label className="mb-2.5 block text-[10px] font-bold uppercase tracking-widest ml-1 text-text-dim">Raio de atendimento</label>
           <div className="grid grid-cols-5 gap-2">
             {RAIOS.map((km) => (
               <button
@@ -170,8 +170,8 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
                 className="py-2.5 rounded-xl text-[11px] font-bold transition-all"
                 style={
                   raioEntrega === km
-                    ? { background: "#ff6500", color: "white" }
-                    : { background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.4)" }
+                    ? { background: "var(--color-ember)", color: "white", boxShadow: "var(--shadow-ember)" }
+                    : { background: "var(--color-surface-mid)", border: "1px solid var(--color-surface-border)", color: "var(--color-text-dim)" }
                 }
               >
                 {km}km
@@ -181,7 +181,7 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
         </div>
 
         <div>
-          <label className="mb-2.5 block text-[10px] font-bold uppercase tracking-widest ml-1 text-[rgba(255,255,255,0.28)]">Cidades Adicionais</label>
+          <label className="mb-2.5 block text-[10px] font-bold uppercase tracking-widest ml-1 text-text-dim">Cidades Adicionais</label>
           <div className="flex gap-2">
             <input
               placeholder="Ex: Contagem, MG"
@@ -193,8 +193,8 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
             <button
               type="button"
               onClick={addCidade}
-              className="h-12 w-12 rounded-2xl flex items-center justify-center active:scale-90 transition-transform shrink-0 text-[#ff6500]"
-              style={{ background: "rgba(255,101,0,0.1)" }}
+              className="h-12 w-12 rounded-2xl flex items-center justify-center active:scale-90 transition-transform shrink-0 text-ember"
+              style={{ background: "var(--color-ember-glow)" }}
             >
               <Plus size={20} />
             </button>
@@ -208,17 +208,13 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   key={cidade}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold text-white"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold text-text bg-surface-mid border border-surface-border"
                 >
                   {cidade}
                   <button
                     type="button"
                     onClick={() => removeCidade(cidade)}
-                    className="transition-colors p-0.5"
-                    style={{ color: "rgba(255,255,255,0.3)" }}
-                    onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).style.color = "#f87171"}
-                    onMouseLeave={(e) => (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.3)"}
+                    className="text-text-dim hover:text-danger transition-colors p-0.5"
                   >
                     <X size={14} />
                   </button>
@@ -235,7 +231,7 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
           onClick={handleSave}
           disabled={loading}
           className="flex h-14 w-full items-center justify-center gap-2 rounded-full text-base font-bold text-white active:scale-[0.98] disabled:opacity-70 transition-all"
-          style={{ background: "linear-gradient(135deg, #ff6500, #e05500)", boxShadow: "0 8px 24px rgba(255,101,0,0.35)" }}
+          style={{ background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))", boxShadow: "var(--shadow-ember)" }}
         >
           {loading ? <LoadingSpinner size="sm" color="white" /> : <><Save size={18} /> Salvar alterações</>}
         </button>
@@ -243,8 +239,7 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
         <button
           type="button"
           onClick={handleSignOut}
-          className="flex h-12 w-full items-center justify-center gap-2 rounded-full text-sm font-bold text-red-400 transition-colors"
-          style={{ background: "rgba(248,113,113,0.07)", border: "1px solid rgba(248,113,113,0.15)" }}
+          className="flex h-12 w-full items-center justify-center gap-2 rounded-full text-sm font-bold text-danger transition-colors bg-danger/5 border border-danger/15"
         >
           <LogOut size={16} /> Sair da conta
         </button>
@@ -256,7 +251,7 @@ export function ConfigFornecedorClient({ initial }: { initial: any }) {
 function DarkField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest ml-1 text-[rgba(255,255,255,0.28)]">{label}</label>
+      <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest ml-1 text-text-dim">{label}</label>
       {children}
     </div>
   );
