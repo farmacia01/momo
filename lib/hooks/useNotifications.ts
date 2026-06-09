@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { sendPush } from "@/lib/notifications";
 
 export interface Notification {
   id: string;
@@ -14,8 +13,13 @@ export interface Notification {
 }
 
 /**
- * Hook to manage in-app notifications and sync them with Web Push.
- * Listen to real-time changes in the 'notifications' table.
+ * Hook to manage in-app notifications list and unread count.
+ * Listens to real-time INSERT events on the notifications table to keep UI in sync.
+ *
+ * NOTE: Do NOT call sendPush() from here. The server-side push delivery
+ * (/api/push/send, /api/push/engine, /api/push/venda) already sends the web push
+ * AND inserts the DB row atomically. Calling sendPush() here would create an
+ * infinite loop: insert → listener → sendPush → insert → listener → ...
  */
 export function useNotifications(userId: string | undefined) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -41,7 +45,7 @@ export function useNotifications(userId: string | undefined) {
 
     fetchNotifications();
 
-    // 2. Real-time subscription
+    // 2. Real-time subscription — UI only, no push re-trigger
     const channel = supabase
       .channel(`user-notifications-${userId}`)
       .on(
@@ -52,19 +56,10 @@ export function useNotifications(userId: string | undefined) {
           table: "notifications",
           filter: `user_id=eq.${userId}`,
         },
-        async (payload) => {
+        (payload) => {
           const newNotif = payload.new as Notification;
           setNotifications((prev) => [newNotif, ...prev].slice(0, 20));
           setUnreadCount((prev) => prev + 1);
-
-          // 3. Bridge to Web Push
-          // When a new notification record is created in DB (via trigger), 
-          // we trigger the actual Push delivery through the browser.
-          await sendPush(userId, {
-            title: newNotif.title,
-            body: newNotif.body,
-            url: newNotif.url || "/",
-          });
         }
       )
       .subscribe();

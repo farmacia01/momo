@@ -17,7 +17,6 @@ import { PageHeader } from "@/components/PageHeader";
 import { Stars } from "@/components/Stars";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { DoseBadge } from "@/components/DoseBadge";
-import { sendPush, pedidoNotificacoes } from "@/lib/notifications";
 import {
   nomeFornecedor,
   iniciais,

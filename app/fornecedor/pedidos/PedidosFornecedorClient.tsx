@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatBRL, STATUS_PEDIDO, TIPO_PRODUTO_LABEL } from "@/lib/fornecedores";
-import { sendPush, pedidoNotificacoes } from "@/lib/notifications";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
