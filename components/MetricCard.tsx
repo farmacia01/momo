@@ -27,8 +27,8 @@ export function MetricCard({
     <div
       className={`rounded-[20px] px-5 py-[18px] ${className}`}
       style={{
-        background: "#1a1a1a",
-        border: "1px solid #2d2d2d",
+        background: "var(--color-surface)",
+        border: "1px solid var(--color-surface-border)",
         boxShadow: "var(--shadow-card)",
       }}
     >
@@ -46,10 +46,10 @@ export function MetricCard({
         )}
         {icon && <span style={{ color: "#ff6500" }}>{icon}</span>}
       </div>
-      <div className="mt-2 text-[24px] font-bold leading-none tracking-tight text-white">
+      <div className="mt-2 text-[24px] font-bold leading-none tracking-tight" style={{ color: "var(--color-text)" }}>
         {value}
       </div>
-      <div className="mt-1 text-[11px] font-medium" style={{ color: "#555" }}>{label}</div>
+      <div className="mt-1 text-[11px] font-medium" style={{ color: "var(--color-text-muted)" }}>{label}</div>
     </div>
   );
 }

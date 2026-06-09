@@ -41,19 +41,19 @@ export function NotificationBell({ userId }: { userId: string | undefined }) {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative flex h-9 w-9 items-center justify-center rounded-full transition-colors active:scale-90"
-        style={{ background: "#1a1a1a", border: "1px solid #2d2d2d" }}
+        style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
       >
         <Bell
           size={18}
           strokeWidth={2}
-          style={{ color: unreadCount > 0 ? "#ff6500" : "#9ca3af" }}
+          style={{ color: unreadCount > 0 ? "#ff6500" : "var(--color-text-muted)" }}
         />
         {(unreadCount > 0 || !pushEnabled) && (
           <span
             className="absolute right-1.5 top-1.5 flex h-[14px] w-[14px] items-center justify-center rounded-full text-[9px] font-bold text-white"
             style={{
               background: !pushEnabled && unreadCount === 0 ? "#f59e0b" : "#ef4444",
-              boxShadow: "0 0 0 2px #0d0d0d",
+              boxShadow: "0 0 0 2px var(--color-bg)",
             }}
           >
             {unreadCount > 0 ? (unreadCount > 9 ? "9+" : unreadCount) : "!"}
@@ -70,10 +70,10 @@ export function NotificationBell({ userId }: { userId: string | undefined }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
               className="absolute right-0 mt-3 z-50 w-80 overflow-hidden rounded-3xl shadow-2xl"
-              style={{ background: "#161616", border: "1px solid #2d2d2d" }}
+              style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
             >
-              <div className="flex items-center justify-between p-4" style={{ borderBottom: "1px solid #222" }}>
-                <h3 className="text-sm font-bold text-white">Notificações</h3>
+              <div className="flex items-center justify-between p-4" style={{ borderBottom: "1px solid var(--color-surface-border)" }}>
+                <h3 className="text-sm font-bold" style={{ color: "var(--color-text)" }}>Notificações</h3>
                 <div className="flex items-center gap-3">
                   {unreadCount > 0 && (
                     <button
@@ -87,8 +87,8 @@ export function NotificationBell({ userId }: { userId: string | undefined }) {
                   <Link
                     href="/configuracoes"
                     onClick={() => setIsOpen(false)}
-                    style={{ color: "#555" }}
-                    className="hover:text-white transition-colors"
+                    style={{ color: "var(--color-text-dim)" }}
+                    className="transition-opacity hover:opacity-70"
                   >
                     <Settings size={16} />
                   </Link>
@@ -106,8 +106,8 @@ export function NotificationBell({ userId }: { userId: string | undefined }) {
                         <Zap size={16} fill="currentColor" />
                       </div>
                       <div>
-                        <p className="text-[13px] font-bold text-white">Ativar Notificações</p>
-                        <p className="text-[11px] leading-snug mt-0.5" style={{ color: "#9ca3af" }}>
+                        <p className="text-[13px] font-bold" style={{ color: "var(--color-text)" }}>Ativar Notificações</p>
+                        <p className="text-[11px] leading-snug mt-0.5" style={{ color: "var(--color-text-muted)" }}>
                           Receba lembretes de doses e atualizações importantes.
                         </p>
                         <button
@@ -126,11 +126,11 @@ export function NotificationBell({ userId }: { userId: string | undefined }) {
                   <div className="flex flex-col items-center justify-center py-12">
                     <div
                       className="flex h-12 w-12 items-center justify-center rounded-full"
-                      style={{ background: "#222", color: "#444" }}
+                      style={{ background: "var(--color-surface-mid)", color: "var(--color-text-dim)" }}
                     >
                       <Bell size={24} />
                     </div>
-                    <p className="mt-4 text-xs font-medium" style={{ color: "#555" }}>
+                    <p className="mt-4 text-xs font-medium" style={{ color: "var(--color-text-muted)" }}>
                       Nenhuma notificação por aqui
                     </p>
                   </div>
@@ -139,7 +139,7 @@ export function NotificationBell({ userId }: { userId: string | undefined }) {
                     <div
                       key={n.id}
                       className="relative flex gap-3 p-4 transition-colors"
-                      style={{ background: !n.read ? "rgba(255,101,0,0.03)" : "transparent" }}
+                      style={{ background: !n.read ? "rgba(255,101,0,0.04)" : "transparent" }}
                     >
                       {!n.read && (
                         <div
@@ -148,12 +148,12 @@ export function NotificationBell({ userId }: { userId: string | undefined }) {
                         />
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-bold text-white line-clamp-1">{n.title}</p>
-                        <p className="mt-0.5 text-[12px] leading-snug line-clamp-2" style={{ color: "#9ca3af" }}>
+                        <p className="text-[13px] font-bold line-clamp-1" style={{ color: "var(--color-text)" }}>{n.title}</p>
+                        <p className="mt-0.5 text-[12px] leading-snug line-clamp-2" style={{ color: "var(--color-text-muted)" }}>
                           {n.body}
                         </p>
                         <div className="mt-2 flex items-center justify-between">
-                          <span className="text-[10px] font-medium" style={{ color: "#555" }}>
+                          <span className="text-[10px] font-medium" style={{ color: "var(--color-text-dim)" }}>
                             {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: ptBR })}
                           </span>
                           <div className="flex items-center gap-2">
@@ -172,7 +172,7 @@ export function NotificationBell({ userId }: { userId: string | undefined }) {
                                 href={n.url}
                                 onClick={() => { markAsRead(n.id); setIsOpen(false); }}
                                 className="flex h-6 w-6 items-center justify-center rounded-full transition-transform active:scale-75"
-                                style={{ background: "#222", color: "#777" }}
+                                style={{ background: "var(--color-surface-mid)", color: "var(--color-text-muted)" }}
                               >
                                 <ExternalLink size={14} />
                               </Link>
@@ -186,8 +186,8 @@ export function NotificationBell({ userId }: { userId: string | undefined }) {
               </div>
 
               {notifications.length > 0 && (
-                <div className="p-3 text-center" style={{ borderTop: "1px solid #222" }}>
-                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#444" }}>
+                <div className="p-3 text-center" style={{ borderTop: "1px solid var(--color-surface-border)" }}>
+                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--color-text-dim)" }}>
                     Histórico das últimas 20 notificações
                   </p>
                 </div>

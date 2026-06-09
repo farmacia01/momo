@@ -2,6 +2,7 @@
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { macroKcal, macroPercent, type Macros } from "@/lib/diet-plans";
+import { useTheme } from "@/app/providers";
 
 const COLORS = {
   proteina: "#ff6500",
@@ -9,10 +10,6 @@ const COLORS = {
   gordura: "#a78bfa",
 } as const;
 
-/**
- * Donut chart of the day's macro distribution (by calories), with the total
- * kcal vs. goal in the center. Updates in real time as `macros` changes.
- */
 export function MacroRing({
   macros,
   metaCalorias,
@@ -24,13 +21,18 @@ export function MacroRing({
   showLegend?: boolean;
   size?: number;
 }) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   const kcal = macroKcal(macros);
   const totalKcal = Math.round(kcal.proteina + kcal.carbo + kcal.gordura);
   const pct = macroPercent(macros);
   const isEmpty = totalKcal === 0;
 
+  const emptyColor = isDark ? "#2a2a2a" : "#e2e8f0";
+
   const data = isEmpty
-    ? [{ name: "vazio", value: 1, color: "#2a2a2a" }]
+    ? [{ name: "vazio", value: 1, color: emptyColor }]
     : [
         { name: "Proteína", value: kcal.proteina, color: COLORS.proteina },
         { name: "Carboidrato", value: kcal.carbo, color: COLORS.carbo },
@@ -65,10 +67,9 @@ export function MacroRing({
           </PieChart>
         </ResponsiveContainer>
 
-        {/* Center label */}
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-white">{totalKcal}</span>
-          <span className="text-xs font-medium" style={{ color: "#9ca3af" }}>kcal hoje</span>
+          <span className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>{totalKcal}</span>
+          <span className="text-xs font-medium" style={{ color: "var(--color-text-muted)" }}>kcal hoje</span>
           {metaPct !== null && (
             <span className="mt-0.5 text-[11px] font-semibold" style={{ color: "#ff6500" }}>
               {metaPct}% da meta
@@ -79,49 +80,24 @@ export function MacroRing({
 
       {showLegend && (
         <div className="mt-4 grid w-full grid-cols-3 gap-2 text-center">
-          <LegendItem
-            color={COLORS.proteina}
-            label="Proteína"
-            grams={macros.proteina_g}
-            percent={isEmpty ? 0 : pct.proteina}
-          />
-          <LegendItem
-            color={COLORS.carbo}
-            label="Carbo"
-            grams={macros.carbo_g}
-            percent={isEmpty ? 0 : pct.carbo}
-          />
-          <LegendItem
-            color={COLORS.gordura}
-            label="Gordura"
-            grams={macros.gordura_g}
-            percent={isEmpty ? 0 : pct.gordura}
-          />
+          <LegendItem color={COLORS.proteina} label="Proteína" grams={macros.proteina_g} percent={isEmpty ? 0 : pct.proteina} />
+          <LegendItem color={COLORS.carbo} label="Carbo" grams={macros.carbo_g} percent={isEmpty ? 0 : pct.carbo} />
+          <LegendItem color={COLORS.gordura} label="Gordura" grams={macros.gordura_g} percent={isEmpty ? 0 : pct.gordura} />
         </div>
       )}
     </div>
   );
 }
 
-function LegendItem({
-  color,
-  label,
-  grams,
-  percent,
-}: {
-  color: string;
-  label: string;
-  grams: number;
-  percent: number;
-}) {
+function LegendItem({ color, label, grams, percent }: { color: string; label: string; grams: number; percent: number }) {
   return (
-    <div className="rounded-lg px-2 py-2" style={{ background: "#1e1e1e", border: "1px solid #2a2a2a" }}>
+    <div className="rounded-lg px-2 py-2" style={{ background: "var(--color-surface-mid)", border: "1px solid var(--color-surface-border)" }}>
       <div className="flex items-center justify-center gap-1.5">
         <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
-        <span className="text-xs font-medium" style={{ color: "#9ca3af" }}>{label}</span>
+        <span className="text-xs font-medium" style={{ color: "var(--color-text-muted)" }}>{label}</span>
       </div>
-      <p className="mt-1 text-sm font-bold text-white">{grams}g</p>
-      <p className="text-[11px]" style={{ color: "#555" }}>{percent}%</p>
+      <p className="mt-1 text-sm font-bold" style={{ color: "var(--color-text)" }}>{grams}g</p>
+      <p className="text-[11px]" style={{ color: "var(--color-text-dim)" }}>{percent}%</p>
     </div>
   );
 }

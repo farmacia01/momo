@@ -49,7 +49,7 @@ export function AchievementModal({ achievement, onShare, onClose }: Props) {
 
       <div
         className="relative z-[131] w-full max-w-xs rounded-[28px] p-7 text-center shadow-2xl animate-fade-up"
-        style={{ background: "#161616", border: "1px solid #2d2d2d" }}
+        style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
       >
         <div
           className="mx-auto mb-3 flex h-24 w-24 items-center justify-center rounded-full text-[64px] leading-none"
@@ -60,7 +60,7 @@ export function AchievementModal({ achievement, onShare, onClose }: Props) {
         <p className="text-sm font-black uppercase tracking-widest" style={{ color: "#ff6500" }}>
           Conquista desbloqueada!
         </p>
-        <h3 className="mt-1 text-xl font-bold text-white">{achievement.name}</h3>
+        <h3 className="mt-1 text-xl font-bold" style={{ color: "var(--color-text)" }}>{achievement.name}</h3>
 
         <div className="mt-6 space-y-3">
           <button
@@ -73,7 +73,7 @@ export function AchievementModal({ achievement, onShare, onClose }: Props) {
           <button
             onClick={onClose}
             className="w-full rounded-full py-2.5 text-sm font-bold"
-            style={{ color: "#555" }}
+            style={{ color: "var(--color-text-dim)" }}
           >
             Depois
           </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { AreaChart, Area, XAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useTheme } from "@/app/providers";
 
 interface WeightData {
   data_medicao: string;
@@ -8,9 +9,21 @@ interface WeightData {
 }
 
 export function DashboardChart({ data }: { data: WeightData[] }) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
+  const gridColor = isDark ? "#222" : "#e2e8f0";
+  const tickColor = isDark ? "#555" : "#94a3b8";
+  const tooltipBg = isDark ? "#222" : "#ffffff";
+  const tooltipBorder = isDark ? "#333" : "#e2e8f0";
+  const tooltipMuted = isDark ? "#777" : "#94a3b8";
+  const dotStroke = isDark ? "#1a1a1a" : "#ffffff";
+  const cursorColor = isDark ? "#333" : "#e2e8f0";
+  const textColor = isDark ? "#ffffff" : "#0f172a";
+
   if (!data || data.length === 0) {
     return (
-      <div className="flex h-[110px] items-center justify-center text-[11px] font-medium" style={{ color: "#555" }}>
+      <div className="flex h-[110px] items-center justify-center text-[11px] font-medium" style={{ color: "var(--color-text-muted)" }}>
         Nenhum registro de peso no período.
       </div>
     );
@@ -25,13 +38,10 @@ export function DashboardChart({ data }: { data: WeightData[] }) {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div
-          className="px-3 py-2 rounded-xl"
-          style={{ background: "#222", border: "1px solid #333" }}
-        >
-          <p className="text-[10px] font-medium mb-0.5" style={{ color: "#777" }}>{label}</p>
-          <p className="text-sm font-bold text-white">
-            {payload[0].value} <span className="font-medium" style={{ color: "#777" }}>kg</span>
+        <div className="px-3 py-2 rounded-xl" style={{ background: tooltipBg, border: `1px solid ${tooltipBorder}` }}>
+          <p className="text-[10px] font-medium mb-0.5" style={{ color: tooltipMuted }}>{label}</p>
+          <p className="text-sm font-bold" style={{ color: textColor }}>
+            {payload[0].value} <span className="font-medium" style={{ color: tooltipMuted }}>kg</span>
           </p>
         </div>
       );
@@ -45,7 +55,7 @@ export function DashboardChart({ data }: { data: WeightData[] }) {
       return (
         <g>
           <circle cx={cx} cy={cy} r={8} fill="#ff6500" fillOpacity={0.2} />
-          <circle cx={cx} cy={cy} r={4} fill="#ff6500" stroke="#1a1a1a" strokeWidth={1.5} />
+          <circle cx={cx} cy={cy} r={4} fill="#ff6500" stroke={dotStroke} strokeWidth={1.5} />
         </g>
       );
     }
@@ -62,15 +72,15 @@ export function DashboardChart({ data }: { data: WeightData[] }) {
               <stop offset="95%" stopColor="#ff6500" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#222" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
           <XAxis
             dataKey="name"
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 10, fill: '#444', fontWeight: 500 }}
+            tick={{ fontSize: 10, fill: tickColor, fontWeight: 500 }}
             dy={8}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#333', strokeWidth: 1 }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ stroke: cursorColor, strokeWidth: 1 }} />
           <Area
             type="monotone"
             dataKey="peso"

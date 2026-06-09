@@ -3,6 +3,7 @@
 import { format, startOfWeek, addDays, isSameDay, isPast } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Check } from "lucide-react";
+import { useTheme } from "@/app/providers";
 
 interface WeekTrackerProps {
   doseDates: string[];
@@ -10,6 +11,9 @@ interface WeekTrackerProps {
 }
 
 export function WeekTracker({ doseDates, nextDoseDate }: WeekTrackerProps) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   const today = new Date();
   const start = startOfWeek(today, { weekStartsOn: 0 });
 
@@ -36,14 +40,24 @@ export function WeekTracker({ doseDates, nextDoseDate }: WeekTrackerProps) {
           bgStyle = { background: "rgba(255,101,0,0.15)", border: "1.5px solid rgba(255,101,0,0.5)" };
           circleContent = <div className="h-1.5 w-1.5 rounded-full" style={{ background: "#ff6500" }} />;
         } else if (day.isToday) {
-          bgStyle = { background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.15)" };
+          bgStyle = isDark
+            ? { background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.15)" }
+            : { background: "rgba(15,23,42,0.06)", border: "1.5px solid rgba(15,23,42,0.15)" };
         } else if (day.isPast) {
-          bgStyle = { background: "rgba(255,255,255,0.03)", border: "1.5px solid rgba(255,255,255,0.06)" };
+          bgStyle = isDark
+            ? { background: "rgba(255,255,255,0.03)", border: "1.5px solid rgba(255,255,255,0.06)" }
+            : { background: "rgba(15,23,42,0.03)", border: "1.5px solid rgba(15,23,42,0.07)" };
         } else {
-          bgStyle = { background: "rgba(255,255,255,0.05)", border: "1.5px solid rgba(255,255,255,0.08)" };
+          bgStyle = isDark
+            ? { background: "rgba(255,255,255,0.05)", border: "1.5px solid rgba(255,255,255,0.08)" }
+            : { background: "rgba(15,23,42,0.04)", border: "1.5px solid rgba(15,23,42,0.09)" };
         }
 
-        const labelColor = day.hasDose ? "#ff6500" : (day.isToday || day.isNextDoseDay) ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.3)";
+        const labelColor = day.hasDose
+          ? "#ff6500"
+          : (day.isToday || day.isNextDoseDay)
+            ? (isDark ? "rgba(255,255,255,0.9)" : "rgba(15,23,42,0.9)")
+            : (isDark ? "rgba(255,255,255,0.3)" : "rgba(15,23,42,0.35)");
 
         return (
           <div key={idx} className="flex flex-col items-center gap-2">

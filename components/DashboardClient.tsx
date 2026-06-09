@@ -16,6 +16,7 @@ import { usePlano } from "@/hooks/usePlano";
 import { BlurPaywall } from "./BlurPaywall";
 import { getPushStatus, pushSupported, subscribeToPush } from "@/lib/push-client";
 import toast from "react-hot-toast";
+import { useTheme } from "@/app/providers";
 
 const DashboardChart = dynamic(() => import("./DashboardChart").then(m => m.DashboardChart), {
   loading: () => <SkeletonChart height={200} />,
@@ -38,12 +39,7 @@ interface DashboardClientProps {
 
 const container: Variants = {
   hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
+  show: { opacity: 1, transition: { staggerChildren: 0.08 } },
 };
 
 const item: Variants = {
@@ -74,6 +70,8 @@ export function DashboardClient({
     .substring(0, 2)
     .toUpperCase() || 'U';
 
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const { isExpirado } = usePlano();
   const textosDose = getTextoProximaDose(calculoDose);
   const [showPushBanner, setShowPushBanner] = useState(false);
@@ -81,9 +79,7 @@ export function DashboardClient({
   useEffect(() => {
     if (pushSupported()) {
       getPushStatus().then(enabled => {
-        if (!enabled && Notification.permission !== "denied") {
-          setShowPushBanner(true);
-        }
+        if (!enabled && Notification.permission !== "denied") setShowPushBanner(true);
       });
     }
   }, []);
@@ -102,8 +98,7 @@ export function DashboardClient({
   const pesoPerdido = Number(weightDelta) > 0 ? Number(weightDelta) : 0;
   const semanasShare = Math.max(1, weeksCompleted);
   const alturaM = (profile?.altura_cm || 0) / 100;
-  const imcShare =
-    lastWeight?.peso_kg && alturaM > 0 ? lastWeight.peso_kg / (alturaM * alturaM) : 0;
+  const imcShare = lastWeight?.peso_kg && alturaM > 0 ? lastWeight.peso_kg / (alturaM * alturaM) : 0;
   const firstWeight = weights?.[weights.length - 1];
   const shareData = {
     pesoPerdido,
@@ -121,20 +116,25 @@ export function DashboardClient({
     textosDose.cor === 'yellow' ? '#f59e0b' :
     '#ff6500';
 
+  const heroCardBg = isDark
+    ? "linear-gradient(135deg, #1a0a00 0%, #2d1000 40%, #1a0800 100%)"
+    : "linear-gradient(135deg, #fff4ed 0%, #ffead4 40%, #fff7ed 100%)";
+  const heroSubtextColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(255,101,0,0.7)";
+  const lastDoseCardBg = isDark
+    ? "linear-gradient(135deg, #1a0a00, #2d1200)"
+    : "linear-gradient(135deg, #fff4ed, #ffe8cc)";
+  const lastDoseSubtextColor = isDark ? "rgba(255,255,255,0.4)" : "var(--color-text-muted)";
+
   return (
-    <m.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="space-y-5 pb-32"
-    >
+    <m.div variants={container} initial="hidden" animate="show" className="space-y-5 pb-32">
+
       {/* Top row */}
       <m.div variants={item} className="flex justify-between items-center pt-1">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#ff6500" }}>
             {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
           </p>
-          <h1 className="text-[26px] font-bold text-white tracking-tight leading-tight">
+          <h1 className="text-[26px] font-bold tracking-tight leading-tight" style={{ color: "var(--color-text)" }}>
             Olá, {firstName}
           </h1>
         </div>
@@ -149,12 +149,12 @@ export function DashboardClient({
         </div>
       </m.div>
 
-      {/* Push Notification Banner */}
+      {/* Push Banner */}
       {showPushBanner && (
         <m.div
           variants={item}
           className="flex items-center justify-between gap-4 p-4 rounded-3xl"
-          style={{ background: "#1a1a1a", border: "1px solid #2d2d2d" }}
+          style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
         >
           <div className="flex items-center gap-3">
             <div
@@ -164,8 +164,8 @@ export function DashboardClient({
               <Zap size={20} fill="currentColor" />
             </div>
             <div>
-              <p className="text-xs font-bold text-white">Ativar Notificações</p>
-              <p className="text-[11px] leading-tight mt-0.5" style={{ color: "#9ca3af" }}>
+              <p className="text-xs font-bold" style={{ color: "var(--color-text)" }}>Ativar Notificações</p>
+              <p className="text-[11px] leading-tight mt-0.5" style={{ color: "var(--color-text-muted)" }}>
                 Receba lembretes importantes do seu tratamento.
               </p>
             </div>
@@ -174,7 +174,7 @@ export function DashboardClient({
             <button
               onClick={() => setShowPushBanner(false)}
               className="px-3 py-2 text-[11px] font-bold"
-              style={{ color: "rgba(255,255,255,0.3)" }}
+              style={{ color: "var(--color-text-dim)" }}
             >
               Depois
             </button>
@@ -192,20 +192,17 @@ export function DashboardClient({
       {/* Hero — Week Tracker */}
       <m.div
         variants={item}
-        className="rounded-[24px] p-6 text-white"
+        className="rounded-[24px] p-6"
         style={{
-          background: "linear-gradient(135deg, #1a0a00 0%, #2d1000 40%, #1a0800 100%)",
+          background: heroCardBg,
           border: "1px solid rgba(255,101,0,0.2)",
           boxShadow: "0 8px 32px rgba(255,101,0,0.1)",
         }}
       >
         <BlurPaywall ativo={isExpirado} mensagem="Veja suas doses semanais no plano Premium">
           <div className="flex items-center gap-2 mb-4">
-            <div
-              className="h-1.5 w-6 rounded-full"
-              style={{ background: "#ff6500" }}
-            />
-            <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <div className="h-1.5 w-6 rounded-full" style={{ background: "#ff6500" }} />
+            <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: heroSubtextColor }}>
               Semana {weeksCompleted + 1} de tratamento
             </p>
           </div>
@@ -213,7 +210,7 @@ export function DashboardClient({
         </BlurPaywall>
       </m.div>
 
-      {/* Metric Grid 2x2 */}
+      {/* Metric Grid */}
       <BlurPaywall ativo={isExpirado} mensagem="Acompanhe peso, dose e estoque">
         <div className="grid grid-cols-2 gap-3">
           <MetricCard
@@ -276,22 +273,19 @@ export function DashboardClient({
       {/* Last Dose Card */}
       <m.div
         variants={item}
-        className="rounded-[20px] p-4 flex justify-between items-center"
-        style={{
-          background: "linear-gradient(135deg, #1a0a00, #2d1200)",
-          border: "1px solid rgba(255,101,0,0.2)",
-        }}
+        className="rounded-[20px] p-4"
+        style={{ background: lastDoseCardBg, border: "1px solid rgba(255,101,0,0.2)" }}
       >
         <BlurPaywall ativo={isExpirado} mensagem="Gerencie suas doses no plano Premium">
           <div className="flex w-full justify-between items-center">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>
+              <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: lastDoseSubtextColor }}>
                 Última aplicação
               </p>
-              <h3 className="text-lg font-bold text-white mt-0.5">
+              <h3 className="text-lg font-bold mt-0.5" style={{ color: "var(--color-text)" }}>
                 {lastDose?.local_aplicacao || 'Não registrada'}
               </h3>
-              <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>
+              <p className="text-[11px] mt-0.5" style={{ color: lastDoseSubtextColor }}>
                 {lastDose
                   ? `Há ${differenceInDays(new Date(), new Date(lastDose.data_aplicacao))} dias · ${lastDose.dose_mg}mg`
                   : '---'}
@@ -300,10 +294,7 @@ export function DashboardClient({
             <Link
               href="/doses"
               className="px-4 py-2 rounded-full text-white text-xs font-bold transition-all"
-              style={{
-                background: "#ff6500",
-                boxShadow: "0 4px 12px rgba(255,101,0,0.35)",
-              }}
+              style={{ background: "#ff6500", boxShadow: "0 4px 12px rgba(255,101,0,0.35)" }}
             >
               + Registrar
             </Link>
@@ -315,13 +306,11 @@ export function DashboardClient({
       <m.div
         variants={item}
         className="rounded-[20px] p-5"
-        style={{ background: "#1a1a1a", border: "1px solid #2d2d2d" }}
+        style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
       >
         <div className="flex justify-between items-center mb-3">
-          <h3 className="text-[15px] font-bold text-white">Evolução do peso</h3>
-          <Link href="/saude" className="text-[11px] font-bold" style={{ color: "#ff6500" }}>
-            Ver tudo
-          </Link>
+          <h3 className="text-[15px] font-bold" style={{ color: "var(--color-text)" }}>Evolução do peso</h3>
+          <Link href="/saude" className="text-[11px] font-bold" style={{ color: "#ff6500" }}>Ver tudo</Link>
         </div>
         <BlurPaywall ativo={isExpirado} mensagem="Veja a evolução do seu peso">
           <DashboardChart data={weights} />
@@ -347,7 +336,7 @@ function MetricCard({ icon, label, value, subValue, badge, accentColor, iconBg, 
     <m.div
       variants={variants}
       className="rounded-[20px] p-4 flex flex-col justify-between"
-      style={{ background: "#1a1a1a", border: "1px solid #2d2d2d" }}
+      style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
     >
       <div className="flex justify-between items-start">
         <div
@@ -370,10 +359,10 @@ function MetricCard({ icon, label, value, subValue, badge, accentColor, iconBg, 
         )}
       </div>
       <div className="mt-4 flex flex-col">
-        <p className="text-[11px] font-medium" style={{ color: "#555" }}>{label}</p>
+        <p className="text-[11px] font-medium" style={{ color: "var(--color-text-muted)" }}>{label}</p>
         <div className="flex flex-col mt-0.5">
-          <h4 className="text-[18px] font-bold tracking-tight line-clamp-1 text-white">{value}</h4>
-          <span className="text-[11px] font-medium" style={{ color: "#555" }}>{subValue}</span>
+          <h4 className="text-[18px] font-bold tracking-tight line-clamp-1" style={{ color: "var(--color-text)" }}>{value}</h4>
+          <span className="text-[11px] font-medium" style={{ color: "var(--color-text-dim)" }}>{subValue}</span>
         </div>
         {footer}
       </div>
@@ -386,10 +375,10 @@ function MiniStatCard({ label, value, delta, variants }: any) {
     <m.div
       variants={variants}
       className="rounded-[16px] p-3"
-      style={{ background: "#1a1a1a", border: "1px solid #2d2d2d" }}
+      style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
     >
-      <p className="text-[10px] font-medium" style={{ color: "#555" }}>{label}</p>
-      <h5 className="text-[17px] font-bold text-white mt-1 tracking-tight">{value}</h5>
+      <p className="text-[10px] font-medium" style={{ color: "var(--color-text-muted)" }}>{label}</p>
+      <h5 className="text-[17px] font-bold mt-1 tracking-tight" style={{ color: "var(--color-text)" }}>{value}</h5>
       {delta && <p className="text-[10px] font-bold mt-0.5" style={{ color: "#ff6500" }}>{delta}</p>}
     </m.div>
   );

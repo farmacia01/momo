@@ -52,15 +52,19 @@ export function Fab() {
                     className="flex items-center gap-3 group"
                   >
                     <span
-                      className="rounded-full px-4 py-2 text-sm font-bold text-white"
-                      style={{ background: "#1a1a1a", border: "1px solid #2d2d2d" }}
+                      className="rounded-full px-4 py-2 text-sm font-bold shadow-lg"
+                      style={{
+                        background: "var(--color-surface)",
+                        border: "1px solid var(--color-surface-border)",
+                        color: "var(--color-text)",
+                      }}
                     >
                       {a.label}
                     </span>
                     <span
-                      className="flex h-12 w-12 items-center justify-center rounded-full text-white transition-transform group-hover:scale-105"
+                      className="flex h-12 w-12 items-center justify-center rounded-full transition-transform group-hover:scale-105 shadow-lg"
                       style={{
-                        background: "#1a1a1a",
+                        background: "var(--color-surface)",
                         border: "1px solid rgba(255,101,0,0.3)",
                         color: "#ff6500",
                       }}
@@ -78,10 +82,10 @@ export function Fab() {
           onClick={() => setOpen((v) => !v)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex h-14 w-14 items-center justify-center rounded-full text-white"
+          className="flex h-14 w-14 items-center justify-center rounded-full"
           style={{
             background: open
-              ? "#1a1a1a"
+              ? "var(--color-surface)"
               : "linear-gradient(135deg, #ff6500, #cc4c00)",
             border: open ? "1px solid #ff6500" : "none",
             boxShadow: open
@@ -92,7 +96,7 @@ export function Fab() {
           {open ? (
             <X className="h-7 w-7" style={{ color: "#ff6500" }} strokeWidth={2.5} />
           ) : (
-            <Plus className="h-7 w-7" strokeWidth={2.5} />
+            <Plus className="h-7 w-7 text-white" strokeWidth={2.5} />
           )}
         </motion.button>
       </div>

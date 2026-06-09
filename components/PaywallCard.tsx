@@ -13,8 +13,8 @@ export function PaywallCard({
   return (
     <div
       style={{
-        background: "#1a1a1a",
-        border: "1px dashed #2d2d2d",
+        background: "var(--color-surface)",
+        border: "1px dashed var(--color-surface-border)",
         borderRadius: 20,
         padding: 32,
         textAlign: "center",
@@ -27,8 +27,8 @@ export function PaywallCard({
       >
         <Lock size={32} style={{ color: "#ff6500" }} />
       </div>
-      <h3 className="text-lg font-bold text-white">{recurso}</h3>
-      <p className="mt-1 max-w-[260px] text-sm font-medium" style={{ color: "#9ca3af" }}>{descricao}</p>
+      <h3 className="text-lg font-bold" style={{ color: "var(--color-text)" }}>{recurso}</h3>
+      <p className="mt-1 max-w-[260px] text-sm font-medium" style={{ color: "var(--color-text-muted)" }}>{descricao}</p>
       <Link
         href="/plano"
         className="mt-6 inline-flex items-center justify-center rounded-full px-6 py-3.5 text-sm font-bold text-white transition-transform active:scale-[0.97]"

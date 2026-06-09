@@ -34,12 +34,12 @@ export function BlurPaywall({ children, ativo, mensagem }: BlurPaywallProps) {
       >
         <div
           style={{
-            background: "#161616",
-            border: "1px solid #2d2d2d",
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-surface-border)",
             borderRadius: 20,
             padding: "20px 24px",
             textAlign: "center",
-            boxShadow: "0 16px 40px rgba(0,0,0,0.6)",
+            boxShadow: "var(--shadow-float)",
             maxWidth: 260,
             width: "100%",
           }}
@@ -59,10 +59,10 @@ export function BlurPaywall({ children, ativo, mensagem }: BlurPaywallProps) {
           >
             <Lock size={20} color="#ff6500" />
           </div>
-          <p style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", margin: "0 0 6px" }}>
+          <p style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text)", margin: "0 0 6px" }}>
             Seu trial expirou
           </p>
-          <p style={{ fontSize: 12, color: "#9ca3af", margin: "0 0 16px", lineHeight: 1.5 }}>
+          <p style={{ fontSize: 12, color: "var(--color-text-muted)", margin: "0 0 16px", lineHeight: 1.5 }}>
             {mensagem || "Assine o Momo para continuar acompanhando seu tratamento"}
           </p>
           <Link
@@ -81,7 +81,7 @@ export function BlurPaywall({ children, ativo, mensagem }: BlurPaywallProps) {
           >
             Ver planos — R$ 29,90/mês
           </Link>
-          <p style={{ fontSize: 11, color: "#555", margin: "8px 0 0" }}>
+          <p style={{ fontSize: 11, color: "var(--color-text-dim)", margin: "8px 0 0" }}>
             Cancele quando quiser
           </p>
         </div>
