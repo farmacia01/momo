@@ -55,7 +55,7 @@ export function FornecedoresSectionClient({
   return (
     <div className="space-y-6 -mx-6 px-6">
       {/* Hero Header */}
-      <div className="relative -mx-6 px-6 pt-8 pb-12 bg-gradient-to-br from-[#1c4d2e] to-[#2d7a4f] rounded-b-[40px] shadow-lg">
+      <div className="relative -mx-6 px-6 pt-8 pb-12 rounded-b-[40px] shadow-lg" style={{ background: "linear-gradient(135deg, #1a0800, #2d1200)", boxShadow: "0 8px 32px rgba(255,101,0,0.18)" }}>
         <div className="space-y-1">
           <p className="text-[10px] font-black uppercase tracking-[0.15em] text-white/60">Comprar ampolas</p>
           <h2 className="text-2xl font-black text-white">Fornecedores</h2>
@@ -64,7 +64,7 @@ export function FornecedoresSectionClient({
 
         {/* Search Bar Overlay */}
         <div className="absolute left-6 right-6 -bottom-6">
-          <div className="bg-surface border border-surface-border shadow-xl shadow-forest/10 rounded-2xl flex items-center gap-3 px-4 py-3.5 transition-all focus-within:ring-2 focus-within:ring-[#1c4d2e]/20">
+          <div className="bg-surface border border-surface-border shadow-xl rounded-2xl flex items-center gap-3 px-4 py-3.5 transition-all focus-within:ring-2 focus-within:ring-ember/20">
             <Search size={18} className="text-dim" />
             <input 
               type="text"
@@ -87,7 +87,7 @@ export function FornecedoresSectionClient({
             onClick={() => setActiveFilter(f.label)}
             className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
               activeFilter === f.label 
-                ? "bg-[#1c4d2e] text-white shadow-md shadow-forest/20" 
+                ? "bg-ember text-white shadow-md shadow-ember/20"
                 : "bg-surface border border-surface-border text-muted hover:bg-surface-mid"
             }`}
           >
@@ -125,7 +125,7 @@ export function FornecedoresSectionClient({
                   className="block bg-surface rounded-[20px] overflow-hidden shadow-premium border border-surface-border active:scale-[0.98] transition-transform"
                 >
                   {/* Banner */}
-                  <div className="relative h-20 bg-gradient-to-br from-[#e8f5ee] to-[#cce8d9]">
+                  <div className="relative h-20 bg-gradient-to-br from-surface-mid to-surface-border">
                     {f.logo_url ? (
                       <img 
                         src={f.logo_url} 
@@ -134,7 +134,7 @@ export function FornecedoresSectionClient({
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Building2 size={32} className="text-[#1c4d2e]/20" />
+                        <Building2 size={32} className="text-ember/20" />
                       </div>
                     )}
                     
@@ -172,7 +172,7 @@ export function FornecedoresSectionClient({
                     </div>
 
                     <div className="flex flex-wrap gap-1.5">
-                      <span className="px-2 py-0.5 bg-[#e8f5ee] text-[#1c4d2e] rounded-md text-[9px] font-black uppercase tracking-wider">
+                      <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider" style={{ background: "rgba(255,101,0,0.1)", color: "#ff6500" }}>
                         {TIPO_FORNECEDOR_LABEL[f.tipo] || "Farmácia"}
                       </span>
                       <span className="px-2 py-0.5 bg-amber-50 text-amber-700 rounded-md text-[9px] font-black uppercase tracking-wider">
@@ -185,11 +185,11 @@ export function FornecedoresSectionClient({
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-[10px] font-bold text-dim uppercase tracking-widest leading-none">A partir de</p>
-                        <p className="text-[15px] font-black text-[#1c4d2e] mt-1">
+                        <p className="text-[15px] font-black text-ember mt-1">
                           {f.preco_minimo ? formatBRL(f.preco_minimo) : "Consulte"}
                         </p>
                       </div>
-                      <div className="bg-[#16a34a] text-white px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-sm shadow-[#16a34a]/20">
+                      <div className="bg-ember text-white px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-sm shadow-ember/20">
                         <Clock size={12} strokeWidth={2.5} />
                         <span className="text-[11px] font-black">~{f.tempo_entrega_minutos || 60} min</span>
                       </div>

@@ -30,7 +30,7 @@ export default async function PlanoPage() {
     <PlanoClient 
       planoAtivo={profile?.plano_ativo || 'free'}
       assinatura={assinatura}
-      checkoutUrl={process.env.CAKTO_CHECKOUT_URL || '#'}
+      checkoutUrl={process.env.CAKTO_CHECKOUT_URL || 'https://pay.cakto.com.br/i75hqvn_913965'}
     />
   );
 }

@@ -95,12 +95,15 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
       </m.div>
 
       {/* Main content - moves down when pulled */}
-      <m.div
-        animate={{ y: pullDistance }}
-        transition={pulling.current ? { type: "tween", duration: 0 } : { type: "spring", stiffness: 400, damping: 40 }}
+      <div
+        style={{
+          transform: pullDistance > 0 ? `translateY(${pullDistance}px)` : undefined,
+          transition: pulling.current ? "none" : "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          willChange: pullDistance > 0 ? "transform" : "auto",
+        }}
       >
         {children}
-      </m.div>
+      </div>
     </div>
   );
 }

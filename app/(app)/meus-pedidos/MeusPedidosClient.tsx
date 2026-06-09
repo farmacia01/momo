@@ -93,11 +93,11 @@ function PedidoCard({ pedido, index }: { pedido: PedidoComInfo, index: number })
   }[pedido.status];
 
   const statusBg = {
-    novo: "bg-amber-50",
-    confirmado: "bg-blue-50",
-    enviado: "bg-indigo-50",
-    entregue: "bg-green-50",
-    cancelado: "bg-red-50",
+    novo: "bg-amber-500/10",
+    confirmado: "bg-blue-500/10",
+    enviado: "bg-indigo-500/10",
+    entregue: "bg-green-500/10",
+    cancelado: "bg-red-500/10",
   }[pedido.status];
 
   return (

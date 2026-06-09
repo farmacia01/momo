@@ -141,7 +141,7 @@ export function ProdutoDetalheClient({
   return (
     <div className="bg-bg min-h-screen pb-32">
       {/* Hero */}
-      <div className="relative h-[160px] bg-gradient-to-br from-[#1c4d2e] to-[#3a9460] px-6 pt-8">
+      <div className="relative h-[160px] px-6 pt-8" style={{ background: "linear-gradient(135deg, #1a0800, #2d1200)" }}>
         <button 
           onClick={() => router.back()}
           className="absolute top-8 left-6 w-[30px] h-[30px] rounded-full bg-black/20 flex items-center justify-center text-white backdrop-blur-sm active:scale-95 transition-transform"
@@ -193,7 +193,7 @@ export function ProdutoDetalheClient({
           </div>
 
           <div className="flex items-end gap-2">
-            <span className="text-[24px] font-bold text-[#1c4d2e] tracking-tight">{formatBRL(price)}</span>
+            <span className="text-[24px] font-bold text-ember tracking-tight">{formatBRL(price)}</span>
             {hasPromo && (
               <>
                 <span className="text-sm text-dim line-through mb-1">{formatBRL(produto.preco)}</span>
@@ -208,17 +208,17 @@ export function ProdutoDetalheClient({
 
           <div className="flex items-center justify-between pt-1">
             <span className="text-sm font-bold text-text">Quantidade</span>
-            <div className="flex items-center bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl p-1 gap-4">
-              <button 
+            <div className="flex items-center rounded-xl p-1 gap-4" style={{ background: "rgba(255,101,0,0.08)", border: "1px solid rgba(255,101,0,0.2)" }}>
+              <button
                 onClick={() => setQuantidade(Math.max(1, quantidade - 1))}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-[#16a34a] active:bg-[#dcfce7] transition-colors"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-ember active:bg-ember/10 transition-colors"
               >
                 <Minus size={18} strokeWidth={2.5} />
               </button>
-              <span className="text-sm font-bold text-[#16a34a] min-w-[20px] text-center">{quantidade}</span>
-              <button 
+              <span className="text-sm font-bold text-ember min-w-[20px] text-center">{quantidade}</span>
+              <button
                 onClick={() => setQuantidade(quantidade + 1)}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-[#16a34a] active:bg-[#dcfce7] transition-colors"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-ember active:bg-ember/10 transition-colors"
               >
                 <Plus size={18} strokeWidth={2.5} />
               </button>
@@ -235,7 +235,7 @@ export function ProdutoDetalheClient({
           <button 
             onClick={() => setTipoEntrega("motoboy")}
             className={`w-full bg-surface rounded-[16px] p-4 flex items-start gap-4 transition-all text-left ${
-              tipoEntrega === "motoboy" ? "border-2 border-[#1c4d2e] shadow-md shadow-[#1c4d2e]/10" : "border border-surface-border"
+              tipoEntrega === "motoboy" ? "border-2 border-ember shadow-md shadow-ember/10" : "border border-surface-border"
             }`}
           >
             <div className="w-10 h-10 rounded-xl bg-[#fef3c7] flex items-center justify-center text-[#d97706] shrink-0">
@@ -248,24 +248,24 @@ export function ProdutoDetalheClient({
               </div>
               <p className="text-[10px] font-medium text-dim mt-1">Entrega hoje em ~{fornecedor.tempo_entrega_minutos || 60} min</p>
             </div>
-            <p className="text-xs font-bold text-[#1c4d2e]">{Number(fornecedor.taxa_motoboy) > 0 ? formatBRL(fornecedor.taxa_motoboy) : "Grátis"}</p>
+            <p className="text-xs font-bold text-ember">{Number(fornecedor.taxa_motoboy) > 0 ? formatBRL(fornecedor.taxa_motoboy) : "Grátis"}</p>
           </button>
         )}
 
         <button 
           onClick={() => setTipoEntrega("padrao")}
           className={`w-full bg-surface rounded-[16px] p-4 flex items-start gap-4 transition-all text-left ${
-            tipoEntrega === "padrao" ? "border-2 border-[#1c4d2e] shadow-md shadow-[#1c4d2e]/10" : "border border-surface-border"
+            tipoEntrega === "padrao" ? "border-2 border-ember shadow-md shadow-ember/10" : "border border-surface-border"
           }`}
         >
-          <div className="w-10 h-10 rounded-xl bg-[#f0fdf4] flex items-center justify-center text-[#16a34a] shrink-0">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-ember shrink-0" style={{ background: "rgba(255,101,0,0.08)" }}>
             <Truck size={20} strokeWidth={2.5} />
           </div>
           <div className="flex-1">
             <p className="text-[12px] font-bold text-text">Entrega Padrão</p>
             <p className="text-[10px] font-medium text-dim mt-1">2 a 5 dias úteis</p>
           </div>
-          <p className="text-xs font-bold text-[#1c4d2e]">Grátis</p>
+          <p className="text-xs font-bold text-ember">Grátis</p>
         </button>
       </div>
 
@@ -287,7 +287,7 @@ export function ProdutoDetalheClient({
             
             <button
               onClick={() => setUsarCod(!usarCod)}
-              className={`w-12 h-7 rounded-full relative transition-colors ${usarCod ? "bg-[#1c4d2e]" : "bg-slate-200"}`}
+              className={`w-12 h-7 rounded-full relative transition-colors ${usarCod ? "bg-ember" : "bg-surface-border"}`}
             >
               <div className={`absolute top-1 left-1 w-5 h-5 bg-surface rounded-full transition-transform ${usarCod ? "translate-x-5" : ""}`} />
             </button>
@@ -373,7 +373,7 @@ export function ProdutoDetalheClient({
         <button 
           onClick={handleConfirmarPedido}
           disabled={loading}
-          className="w-full h-[52px] bg-[#1c4d2e] text-white rounded-full font-bold text-sm shadow-[0_8px_30px_rgba(28,77,46,0.3)] flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-70"
+          className="w-full h-[52px] text-white rounded-full font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-70" style={{ background: "linear-gradient(135deg, #ff6500, #e05500)", boxShadow: "0 8px 30px rgba(255,101,0,0.35)" }}
         >
           {loading ? <LoadingSpinner size="sm" /> : `Confirmar pedido — ${formatBRL(total)}`}
         </button>

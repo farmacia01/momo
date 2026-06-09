@@ -251,7 +251,7 @@ function ProdutoCard({
         <button
           onClick={onPedir}
           disabled={esgotado}
-          className="rounded-full bg-ember px-6 py-2.5 text-sm font-bold text-white transition-all active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-dim shadow-lg shadow-forest/20"
+          className="rounded-full bg-ember px-6 py-2.5 text-sm font-bold text-white transition-all active:scale-95 disabled:cursor-not-allowed disabled:bg-surface-border disabled:text-dim shadow-lg shadow-ember/20"
         >
           Pedir agora
         </button>
@@ -354,7 +354,7 @@ function ConfirmarPedidoModal({
         onClick={onClose}
       />
       <div className="relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-[32px] bg-bg p-8 shadow-2xl animate-slide-up z-[101]">
-        <div className="mx-auto mb-8 h-1.5 w-12 rounded-full bg-gray-200" />
+        <div className="mx-auto mb-8 h-1.5 w-12 rounded-full bg-surface-border" />
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-bold text-text">Confirmar pedido</h2>
           <button
@@ -413,7 +413,7 @@ function ConfirmarPedidoModal({
             </span>
           </div>
           {freteGratis && (
-            <p className="mt-2 text-right text-[11px] font-bold text-[#16a34a] uppercase tracking-wider">
+            <p className="mt-2 text-right text-[11px] font-bold text-ember uppercase tracking-wider">
               ✓ Frete grátis aplicado
             </p>
           )}

@@ -14,6 +14,7 @@ import {
   X,
   ShoppingBag,
   Store,
+  Salad,
   type LucideIcon,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -77,6 +78,7 @@ export function BottomNav() {
   const primaryItems: Item[] = role === 'paciente' ? [
     { label: "Home", href: "/", icon: Home },
     { label: "Doses", href: "/doses", icon: Syringe },
+    { label: "Dieta", href: "/dieta", icon: Salad },
     { label: "Saúde", href: "/saude", icon: HeartPulse },
   ] : [
     { label: "Home", href: "/", icon: Home },

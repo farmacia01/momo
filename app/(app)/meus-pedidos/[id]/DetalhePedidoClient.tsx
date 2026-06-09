@@ -120,7 +120,7 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
   return (
     <div className="space-y-0 pb-32">
       {/* Header Gradient */}
-      <div className="bg-gradient-to-br from-[#1c4d2e] to-[#2d7a4f] pt-8 pb-16 px-6 -mx-6 rounded-b-[40px] shadow-lg">
+      <div className="pt-8 pb-16 px-6 -mx-6 rounded-b-[40px]" style={{ background: "linear-gradient(135deg, #1a0800, #2d1200)", boxShadow: "0 8px 32px rgba(255,101,0,0.18)" }}>
         <div className="flex items-center gap-4 mb-6">
           <button 
             onClick={() => router.back()}
@@ -167,24 +167,24 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
                         <motion.div 
                           animate={{ scale: [1, 1.2, 1] }}
                           transition={{ duration: 1.5, repeat: Infinity }}
-                          className="absolute inset-0 bg-[#1c4d2e]/10 rounded-full"
+                          className="absolute inset-0 bg-ember/10 rounded-full"
                         />
                       )}
                       <div className={`
                         relative z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500
-                        ${status === 'done' ? 'bg-[#1c4d2e] text-white' : 
-                          status === 'active' ? 'bg-surface border-2 border-[#1c4d2e]' : 
+                        ${status === 'done' ? 'bg-ember text-white' : 
+                          status === 'active' ? 'bg-surface border-2 border-ember' : 
                           'bg-surface-border text-dim'}
                       `}>
                         {status === 'active' ? (
-                          <div className="w-2.5 h-2.5 bg-[#1c4d2e] rounded-full" />
+                          <div className="w-2.5 h-2.5 bg-ember rounded-full" />
                         ) : (
                           <Icon size={14} strokeWidth={3} />
                         )}
                       </div>
                     </div>
                     {!isLast && (
-                      <div className={`w-0.5 h-10 my-1 rounded-full ${status === 'done' ? 'bg-[#1c4d2e]' : 'bg-surface-border'}`} />
+                      <div className={`w-0.5 h-10 my-1 rounded-full ${status === 'done' ? 'bg-ember' : 'bg-surface-border'}`} />
                     )}
                   </div>
                   <div className="pt-1.5 flex-1">
@@ -202,7 +202,7 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
                       <motion.p 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="text-[11px] font-bold text-[#16a34a] mt-1"
+                        className="text-[11px] font-bold text-ember mt-1"
                       >
                         {eta ? `Previsão: ~${eta}` : "Chegando em breve"}
                       </motion.p>
@@ -241,14 +241,14 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
                   value={confirmCode}
                   onChange={(e) => setConfirmCode(e.target.value.toUpperCase())}
                   placeholder="Ex: AB3K7X"
-                  className="w-full h-14 bg-surface-mid border border-surface-border rounded-2xl pl-12 pr-4 text-sm font-mono font-bold tracking-[0.2em] focus:outline-none focus:ring-2 focus:ring-[#1c4d2e]/10 transition-all"
+                  className="w-full h-14 bg-surface-mid border border-surface-border rounded-2xl pl-12 pr-4 text-sm font-mono font-bold tracking-[0.2em] focus:outline-none focus:ring-2 focus:ring-ember/10 transition-all"
                 />
               </div>
 
               <button 
                 onClick={handleConfirmReceipt}
                 disabled={loading || confirmCode.length < 6}
-                className="w-full h-12 bg-[#1c4d2e] text-white rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-forest/20 active:scale-[0.98] transition-all disabled:opacity-50"
+                className="w-full h-12 bg-ember text-white rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-forest/20 active:scale-[0.98] transition-all disabled:opacity-50"
               >
                 {loading ? "Processando..." : "Confirmar recebimento"}
               </button>
@@ -378,7 +378,7 @@ function RatingModal({ pedido, onClose }: { pedido: any; onClose: () => void }) 
         </button>
 
         <div className="text-center space-y-6">
-          <div className="h-16 w-16 bg-[#e8f5ee] text-[#1c4d2e] rounded-2xl flex items-center justify-center mx-auto">
+          <div className="h-16 w-16 rounded-2xl flex items-center justify-center mx-auto" style={{ background: "rgba(255,101,0,0.1)", color: "#ff6500" }}>
             <Star size={32} className="fill-current" />
           </div>
           
@@ -424,7 +424,7 @@ function RatingModal({ pedido, onClose }: { pedido: any; onClose: () => void }) 
           <button 
             onClick={handleEnviar}
             disabled={enviando || nota === 0}
-            className="w-full h-14 bg-[#1c4d2e] text-white rounded-full text-sm font-black uppercase tracking-widest shadow-lg shadow-forest/20 active:scale-[0.98] transition-all disabled:opacity-50"
+            className="w-full h-14 bg-ember text-white rounded-full text-sm font-black uppercase tracking-widest shadow-lg shadow-forest/20 active:scale-[0.98] transition-all disabled:opacity-50"
           >
             {enviando ? "Enviando..." : "Enviar avaliação"}
           </button>
