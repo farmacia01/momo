@@ -18,12 +18,14 @@ export default async function UsuarioPage() {
     .eq("id", session.user.id)
     .single();
 
+  const nome = profile?.nome || session.user.user_metadata?.nome || "";
+
   return (
     <UsuarioClient
       userId={session.user.id}
       email={session.user.email ?? ""}
       initial={{
-        nome: profile?.nome ?? "",
+        nome: nome,
         data_nascimento: profile?.data_nascimento ?? "",
         sexo: profile?.sexo ?? "",
         altura_cm: profile?.altura_cm != null ? String(profile.altura_cm) : "",

@@ -44,6 +44,16 @@ export default async function DashboardPage() {
   const weights = weightsResult.data;
   const ampolas = ampolasResult.data;
 
+  // Fallback for name if missing in profile
+  if (profile && !profile.nome && session.user.user_metadata?.nome) {
+    profile.nome = session.user.user_metadata.nome;
+  } else if (!profile && session.user.user_metadata?.nome) {
+    // If profile query failed entirely, create a partial profile object for the UI
+    (profile as any) = {
+      nome: session.user.user_metadata.nome
+    };
+  }
+
   const lastDose = doses?.[0];
   
   const totalPurchased = ampolas?.reduce((acc, curr) => acc + (curr.quantidade || 0), 0) || 0;
