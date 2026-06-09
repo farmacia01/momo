@@ -112,7 +112,7 @@ export function UsuarioClient({
           />
         </Field>
 
-        <SaveButton loading={saving} onClick={handleSave} />
+        <SaveButton loading={saving} onClick={handleSave}>Salvar</SaveButton>
       </Card>
 
       <Card className="p-6">
