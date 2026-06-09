@@ -34,15 +34,17 @@ export function SaveButton({
   children,
   onClick,
   busy,
+  loading,
   disabled,
 }: {
   children: React.ReactNode;
   onClick: () => void;
   busy?: boolean;
+  loading?: boolean;
   disabled?: boolean;
 }) {
   return (
-    <SubmitButton onClick={onClick} busy={busy} disabled={disabled}>
+    <SubmitButton onClick={onClick} busy={busy || loading} disabled={disabled}>
       {children}
     </SubmitButton>
   );
