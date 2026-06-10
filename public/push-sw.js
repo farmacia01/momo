@@ -1,7 +1,5 @@
-/*
-  Custom push handlers for Momo App.
-  Injected into the main service worker via next-pwa importScripts.
-*/
+// Push notification handler for Momo App.
+// Registered directly by PushRegistrar — no Workbox or next-pwa dependency.
 
 self.addEventListener("push", function (event) {
   let data = {};

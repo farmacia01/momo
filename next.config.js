@@ -1,32 +1,4 @@
 /** @type {import('next').NextConfig} */
-const withPWA = require("next-pwa")({
-  dest: "public",
-  register: true,
-  skipWaiting: true,
-  importScripts: ["/push-sw.js"],
-  disable: process.env.NODE_ENV === "development",
-  exclude: [
-    // App Router internal files — not served as public URLs, cause bad-precaching-response 404
-    /app-build-manifest\.json$/,
-    /middleware-manifest\.json$/,
-    /middleware-build-manifest\.js$/,
-    /interception-route-rewrite-manifest\.js$/,
-  ],
-  runtimeCaching: [
-    {
-      urlPattern: /^https:\/\/wlnlmmvlhjazqifyetse\.supabase\.co\/.*/i,
-      handler: 'NetworkFirst',
-      options: {
-        cacheName: 'supabase-api',
-        expiration: {
-          maxEntries: 100,
-          maxAgeSeconds: 60 * 60 * 24 // 24 hours
-        }
-      }
-    }
-  ]
-});
-
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
@@ -40,7 +12,7 @@ const nextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 dias
+    minimumCacheTTL: 60 * 60 * 24 * 30,
     remotePatterns: [
       {
         protocol: "https",
@@ -53,4 +25,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withPWA(nextConfig);
+module.exports = nextConfig;
