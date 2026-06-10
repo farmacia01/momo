@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     
     const { data: subs, error } = await supabase
       .from("push_subscriptions")
-      .select("id, endpoint, p256dh, auth")
+      .select("id, subscription_json")
       .eq("user_id", userId);
 
     if (error) {
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
     const results = await Promise.allSettled(
       subs.map((s) =>
         webpush.sendNotification(
-          { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+          JSON.parse(s.subscription_json),
           payload,
         ),
       ),
