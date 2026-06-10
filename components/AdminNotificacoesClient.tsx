@@ -2,16 +2,17 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Bell, 
-  Send, 
-  Clock, 
-  CheckCircle, 
-  Syringe, 
-  Scale, 
-  Package, 
-  Salad, 
-  Heart, 
+import {
+  Bell,
+  Send,
+  Clock,
+  CheckCircle,
+  Syringe,
+  Scale,
+  Package,
+  Salad,
+  Heart,
+  Activity,
   Smartphone,
   Zap,
   Info,
@@ -31,7 +32,7 @@ const CATEGORIAS = [
   { key: "ESTOQUE", label: "Estoque", icon: Package, color: "text-amber-400" },
   { key: "DIETA", label: "Dieta", icon: Salad, color: "text-green-400" },
   { key: "ENGAJAMENTO", label: "Engajamento", icon: Heart, color: "text-pink-400" },
-  { key: "SAUDE", label: "Saúde", icon: Heart, color: "text-red-400" },
+  { key: "SAUDE", label: "Saúde", icon: Activity, color: "text-red-400" },
 ];
 
 export function AdminNotificacoesClient({ historico: initialHistorico }: { historico: Historico[] }) {
@@ -116,7 +117,7 @@ export function AdminNotificacoesClient({ historico: initialHistorico }: { histo
             >
               {Object.keys(currentTemplates).map((key) => {
                 const templateFn = currentTemplates[key];
-                const preview = templateFn("Usuário", 5, "🏆"); // Mock params para preview
+                const preview = templateFn("Usuário", 5, "MJ-001"); // Mock params: (nome, número, código)
                 const timing = (TIMING_NOTIFICACOES as any)[`${activeTab}.${key}`];
 
                 return (

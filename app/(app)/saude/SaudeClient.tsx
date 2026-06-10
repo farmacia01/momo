@@ -292,41 +292,21 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
       />
 
       <BlurPaywall ativo={isExpirado} mensagem="Acompanhe sua evolução e registre sintomas no Premium">
-        <div className="flex gap-2 p-1 bg-surface-border rounded-full">
-          {(["Peso", "Pressão", "Sintomas"] as Tab[]).map(tab => {
-            const isSoon = tab === "Pressão";
-            return (
-              <button
-                key={tab}
-                onClick={() => {
-                  if (isSoon) {
-                    toast("Em breve! Esta funcionalidade está sendo desenvolvida 🚀", {
-                      icon: '⏳',
-                      style: {
-                        borderRadius: '10px',
-                        background: 'var(--color-surface)',
-                        color: 'var(--color-text)',
-                        border: '1px solid var(--color-surface-border)',
-                        fontSize: '12px'
-                      },
-                    });
-                    return;
-                  }
-                  setActiveTab(tab);
-                }}
-                className={`flex-1 py-2.5 rounded-full text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
-                  activeTab === tab ? "bg-ember text-white shadow-sm" : "text-muted hover:bg-surface-mid"
-                } ${isSoon ? "opacity-50 cursor-not-allowed" : ""}`}
-              >
-                {tab}
-                {isSoon && (
-                  <span className="bg-slate-200 text-muted text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none uppercase tracking-tighter">
-                    Em breve
-                  </span>
-                )}
-              </button>
-            );
-          })}
+        <div className="flex gap-2 p-1 bg-surface-border rounded-full mb-8">
+          {(["Peso", "Sintomas"] as Tab[]).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.1em] transition-all flex items-center justify-center gap-2 ${
+                activeTab === tab 
+                  ? "bg-ember text-white shadow-ember scale-[1.02]" 
+                  : "text-muted hover:text-text hover:bg-surface-mid"
+              }`}
+            >
+              {tab === "Peso" ? <Scale size={14} /> : <Activity size={14} />}
+              {tab}
+            </button>
+          ))}
         </div>
 
         {activeTab === "Peso" && (
@@ -572,18 +552,6 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
               <Plus size={18} strokeWidth={2.5} />
               Nova Medição
             </button>
-          </div>
-        )}
-
-        {activeTab === "Pressão" && (
-          <div className="space-y-6 page-transition-enter flex flex-col items-center justify-center py-12 text-center">
-            <div className="w-16 h-16 bg-surface-border rounded-full flex items-center justify-center text-dim mb-4">
-              <Activity size={32} />
-            </div>
-            <h3 className="text-lg font-bold text-text">Em breve</h3>
-            <p className="text-sm text-muted max-w-[240px] mt-1">
-              Esta funcionalidade está sendo desenvolvida para trazer métricas ainda mais precisas.
-            </p>
           </div>
         )}
 
