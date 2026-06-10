@@ -48,7 +48,7 @@ export async function POST(req: Request) {
   }
 
   const userIds = usuarios.map((u) => u.id);
-  const { data: subs } = await admin.from("push_subscriptions").select("user_id, endpoint, p256dh, auth, id").in("user_id", userIds);
+  const { data: subs } = await admin.from("push_subscriptions").select("user_id, id, subscription_json").in("user_id", userIds);
 
   if (!subs || subs.length === 0) {
     await admin.from("notification_history").insert({ admin_email: ADMIN_EMAIL, titulo, mensagem, url, segmento, total_enviado: 0 });
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
   webpush.setVapidDetails(process.env.VAPID_EMAIL || "mailto:no-reply@momo.app", publicKey, privateKey);
   const payload = JSON.stringify({ title: titulo, body: mensagem, url });
 
-  const results = await Promise.allSettled(subs.map((s) => webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload)));
+  const results = await Promise.allSettled(subs.map((s) => webpush.sendNotification(JSON.parse(s.subscription_json), payload)));
 
   const stale: string[] = [];
   results.forEach((r, i) => {
