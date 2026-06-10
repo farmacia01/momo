@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "@/lib/supabase";
 import { format, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -346,10 +347,14 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
 }
 
 function AcceptDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, onClose: () => void, onConfirm: (d: string) => void, loading: boolean }) {
+  const [mounted, setMounted] = useState(false);
   const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-end justify-center px-0">
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[1000] flex items-end justify-center sm:items-center sm:p-6">
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -358,51 +363,70 @@ function AcceptDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, on
         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
       />
       <motion.div 
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
+        initial={{ y: "100%", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: "100%", opacity: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="relative w-full max-w-lg bg-bg rounded-t-[24px] border-t border-surface-border p-6 pb-12 shadow-2xl"
+        className="relative w-full max-w-lg bg-surface rounded-t-[32px] sm:rounded-[32px] border border-surface-border p-6 pb-10 sm:pb-8 shadow-2xl overflow-hidden"
       >
-        <div className="w-[40px] h-[4px] bg-surface-border rounded-full mx-auto mb-6" />
+        <div className="w-10 h-1 rounded-full mx-auto mb-6 sm:hidden bg-surface-border" />
         
-        <h3 className="text-[18px] font-bold text-text mb-2">Confirmar pedido</h3>
-        <p className="text-[13px] text-muted mb-6">
-          {pedido.codigo} · {formatBRL(pedido.preco_total)}
-        </p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-xl font-display font-black text-text">Aceitar Pedido</h3>
+            <p className="text-[13px] text-muted">
+              {pedido.codigo} · {formatBRL(pedido.preco_total)}
+            </p>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="h-10 w-10 rounded-full flex items-center justify-center bg-surface-mid text-text-dim transition-transform active:scale-90"
+          >
+            <X size={20} />
+          </button>
+        </div>
 
         <div className="space-y-6">
-          <div>
-            <label className="text-[11px] font-bold text-text-dim uppercase tracking-widest mb-2 block">Previsão de entrega</label>
-            <input 
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full h-14 bg-surface-mid border border-surface-border rounded-[16px] px-4 text-text focus:outline-none focus:border-ember/30 transition-colors"
-            />
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-text-dim uppercase tracking-[0.1em] ml-1">Previsão de entrega</label>
+            <div className="relative">
+              <input 
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full h-14 bg-surface-mid border border-surface-border rounded-2xl px-5 text-text font-bold focus:outline-none focus:ring-2 focus:ring-ember/20 transition-all appearance-none"
+              />
+              <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 text-text-dim rotate-90" size={18} />
+            </div>
           </div>
 
           <button 
             onClick={() => onConfirm(date)}
             disabled={loading}
-            className="w-full h-[52px] rounded-full font-[700] text-[15px] text-white active:scale-[0.98] transition-all disabled:opacity-50" style={{ background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))", boxShadow: "var(--shadow-ember)" }}
+            className="w-full h-14 rounded-full font-bold text-[16px] text-white active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2" 
+            style={{ background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))", boxShadow: "var(--shadow-ember)" }}
           >
-            {loading ? "Processando..." : "Confirmar aceite"}
+            {loading ? <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <><Check size={18} strokeWidth={3} /> Confirmar aceite</>}
           </button>
         </div>
       </motion.div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
 function RejectDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, onClose: () => void, onConfirm: (r: string) => void, loading: boolean }) {
+  const [mounted, setMounted] = useState(false);
   const [reason, setReason] = useState("Sem estoque");
   const [other, setOther] = useState("");
 
   const reasons = ["Sem estoque", "Fora da área", "Produto descontinuado", "Outro"];
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-end justify-center px-0">
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[1000] flex items-end justify-center sm:items-center sm:p-6">
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -411,28 +435,39 @@ function RejectDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, on
         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
       />
       <motion.div 
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
+        initial={{ y: "100%", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: "100%", opacity: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="relative w-full max-w-lg bg-bg rounded-t-[24px] border-t border-surface-border p-6 pb-12 shadow-2xl"
+        className="relative w-full max-w-lg bg-surface rounded-t-[32px] sm:rounded-[32px] border border-surface-border p-6 pb-10 sm:pb-8 shadow-2xl max-h-[90vh] overflow-y-auto"
       >
-        <div className="w-[40px] h-[4px] bg-surface-border rounded-full mx-auto mb-6" />
+        <div className="w-10 h-1 rounded-full mx-auto mb-6 sm:hidden bg-surface-border" />
         
-        <h3 className="text-[18px] font-bold text-text mb-6">Recusar pedido</h3>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-xl font-display font-black text-text">Recusar pedido</h3>
+            <p className="text-[13px] text-muted">{pedido.codigo}</p>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="h-10 w-10 rounded-full flex items-center justify-center bg-surface-mid text-text-dim transition-transform active:scale-90"
+          >
+            <X size={20} />
+          </button>
+        </div>
 
         <div className="space-y-6">
-          <div>
-            <label className="text-[11px] font-bold text-text-dim uppercase tracking-widest mb-3 block">Motivo da recusa</label>
-            <div className="space-y-2">
+          <div className="space-y-3">
+            <label className="text-[10px] font-black text-text-dim uppercase tracking-[0.1em] ml-1">Motivo da recusa</label>
+            <div className="grid grid-cols-1 gap-2">
               {reasons.map((r) => (
                 <button
                   key={r}
                   onClick={() => setReason(r)}
-                  className={`w-full h-12 rounded-[14px] px-4 text-left text-[13px] font-medium transition-all ${
+                  className={`w-full h-14 rounded-2xl px-5 text-left text-[14px] font-bold transition-all border ${
                     reason === r 
-                      ? "bg-danger/10 text-danger border border-danger/20" 
-                      : "bg-surface-mid text-muted border border-transparent"
+                      ? "bg-danger/5 text-danger border-danger/30 ring-4 ring-danger/5" 
+                      : "bg-surface-mid text-muted border-transparent hover:border-surface-border"
                   }`}
                 >
                   {r}
@@ -443,22 +478,23 @@ function RejectDrawer({ pedido, onClose, onConfirm, loading }: { pedido: any, on
 
           {reason === "Outro" && (
             <textarea
-              placeholder="Descreva o motivo..."
+              placeholder="Descreva o motivo detalhadamente..."
               value={other}
               onChange={(e) => setOther(e.target.value)}
-              className="w-full bg-surface-mid border border-surface-border rounded-[16px] p-4 text-text text-[13px] focus:outline-none min-h-[80px]"
+              className="w-full bg-surface-mid border border-surface-border rounded-2xl p-5 text-text text-sm font-medium focus:outline-none focus:ring-2 focus:ring-danger/20 transition-all min-h-[100px] resize-none"
             />
           )}
 
           <button 
             onClick={() => onConfirm(reason === "Outro" ? other : reason)}
-            disabled={loading}
-            className="w-full h-[52px] bg-danger/10 border border-danger/20 text-danger rounded-full font-[700] text-[15px] active:scale-[0.98] transition-all disabled:opacity-50"
+            disabled={loading || (reason === "Outro" && !other.trim())}
+            className="w-full h-14 bg-danger/10 border border-danger/20 text-danger rounded-full font-black text-[16px] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {loading ? "Processando..." : "Confirmar recusa"}
+            {loading ? <div className="h-5 w-5 border-2 border-danger/30 border-t-danger rounded-full animate-spin" /> : <><X size={18} strokeWidth={3} /> Confirmar recusa</>}
           </button>
         </div>
       </motion.div>
-    </div>
+    </div>,
+    document.body
   );
 }
