@@ -11,7 +11,6 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return arr;
 }
 
-/** Check if browser supports all required APIs for Web Push. */
 export function pushSupported(): boolean {
   if (typeof window === "undefined") return false;
   return (
@@ -21,7 +20,6 @@ export function pushSupported(): boolean {
   );
 }
 
-/** Check if this specific device already has an active push subscription. */
 export async function getPushStatus(): Promise<boolean> {
   if (!pushSupported()) return false;
   try {
@@ -34,63 +32,6 @@ export async function getPushStatus(): Promise<boolean> {
   }
 }
 
-/**
- * Waits for a SW registration to reach "active" state.
- * Uses statechange events instead of navigator.serviceWorker.ready,
- * which can hang if the SW never claims the page.
- */
-async function waitForActiveRegistration(
-  reg: ServiceWorkerRegistration,
-  timeoutMs = 12000
-): Promise<ServiceWorkerRegistration> {
-  if (reg.active) return reg;
-
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(
-      () => reject(new Error("Service Worker demorou para ativar. Recarregue a página.")),
-      timeoutMs
-    );
-
-    const sw = reg.installing ?? reg.waiting;
-    if (!sw) {
-      clearTimeout(timer);
-      resolve(reg);
-      return;
-    }
-
-    function onStateChange(this: ServiceWorker) {
-      if (this.state === "activated" || this.state === "activating") {
-        clearTimeout(timer);
-        sw!.removeEventListener("statechange", onStateChange);
-        resolve(reg);
-      } else if (this.state === "redundant") {
-        clearTimeout(timer);
-        sw!.removeEventListener("statechange", onStateChange);
-        // SW was superseded by a newer version — pick up the replacement
-        navigator.serviceWorker.getRegistration("/").then((newReg) => {
-          if (newReg?.active) {
-            resolve(newReg);
-          } else if (newReg) {
-            waitForActiveRegistration(newReg, 8000).then(resolve).catch(reject);
-          } else {
-            reject(new Error("Service Worker substituído. Recarregue a página."));
-          }
-        }).catch(() => reject(new Error("Service Worker substituído. Recarregue a página.")));
-      }
-    }
-
-    sw.addEventListener("statechange", onStateChange);
-  });
-}
-
-/**
- * Subscribe flow:
- * 1. Request permission
- * 2. Register SW if not present (with updateViaCache: none to avoid stale SW)
- * 3. Wait for SW active state (not controlling — just active is enough for PushManager)
- * 4. Get/create PushManager subscription
- * 5. Sync to Supabase
- */
 export async function subscribeToPush(userId: string): Promise<void> {
   if (!pushSupported()) {
     throw new Error("Seu navegador não suporta notificações push.");
@@ -101,68 +42,39 @@ export async function subscribeToPush(userId: string): Promise<void> {
     throw new Error("Erro de configuração: chave VAPID não encontrada.");
   }
 
-  // 1. Request permission
   const permission = await Notification.requestPermission();
   if (permission !== "granted") {
     throw new Error("Você precisa permitir as notificações no seu navegador.");
   }
 
-  // 2. Ensure SW is registered
-  let reg = await navigator.serviceWorker.getRegistration("/");
-  if (!reg) {
-    console.log("[Push] SW not found, registering...");
-    reg = await navigator.serviceWorker.register("/sw.js", {
-      scope: "/",
-      updateViaCache: "none",
-    });
-  }
-
-  // 3. Wait for active (not controlling) — avoids hanging on first install
-  const activeReg = await waitForActiveRegistration(reg);
-
-  // 4. Get or create subscription via reg.pushManager directly
-  let sub = await activeReg.pushManager.getSubscription();
-  if (!sub) {
-    console.log("[Push] Creating new subscription...");
-    sub = await activeReg.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(vapidKey) as unknown as BufferSource,
-    });
-  }
-
-  // 5. Sync to Supabase — clean up old entry for same endpoint first
-  const json = sub.toJSON();
-  await supabase.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
-
-  const { error } = await supabase.from("push_subscriptions").insert({
-    user_id: userId,
-    endpoint: sub.endpoint,
-    p256dh: json.keys?.p256dh ?? null,
-    auth: json.keys?.auth ?? null,
+  // navigator.serviceWorker.ready resolves once the SW is active (registered by PushRegistrar)
+  const reg = await navigator.serviceWorker.ready;
+  const sub = await reg.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(vapidKey) as unknown as BufferSource,
   });
+
+  const { error } = await supabase
+    .from("push_subscriptions")
+    .upsert(
+      { user_id: userId, subscription_json: JSON.stringify(sub) },
+      { onConflict: "user_id" },
+    );
 
   if (error) {
     throw new Error("Erro ao salvar sua inscrição no servidor.");
   }
-
-  console.log("[Push] Subscription successful!");
 }
 
-/**
- * Unsubscribe flow:
- * 1. Unsubscribe from PushManager
- * 2. Remove from Supabase
- */
-export async function unsubscribeFromPush(): Promise<void> {
+export async function unsubscribeFromPush(userId: string): Promise<void> {
   if (!pushSupported()) return;
   try {
     const reg = await navigator.serviceWorker.getRegistration("/");
-    if (!reg) return;
-    const sub = await reg.pushManager.getSubscription();
-    if (sub) {
-      await sub.unsubscribe();
-      await supabase.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
+    if (reg) {
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) await sub.unsubscribe();
     }
+    await supabase.from("push_subscriptions").delete().eq("user_id", userId);
   } catch (e) {
     console.error("[Push] Error unsubscribing:", e);
   }
