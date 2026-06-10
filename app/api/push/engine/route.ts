@@ -13,8 +13,9 @@ export const runtime = "nodejs";
  * Chamado pelo Vercel Cron (Authorization: Bearer <CRON_SECRET>) ou
  * manualmente com ?secret=<N8N_SECRET> para compatibilidade.
  *
- * Schedule em vercel.json: "0 8,9,10,12,14,19,20 * * *"
- * Cobre todos os horários relevantes: dose, peso, estoque, trial, dieta, hidratação.
+ * Schedule em vercel.json: "0 8,9,10,12,14,19,20,21 * * *"
+ * Cobre todos os horários: dose, peso, estoque, trial, dieta, hidratação,
+ * marcos de peso, streak, onboarding, primeiro mês, consulta médica, pós-entrega.
  */
 export async function GET(req: Request) {
   if (!isAuthorized(req)) {
@@ -33,7 +34,7 @@ export async function GET(req: Request) {
       .from("configuracoes_notificacao")
       .select(`
         user_id, lembrete_dose, dia_semana_dose, alerta_estoque, relatorio_semanal, dicas_dieta,
-        profiles!inner(id, nome, plano_ativo, trial_expira_em, created_at)
+        profiles!inner(id, nome, plano_ativo, trial_expira_em, created_at, peso_inicial, altura_cm)
       `);
 
     if (!allConfigs || allConfigs.length === 0) {
@@ -204,6 +205,145 @@ export async function GET(req: Request) {
           if (count === 0) {
             await send(userId, { ...NOTIFICACOES.ENGAJAMENTO.INATIVO_3DIAS(nome), tag: "reativacao-3d" });
             logs.push(`${userId}:INATIVO_3D`);
+          }
+        }
+      }
+
+      // ── MARCOS DE PESO ────────────────────────────────
+      if (currentHour === 9) {
+        const pesoInicial = profile.peso_inicial;
+        if (pesoInicial && pesoInicial > 0) {
+          const { data: latestW } = await supabase
+            .from("medicoes_saude").select("peso_kg").eq("user_id", userId)
+            .not("peso_kg", "is", null).order("data_medicao", { ascending: false })
+            .limit(1).maybeSingle();
+          if (latestW?.peso_kg) {
+            const perdido = Math.round((pesoInicial - latestW.peso_kg) * 10) / 10;
+            if (perdido >= 1) {
+              const { count: c1 } = await supabase.from("notifications")
+                .select("id", { count: "exact", head: true }).eq("user_id", userId).eq("tag", "perda-primeira");
+              if (c1 === 0) {
+                await send(userId, { ...NOTIFICACOES.PROGRESSO.PERDA_PRIMEIRA(nome, perdido), tag: "perda-primeira" });
+                logs.push(`${userId}:PERDA_PRIMEIRA`);
+              }
+            }
+            if (perdido >= 5) {
+              const { count: c5 } = await supabase.from("notifications")
+                .select("id", { count: "exact", head: true }).eq("user_id", userId).eq("tag", "marco-5kg");
+              if (c5 === 0) {
+                await send(userId, { ...NOTIFICACOES.PROGRESSO.PERDA_MARCO_5(nome), tag: "marco-5kg" });
+                logs.push(`${userId}:MARCO_5KG`);
+              }
+            }
+            if (perdido >= 10) {
+              const { count: c10 } = await supabase.from("notifications")
+                .select("id", { count: "exact", head: true }).eq("user_id", userId).eq("tag", "marco-10kg");
+              if (c10 === 0) {
+                await send(userId, { ...NOTIFICACOES.PROGRESSO.PERDA_MARCO_10(nome), tag: "marco-10kg" });
+                logs.push(`${userId}:MARCO_10KG`);
+              }
+            }
+            if (profile.altura_cm && profile.altura_cm > 0 && perdido >= 1) {
+              const currentIMC = latestW.peso_kg / Math.pow(profile.altura_cm / 100, 2);
+              const imcFloor = Math.floor(currentIMC);
+              const imcTag = `imc-${imcFloor}`;
+              const { count: cImc } = await supabase.from("notifications")
+                .select("id", { count: "exact", head: true }).eq("user_id", userId).eq("tag", imcTag);
+              if (cImc === 0) {
+                await send(userId, { ...NOTIFICACOES.PROGRESSO.IMC_MELHOROU(nome, Math.round(currentIMC * 10) / 10), tag: imcTag });
+                logs.push(`${userId}:IMC_${imcFloor}`);
+              }
+            }
+          }
+        }
+      }
+
+      // ── STREAK SEMANAL ─────────────────────────────────
+      if (currentHour === 9 && conf.lembrete_dose) {
+        const { count: totalDosesS } = await supabase
+          .from("doses").select("id", { count: "exact", head: true }).eq("user_id", userId);
+        const dosesS = totalDosesS || 0;
+        if (dosesS >= 4 && dosesS % 4 === 0) {
+          const streakTag = `dose-streak-${dosesS}`;
+          const { count: cStreak } = await supabase.from("notifications")
+            .select("id", { count: "exact", head: true }).eq("user_id", userId).eq("tag", streakTag);
+          if (cStreak === 0) {
+            await send(userId, { ...NOTIFICACOES.DOSES.SEMANA_COMPLETA(nome, dosesS), tag: streakTag });
+            logs.push(`${userId}:STREAK_${dosesS}`);
+          }
+        }
+      }
+
+      // ── PRIMEIRO MÊS ───────────────────────────────────
+      if (currentHour === 9 && differenceInDays(agora, parseISO(profile.created_at)) === 30) {
+        const { count: cMes } = await supabase.from("notifications")
+          .select("id", { count: "exact", head: true }).eq("user_id", userId).eq("tag", "primeiro-mes");
+        if (cMes === 0) {
+          await send(userId, { ...NOTIFICACOES.ENGAJAMENTO.PRIMEIRO_MES(nome), tag: "primeiro-mes" });
+          logs.push(`${userId}:PRIMEIRO_MES`);
+        }
+      }
+
+      // ── ONBOARDING D+2 / D+3 ──────────────────────────
+      if (hoursSinceSignup >= 48 && hoursSinceSignup < 72 && currentHour === 10) {
+        const { count: totalDosesOb } = await supabase
+          .from("doses").select("id", { count: "exact", head: true }).eq("user_id", userId);
+        if ((totalDosesOb || 0) === 0) {
+          const { count: cD2 } = await supabase.from("notifications")
+            .select("id", { count: "exact", head: true }).eq("user_id", userId).eq("tag", "onboarding-d2");
+          if (cD2 === 0) {
+            await send(userId, {
+              title: `${nome.split(' ')[0]}, configure sua primeira dose! 💉`,
+              body: 'Registre sua dose de Mounjaro para começar a acompanhar seu progresso no Momo.',
+              url: '/doses',
+              tag: 'onboarding-d2',
+            });
+            logs.push(`${userId}:ONBOARDING_D2`);
+          }
+        }
+      }
+      if (hoursSinceSignup >= 72 && hoursSinceSignup < 96 && currentHour === 19) {
+        const { count: totalDosesOb3 } = await supabase
+          .from("doses").select("id", { count: "exact", head: true }).eq("user_id", userId);
+        if ((totalDosesOb3 || 0) === 0) {
+          const { count: cD3 } = await supabase.from("notifications")
+            .select("id", { count: "exact", head: true }).eq("user_id", userId).eq("tag", "onboarding-d3");
+          if (cD3 === 0) {
+            await send(userId, {
+              title: 'Momo fica ainda melhor com seus dados 📊',
+              body: `${nome.split(' ')[0]}, registre seu peso e dia de dose para desbloquear lembretes e insights.`,
+              url: '/configuracoes/tratamento',
+              tag: 'onboarding-d3',
+            });
+            logs.push(`${userId}:ONBOARDING_D3`);
+          }
+        }
+      }
+
+      // ── CONSULTA MÉDICO (mensal, 2ª feira) ────────────
+      if (currentDay === 1 && currentHour === 10 && differenceInDays(agora, parseISO(profile.created_at)) >= 30) {
+        const umMesAtras = new Date(agora.getTime() - 28 * 24 * 3600 * 1000);
+        const { count: cConsulta } = await supabase.from("notifications")
+          .select("id", { count: "exact", head: true }).eq("user_id", userId).eq("tag", "consulta-medico")
+          .gte("created_at", umMesAtras.toISOString());
+        if (cConsulta === 0) {
+          await send(userId, { ...NOTIFICACOES.SAUDE.CONSULTA_MEDICO(nome), tag: "consulta-medico" });
+          logs.push(`${userId}:CONSULTA_MEDICO`);
+        }
+      }
+
+      // ── AVALIAÇÃO PÓS-ENTREGA ──────────────────────────
+      if (currentHour === 20) {
+        const { data: entregaHoje } = await supabase
+          .from("notifications").select("id").eq("user_id", userId)
+          .eq("tag", "entrega-concluida").gte("created_at", hojeStr).maybeSingle();
+        if (entregaHoje) {
+          const { count: cAvalia } = await supabase.from("notifications")
+            .select("id", { count: "exact", head: true }).eq("user_id", userId)
+            .eq("tag", "avaliacao").gte("created_at", hojeStr);
+          if (cAvalia === 0) {
+            await send(userId, { ...NOTIFICACOES.ENGAJAMENTO.AVALIE_FORNECEDOR(nome), tag: "avaliacao" });
+            logs.push(`${userId}:AVALIA_ENTREGA`);
           }
         }
       }
