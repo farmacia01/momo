@@ -1,4 +1,8 @@
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 import { createServerClient } from "@/lib/supabase-server";
 import "./fornecedor.css";
 import { SupplierBottomNav } from "@/components/SupplierBottomNav";

@@ -122,6 +122,16 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|icon.*|manifest.json).*)',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - manifest.json (PWA manifest)
+     * - splash.gif (Splash screen)
+     * - .png, .jpg, .jpeg, .gif, .svg (Images)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|manifest.json|splash.gif|.*\\.(?:png|jpg|jpeg|gif|svg)$|icon.*).*)',
   ],
 };

@@ -20,15 +20,56 @@ const syne = Syne({
   preload: false,
 });
 
+const APP_URL = "https://momo-rust-nu.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(APP_URL),
   title: {
-    default: "Momo",
+    default: "Momo — Acompanhamento de Mounjaro",
     template: "%s · Momo",
   },
   description:
-    "Acompanhe suas doses, peso, dieta e estoque de Mounjaro em um só lugar.",
+    "Acompanhe suas doses, peso, dieta e estoque de Mounjaro em um só lugar. O app completo para quem usa semaglutida e tirzepatida.",
+  keywords: [
+    "Mounjaro",
+    "tirzepatida",
+    "semaglutida",
+    "controle de doses",
+    "acompanhamento Mounjaro",
+    "diário Mounjaro",
+    "emagrecimento",
+    "saúde",
+  ],
   manifest: "/manifest.json",
   applicationName: "Momo",
+  authors: [{ name: "Momo" }],
+  creator: "Momo",
+  robots: { index: true, follow: true },
+  alternates: { canonical: APP_URL },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    url: APP_URL,
+    siteName: "Momo",
+    title: "Momo — Acompanhamento de Mounjaro",
+    description:
+      "Acompanhe suas doses, peso, dieta e estoque de Mounjaro em um só lugar.",
+    images: [
+      {
+        url: "/icons/icon-512.png",
+        width: 512,
+        height: 512,
+        alt: "Momo App",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "Momo — Acompanhamento de Mounjaro",
+    description:
+      "Acompanhe suas doses, peso, dieta e estoque de Mounjaro em um só lugar.",
+    images: ["/icons/icon-512.png"],
+  },
   icons: {
     icon: "/icons/icon-192.png",
     apple: "/icons/icon-192.png",

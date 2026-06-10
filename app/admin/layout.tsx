@@ -1,4 +1,8 @@
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 import { redirect } from "next/navigation";
 import { createServerClient, createServiceClient } from "@/lib/supabase-server";
 import { AdminNav } from "@/components/AdminNav";

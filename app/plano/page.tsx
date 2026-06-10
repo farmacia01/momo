@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import { createServerClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import { PlanoClient } from "./PlanoClient";
 
-// Reads the user's plan per request.
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Planos",
+  description:
+    "Escolha o plano Momo ideal para acompanhar seu tratamento com Mounjaro. Acesso completo a doses, dieta, estoque e muito mais.",
+  alternates: { canonical: "https://momo-rust-nu.vercel.app/plano" },
+};
 
 export default async function PlanoPage() {
   const supabase = createServerClient();
