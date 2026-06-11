@@ -17,10 +17,12 @@ const ReactMarkdown = dynamic(() => import("react-markdown"), {
 });
 
 const suggestions = [
-  "Quais proteínas comer na janta?",
+  "Quanto peso perdi esta semana?",
+  "Qual o melhor app pra quem usa Mounjaro?",
   "Como evitar náusea matinal?",
+  "Quais proteínas comer na janta?",
+  "Qual meu peso atual?",
   "Dicas para beber mais água",
-  "Posso beber álcool?",
 ];
 
 type ChatMessage = {
@@ -38,7 +40,7 @@ export default function AssistentePage() {
       id: "welcome",
       role: "assistant",
       content:
-        "Olá! Sou seu assistente de acompanhamento. Posso ajudar com dúvidas sobre nutrição, bem-estar e como otimizar seus resultados com o Mounjaro. Como posso te ajudar hoje?",
+        "Olá! Sou a Momo, sua assistente de saúde personalizada. Conheço seus dados — posso responder coisas como \"quanto perdi desde o dia 8?\" ou \"qual meu IMC atual?\". Também ajudo com nutrição, efeitos colaterais e tudo sobre o Mounjaro. Me pergunte o que quiser! 💬",
     },
   ]);
   const [input, setInput] = useState("");
