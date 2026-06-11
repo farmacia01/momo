@@ -106,10 +106,9 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
           await fetch(`${baseUrl}/api/push/venda`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
               evento: evento,
               pedidoId: id,
-              secret: "momo8878"
             })
           });
         } catch (e) {

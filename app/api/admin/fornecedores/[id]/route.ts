@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createRouteClient, createServiceClient } from "@/lib/supabase-server";
 import webpush from "web-push";
 
-const ADMIN_EMAIL = "ryan@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
 
 async function pushToUser(userId: string, title: string, body: string) {
   const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
@@ -19,8 +19,8 @@ async function pushToUser(userId: string, title: string, body: string) {
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const supabase = createRouteClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session || session.user.email !== ADMIN_EMAIL) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user || user.email !== ADMIN_EMAIL) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { action, motivo } = await req.json().catch(() => ({}));
   if (!action) return NextResponse.json({ error: "action required" }, { status: 400 });
@@ -36,7 +36,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   await admin.from("fornecedores").update({ status: novoStatus }).eq("id", params.id);
 
   await admin.from("admin_logs").insert({
-    admin_email: session.user.email, acao: action, entidade: "fornecedor", entidade_id: params.id,
+    admin_email: user.email, acao: action, entidade: "fornecedor", entidade_id: params.id,
     detalhes: { motivo: motivo || null, nome: fornecedor.nome_fantasia || fornecedor.razao_social },
   });
 

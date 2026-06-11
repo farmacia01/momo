@@ -426,7 +426,6 @@ function isAuthorized(req: Request): boolean {
   // Compatibilidade com secret via query param (chamadas manuais/admin)
   const secret = new URL(req.url).searchParams.get("secret");
   if (secret === process.env.N8N_SECRET) return true;
-  if (secret === "momo8878") return true;
 
   return false;
 }

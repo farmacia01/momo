@@ -329,7 +329,7 @@ function ConfirmarPedidoModal({
         fetch(`${baseUrl}/api/push/venda`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ evento: "NOVO_PEDIDO", pedidoId, secret: "momo8878" }),
+          body: JSON.stringify({ evento: "NOVO_PEDIDO", pedidoId }),
         }).catch(() => {});
       }
 

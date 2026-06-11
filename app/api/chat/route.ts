@@ -1,10 +1,17 @@
 import { NextResponse } from "next/server";
 import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
+import { createRouteClient } from "@/lib/supabase-server";
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
+  const supabase = createRouteClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { messages } = await req.json();
 
   try {

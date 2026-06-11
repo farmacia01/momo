@@ -10,6 +10,20 @@ export const runtime = "nodejs";
  * Body: { userId, template, category, params: [] }
  */
 export async function POST(req: Request) {
+  // Somente callers autenticados (server-side via X-Internal-Key ou sessão de usuário)
+  const internalKey = req.headers.get("x-internal-key");
+  const n8nSecret = process.env.N8N_SECRET;
+  const isInternal = n8nSecret && n8nSecret.length > 0 && internalKey === n8nSecret;
+
+  if (!isInternal) {
+    const { createRouteClient } = await import("@/lib/supabase-server");
+    const supabase = createRouteClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
+
   const { userId, template, category, params = [] } = await req.json().catch(() => ({}));
 
   if (!userId || !template) {
@@ -33,12 +47,12 @@ export async function POST(req: Request) {
     
     const pushRes = await fetch(`${baseUrl}/api/push/send`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        userId, 
-        title: payload.title, 
+      headers: { 'Content-Type': 'application/json', 'X-Internal-Key': process.env.N8N_SECRET ?? '' },
+      body: JSON.stringify({
+        userId,
+        title: payload.title,
         body: payload.body,
-        url: payload.url 
+        url: payload.url
       })
     });
 

@@ -32,9 +32,17 @@ async function handleBroadcast(req: Request) {
   const msgBody = searchParams.get("body") || body.body;
   const url = searchParams.get("url") || body.url || "/";
 
-  // 1. Validação de Segurança
-  if (secret !== process.env.N8N_SECRET && secret !== "momo8878") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // 1. Validação de Segurança: aceita N8N_SECRET (n8n/server) ou sessão admin (painel)
+  const n8nSecret = process.env.N8N_SECRET;
+  const isN8n = n8nSecret && n8nSecret.length > 0 && secret === n8nSecret;
+  if (!isN8n) {
+    const { createRouteClient } = await import("@/lib/supabase-server");
+    const supabase = createRouteClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+    if (!user || !ADMIN_EMAIL || user.email !== ADMIN_EMAIL) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
   }
 
   try {
@@ -75,12 +83,12 @@ async function handleBroadcast(req: Request) {
       try {
         const pushRes = await fetch(`${baseUrl}/api/push/send`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            userId: user.id, 
-            title: finalTitle, 
-            body: finalBody, 
-            url: finalUrl 
+          headers: { 'Content-Type': 'application/json', 'X-Internal-Key': process.env.N8N_SECRET ?? '' },
+          body: JSON.stringify({
+            userId: user.id,
+            title: finalTitle,
+            body: finalBody,
+            url: finalUrl
           })
         });
         results.push({ email: user.email, ok: pushRes.ok });

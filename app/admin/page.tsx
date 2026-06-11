@@ -15,7 +15,7 @@ import {
 
 export const dynamic = "force-dynamic";
 
-const ADMIN_EMAIL = "ryan@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
 
 // --- Helpers ---
 
@@ -44,8 +44,8 @@ function calculateChurn(activeStart: number, canceledDuring: number) {
 
 export default async function AdminDashboardPage() {
   const supabase = createServerClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session || session.user.email !== ADMIN_EMAIL) redirect("/login");
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user || user.email !== ADMIN_EMAIL) redirect("/login");
 
   const admin = createServiceClient();
   const now = new Date();

@@ -51,7 +51,6 @@ export function AdminNotificacoesClient({ historico: initialHistorico }: { histo
         body: JSON.stringify({
           template: templateKey,
           category: category,
-          secret: "momo8878"
         })
       });
 

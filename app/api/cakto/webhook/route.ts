@@ -1,5 +1,6 @@
 import { createServiceClient } from '@/lib/supabase-server'
 import { NextRequest } from 'next/server'
+import crypto from 'crypto'
 
 export const runtime = 'nodejs'
 
@@ -7,12 +8,33 @@ export const runtime = 'nodejs'
 const PERIODO_MS = 30 * 24 * 60 * 60 * 1000
 
 export async function POST(req: NextRequest) {
-  const body = await req.json()
+  const rawBody = await req.text()
+
+  // Verificação HMAC: se CAKTO_WEBHOOK_SECRET estiver configurado, valida a assinatura.
+  const webhookSecret = process.env.CAKTO_WEBHOOK_SECRET
+  if (webhookSecret) {
+    const signature = req.headers.get('x-cakto-signature') || req.headers.get('x-signature') || ''
+    const expected = crypto
+      .createHmac('sha256', webhookSecret)
+      .update(rawBody, 'utf8')
+      .digest('hex')
+    const sigBuf = Buffer.from(signature)
+    const expBuf = Buffer.from(expected)
+    const valid = sigBuf.length === expBuf.length && crypto.timingSafeEqual(sigBuf, expBuf)
+    if (!valid) {
+      console.error('[Cakto] Webhook signature mismatch — request rejected')
+      return Response.json({ error: 'Invalid signature' }, { status: 401 })
+    }
+  } else {
+    console.warn('[Cakto] CAKTO_WEBHOOK_SECRET not set — signature verification skipped. Set this env var to secure the webhook.')
+  }
+
+  const body = JSON.parse(rawBody)
   // Service role: o webhook precisa achar/atualizar profiles de qualquer usuário
   // pelo email (fora do contexto de sessão), o que ignora RLS.
   const supabase = createServiceClient()
 
-  console.log('Cakto webhook event:', body.event, body)
+  console.log('Cakto webhook event:', body.event)
 
   const evento = body.event || body.custom_id
   const pedido = body.order || body
@@ -55,12 +77,12 @@ export async function POST(req: NextRequest) {
           const baseUrl = "https://momo-rust-nu.vercel.app";
           await fetch(`${baseUrl}/api/push/send`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              userId: profile.id, 
-              title: "💎 Assinatura Premium Ativada!", 
+            headers: { 'Content-Type': 'application/json', 'X-Internal-Key': process.env.N8N_SECRET ?? '' },
+            body: JSON.stringify({
+              userId: profile.id,
+              title: "💎 Assinatura Premium Ativada!",
               body: "Parabéns! Seu acesso total ao Momo já está liberado.",
-              url: "/" 
+              url: "/"
             })
           });
         } catch (e) {

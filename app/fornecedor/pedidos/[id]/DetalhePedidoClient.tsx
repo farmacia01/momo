@@ -61,7 +61,7 @@ export function DetalhePedidoClient({ initialPedido, isFornecedor }: { initialPe
         fetch(`${baseUrl}/api/push/venda`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ evento, pedidoId: pedido.id, secret: "momo8878" }),
+          body: JSON.stringify({ evento, pedidoId: pedido.id }),
         }).catch(() => {});
       }
     } else {

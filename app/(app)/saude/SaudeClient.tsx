@@ -311,6 +311,14 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
 
         {activeTab === "Peso" && (
           <div className="space-y-6 page-transition-enter">
+            <button
+              onClick={() => setShowMedicaoForm(true)}
+              className="w-full h-[52px] bg-ember text-white rounded-full font-bold text-sm shadow-ember flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
+            >
+              <Plus size={18} strokeWidth={2.5} />
+              Nova Medição
+            </button>
+
             {/* Hero Card "Peso Atual" */}
             <div className="relative overflow-hidden bg-gradient-to-br from-ember to-ember-dim p-6 rounded-[24px] shadow-lg text-white">
               <div className="absolute top-[-20px] right-[-20px] w-32 h-32 rounded-full bg-surface/10 blur-2xl" />
@@ -545,13 +553,6 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
               </div>
             </div>
 
-            <button 
-              onClick={() => setShowMedicaoForm(true)}
-              className="w-full h-[52px] bg-ember text-white rounded-full font-bold text-sm shadow-ember flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
-            >
-              <Plus size={18} strokeWidth={2.5} />
-              Nova Medição
-            </button>
           </div>
         )}
 

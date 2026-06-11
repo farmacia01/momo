@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import webpush from "web-push";
-import { createServiceClient } from "@/lib/supabase-server";
+import { createServiceClient, createRouteClient } from "@/lib/supabase-server";
 
 export const runtime = "nodejs";
 
 /**
  * POST /api/push/send
  * Body: { userId, title, body, url? }
+ * Header: X-Internal-Key: <N8N_SECRET>  (required for server-to-server calls)
  *
  * Sends a web-push notification to every registered device of `userId`.
  * Uses the service-role client to read push_subscriptions across users.
@@ -17,6 +18,19 @@ export async function POST(request: Request) {
     const body = await request.json().catch(() => ({}));
     const { userId, title, body: msgBody, url, tag } = body;
     const finalBody = msgBody ?? "";
+
+    // Auth: accept server-to-server calls with internal key, or authenticated users sending to themselves
+    const internalKey = request.headers.get("x-internal-key");
+    const n8nSecret = process.env.N8N_SECRET;
+    const isInternal = n8nSecret && n8nSecret.length > 0 && internalKey === n8nSecret;
+
+    if (!isInternal) {
+      const supabase = createRouteClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || user.id !== userId) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+    }
 
     console.log(`[PushSend] Attempting to send to ${userId}: ${title}`);
 
@@ -100,6 +114,6 @@ export async function POST(request: Request) {
 
   } catch (err: any) {
     console.error("[PushSend] Global Exception:", err);
-    return NextResponse.json({ error: err.message, stack: err.stack }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

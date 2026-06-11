@@ -12,7 +12,8 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const secret = searchParams.get("secret");
 
-  if (secret !== process.env.N8N_SECRET && secret !== "momo8878") {
+  const n8nSecret = process.env.N8N_SECRET;
+  if (!n8nSecret || !secret || secret !== n8nSecret) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -34,12 +35,12 @@ export async function GET(req: Request) {
     
     const pushRes = await fetch(`${baseUrl}/api/push/send`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        userId, 
-        title: "🔔 Teste de Conexão", 
+      headers: { 'Content-Type': 'application/json', 'X-Internal-Key': process.env.N8N_SECRET ?? '' },
+      body: JSON.stringify({
+        userId,
+        title: "🔔 Teste de Conexão",
         body: `Olá ${userEmail}, sua integração com o n8n está 100%!`,
-        url: "/" 
+        url: "/"
       })
     });
 

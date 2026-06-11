@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import { createRouteClient, createServiceClient } from "@/lib/supabase-server";
 import webpush from "web-push";
 
-const ADMIN_EMAIL = "ryan@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
 
 export async function POST(req: Request) {
   const supabase = createRouteClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session || session.user.email !== ADMIN_EMAIL) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user || user.email !== ADMIN_EMAIL) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { titulo, mensagem, url = "/", segmento } = await req.json().catch(() => ({}));
   if (!titulo || !mensagem || !segmento) return NextResponse.json({ error: "titulo, mensagem e segmento são obrigatórios" }, { status: 400 });
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
 
   await admin.from("notification_history").insert({ admin_email: ADMIN_EMAIL, titulo, mensagem, url, segmento, total_enviado: enviado });
   await admin.from("admin_logs").insert({
-    admin_email: session.user.email, acao: "notificacao_massa", entidade: "notificacao",
+    admin_email: user.email, acao: "notificacao_massa", entidade: "notificacao",
     detalhes: { titulo, segmento, total_enviado: enviado, total_usuarios: userIds.length },
   });
 

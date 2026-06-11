@@ -14,13 +14,13 @@ export const viewport: Viewport = {
 
 export const dynamic = "force-dynamic";
 
-const ADMIN_EMAIL = "ryan@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = createServerClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  if (!session || session.user.email !== ADMIN_EMAIL) {
+  if (!user || user.email !== ADMIN_EMAIL) {
     redirect("/login");
   }
 

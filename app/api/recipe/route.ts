@@ -1,10 +1,17 @@
 import { OpenAI } from 'openai';
 import { NextResponse } from 'next/server';
 import { PLANOS, type FaseMounjaro } from '@/lib/diet-plans';
+import { createRouteClient } from '@/lib/supabase-server';
 
 export const maxDuration = 60; // DALL-E 3 and GPT can take time
 
 export async function POST(req: Request) {
+  const supabase = createRouteClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });

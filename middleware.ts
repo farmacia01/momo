@@ -43,9 +43,9 @@ export async function middleware(req: NextRequest) {
   const isSupplier = session?.user?.user_metadata?.is_fornecedor === true;
 
   // Admin routes: restricted to owner email only
-  const ADMIN_EMAIL = 'ryan@gmail.com';
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? '';
   if (req.nextUrl.pathname.startsWith('/admin')) {
-    if (!session || session.user.email !== ADMIN_EMAIL) {
+    if (!session || !ADMIN_EMAIL || session.user.email !== ADMIN_EMAIL) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
     return res;
@@ -132,6 +132,6 @@ export const config = {
      * - splash.gif (Splash screen)
      * - .png, .jpg, .jpeg, .gif, .svg (Images)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|manifest.json|splash.gif|.*\\.(?:png|jpg|jpeg|gif|svg)$|icon.*).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|manifest.json|splash.gif|sw\\.js|push-sw\\.js|workbox-|.*\\.(?:png|jpg|jpeg|gif|svg)$|icon.*).*)',
   ],
 };

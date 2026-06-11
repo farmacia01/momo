@@ -66,8 +66,16 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const { evento, pedidoId, secret, nota, comentario } = body;
 
-    if (secret !== process.env.N8N_SECRET && secret !== "momo8878") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const n8nSecret = process.env.N8N_SECRET;
+    const isN8n = n8nSecret && n8nSecret.length > 0 && secret === n8nSecret;
+    if (!isN8n) {
+      // Aceita chamadas de usuários autenticados (fornecedores/pacientes via browser)
+      const { createRouteClient } = await import("@/lib/supabase-server");
+      const supabase = createRouteClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
     }
 
     if (!evento || !pedidoId) {
