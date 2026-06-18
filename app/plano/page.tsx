@@ -45,7 +45,6 @@ export default async function PlanoPage() {
 
   return (
     <PlanoClient
-      email={session.user.email ?? ""}
       status={status}
       diasRestantesTrial={diasRestantesTrial}
       assinaturaExpiraEm={profile?.assinatura_expira_em ?? null}

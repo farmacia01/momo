@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { AlertTriangle, TrendingUp, Utensils, Bell, Star, Package, ShieldCheck, Check, ChevronLeft } from "lucide-react";
-
-const CHECKOUT_URL = "https://pay.cakto.com.br/i75hqvn_913965";
+import { StripeCheckout } from "@/components/StripeCheckout";
 
 const DORES = [
   { icon: <AlertTriangle size={18} />, text: "Uma dose esquecida zera semanas de progresso — e você nem percebe" },
@@ -19,21 +19,19 @@ const SOLUCOES = [
 ];
 
 export function PlanoClient({
-  email,
   status,
   diasRestantesTrial,
   assinaturaExpiraEm,
 }: {
-  email: string;
   status: "trial" | "premium" | "expirado";
   diasRestantesTrial: number;
   assinaturaExpiraEm: string | null;
 }) {
+  const [showCheckout, setShowCheckout] = useState(false);
+
   if (status === "premium") {
     return <PremiumAtivo assinaturaExpiraEm={assinaturaExpiraEm} />;
   }
-
-  const checkoutLink = `${CHECKOUT_URL}?email=${encodeURIComponent(email)}`;
 
   return (
     <div className="min-h-screen bg-bg pb-12">
@@ -50,7 +48,6 @@ export function PlanoClient({
           className="absolute right-0 top-0 h-48 w-48 rounded-full opacity-10"
           style={{ background: "#ff6500", filter: "blur(50px)", transform: "translate(20%, -20%)" }}
         />
-
         <a
           href="/"
           className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-semibold"
@@ -59,7 +56,6 @@ export function PlanoClient({
           <ChevronLeft size={16} strokeWidth={2.5} />
           Voltar
         </a>
-
         <div className="relative z-10 space-y-3">
           <p
             className="text-[10px] font-black uppercase tracking-[0.2em]"
@@ -150,19 +146,20 @@ export function PlanoClient({
             </div>
           </div>
 
-          <a
-            href={checkoutLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex w-full items-center justify-center gap-2 rounded-full py-4 text-base font-black text-white transition-transform active:scale-[0.97]"
-            style={{
-              background: "linear-gradient(135deg, #ff6500, #e05500)",
-              boxShadow: "0 8px 24px rgba(255,101,0,0.4)",
-              textDecoration: "none",
-            }}
-          >
-            Ativar meu acompanhamento
-          </a>
+          {showCheckout ? (
+            <StripeCheckout />
+          ) : (
+            <button
+              onClick={() => setShowCheckout(true)}
+              className="flex w-full items-center justify-center gap-2 rounded-full py-4 text-base font-black text-white transition-transform active:scale-[0.97]"
+              style={{
+                background: "linear-gradient(135deg, #ff6500, #e05500)",
+                boxShadow: "0 8px 24px rgba(255,101,0,0.4)",
+              }}
+            >
+              Ativar meu acompanhamento
+            </button>
+          )}
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <span className="flex items-center gap-1.5 text-[11px] font-medium" style={{ color: "var(--color-text-dim)" }}>
@@ -181,6 +178,8 @@ export function PlanoClient({
 }
 
 function PremiumAtivo({ assinaturaExpiraEm }: { assinaturaExpiraEm: string | null }) {
+  const [loading, setLoading] = useState(false);
+
   const venc = assinaturaExpiraEm
     ? new Date(assinaturaExpiraEm).toLocaleDateString("pt-BR", {
         day: "2-digit",
@@ -188,6 +187,17 @@ function PremiumAtivo({ assinaturaExpiraEm }: { assinaturaExpiraEm: string | nul
         year: "numeric",
       })
     : "Renovação automática";
+
+  async function openPortal() {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/stripe/portal', { method: 'POST' });
+      const { url } = await res.json();
+      window.location.href = url;
+    } catch {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6 py-16" style={{ background: "#0d0d0d" }}>
@@ -224,20 +234,18 @@ function PremiumAtivo({ assinaturaExpiraEm }: { assinaturaExpiraEm: string | nul
           <p className="mt-1 text-base font-bold text-white">{venc}</p>
         </div>
 
-        <a
-          href="https://app.cakto.com.br/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-6 block w-full rounded-full py-3.5 text-sm font-black transition-transform active:scale-[0.98]"
+        <button
+          onClick={openPortal}
+          disabled={loading}
+          className="mt-6 block w-full rounded-full py-3.5 text-sm font-black transition-transform active:scale-[0.98] disabled:opacity-60"
           style={{
             background: "linear-gradient(135deg, #ff6500, #e05500)",
             color: "white",
-            textDecoration: "none",
             boxShadow: "0 4px 16px rgba(255,101,0,0.35)",
           }}
         >
-          Gerenciar assinatura
-        </a>
+          {loading ? "Abrindo..." : "Gerenciar assinatura"}
+        </button>
         <a
           href="/"
           className="mt-3 block w-full rounded-full py-3.5 text-sm font-bold"
