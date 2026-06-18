@@ -30,6 +30,11 @@ export async function POST(req: NextRequest) {
     sessionParams.subscription_data = { trial_period_days: 7 }
   }
 
-  const session = await stripe.checkout.sessions.create(sessionParams)
-  return Response.json({ clientSecret: session.client_secret })
+  try {
+    const session = await stripe.checkout.sessions.create(sessionParams)
+    return Response.json({ clientSecret: session.client_secret })
+  } catch (err: any) {
+    console.error('[create-checkout] Stripe error:', err?.message)
+    return Response.json({ error: err?.message || 'Stripe error' }, { status: 500 })
+  }
 }

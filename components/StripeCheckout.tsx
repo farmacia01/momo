@@ -19,7 +19,7 @@ export function StripeCheckout({ signup }: { signup?: boolean }) {
       .then(r => r.json())
       .then(data => {
         if (data.clientSecret) setClientSecret(data.clientSecret)
-        else setError('Não foi possível iniciar o checkout.')
+        else setError(data.error || 'Não foi possível iniciar o checkout.')
       })
       .catch(() => setError('Erro ao conectar com o servidor.'))
   }, [signup])
