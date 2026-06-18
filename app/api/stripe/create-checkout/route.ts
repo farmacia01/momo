@@ -34,7 +34,8 @@ export async function POST(req: NextRequest) {
     const session = await stripe.checkout.sessions.create(sessionParams)
     return Response.json({ clientSecret: session.client_secret })
   } catch (err: any) {
-    console.error('[create-checkout] Stripe error:', err?.message)
-    return Response.json({ error: err?.message || 'Stripe error' }, { status: 500 })
+    const detail = { type: err?.type, code: err?.code, message: err?.message, status: err?.statusCode }
+    console.error('[create-checkout] error:', JSON.stringify(detail))
+    return Response.json({ error: err?.message || 'Stripe error', detail }, { status: 500 })
   }
 }
