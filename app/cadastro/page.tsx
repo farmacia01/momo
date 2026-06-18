@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, ArrowRight, Check, User, Activity, Target } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, User, Activity, Target, Star, Bell, TrendingUp, Utensils, Package, BookOpen, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { StripeCheckout } from '@/components/StripeCheckout';
 
 const DOSES = ['2.5', '5', '7.5', '10', '12.5', '15'];
 const DIAS_SEMANA = [
@@ -18,10 +19,19 @@ const DIAS_SEMANA = [
   { id: 6, label: 'Sáb' },
 ];
 
+const BENEFICIOS = [
+  { icon: <Bell size={15} />, text: 'Lembretes automáticos de dose' },
+  { icon: <TrendingUp size={15} />, text: 'Gráficos de peso e progresso' },
+  { icon: <Utensils size={15} />, text: 'Receitas para sua fase do tratamento' },
+  { icon: <Package size={15} />, text: 'Alerta de estoque de ampolas' },
+  { icon: <BookOpen size={15} />, text: 'Histórico completo para o médico' },
+];
+
 export default function CadastroPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
@@ -40,24 +50,7 @@ export default function CadastroPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const nextStep = () => {
-    if (step === 1 && (!formData.nome || !formData.email || !formData.password)) {
-      toast.error('Preencha os dados básicos');
-      return;
-    }
-    if (step === 2 && (!formData.data_inicio_tratamento || !formData.altura_cm || !formData.peso_inicial)) {
-      toast.error('Preencha os dados do tratamento');
-      return;
-    }
-    setStep(step + 1);
-  };
-
-  const prevStep = () => {
-    if (step === 1) { router.push('/login'); } else { setStep(step - 1); }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const createAccount = async () => {
     setLoading(true);
     setError(null);
 
@@ -67,24 +60,49 @@ export default function CadastroPage() {
       options: {
         data: {
           nome: formData.nome,
+          skip_trial: 'true',
           altura_cm: Number(formData.altura_cm),
           peso_inicial: Number(formData.peso_inicial),
           peso_meta: formData.peso_meta ? Number(formData.peso_meta) : null,
           data_inicio_tratamento: formData.data_inicio_tratamento,
           dose_atual_mg: Number(formData.dose_atual_mg),
           dia_aplicacao: Number(formData.dia_aplicacao),
-        }
-      }
+        },
+      },
     });
+
+    setLoading(false);
 
     if (signUpError) {
       setError(signUpError.message);
-      setLoading(false);
-    } else {
-      toast.success('Conta criada com sucesso!');
-      setTimeout(() => { router.push('/'); router.refresh(); }, 1500);
+      return false;
     }
+    return true;
   };
+
+  const nextStep = async () => {
+    if (step === 1 && (!formData.nome || !formData.email || !formData.password)) {
+      toast.error('Preencha os dados básicos');
+      return;
+    }
+    if (step === 2 && (!formData.data_inicio_tratamento || !formData.altura_cm || !formData.peso_inicial)) {
+      toast.error('Preencha os dados do tratamento');
+      return;
+    }
+    if (step === 3) {
+      const ok = await createAccount();
+      if (!ok) return;
+    }
+    setStep(step + 1);
+  };
+
+  const prevStep = () => {
+    if (step === 1) { router.push('/login'); }
+    else if (step === 4) { /* can't go back after account created */ }
+    else { setStep(step - 1); }
+  };
+
+  const TOTAL_STEPS = 4;
 
   return (
     <div className="flex min-h-screen flex-col bg-bg text-text transition-colors duration-300">
@@ -95,7 +113,12 @@ export default function CadastroPage() {
         <button
           onClick={prevStep}
           className="rounded-full p-2 transition-all active:scale-95"
-          style={{ background: "var(--color-surface-mid)", color: "var(--color-text-muted)", border: "1px solid var(--color-surface-border)" }}
+          style={{
+            background: "var(--color-surface-mid)",
+            color: step === 4 ? "transparent" : "var(--color-text-muted)",
+            border: "1px solid var(--color-surface-border)",
+            pointerEvents: step === 4 ? "none" : "auto",
+          }}
         >
           <ArrowLeft className="h-6 w-6" />
         </button>
@@ -105,7 +128,7 @@ export default function CadastroPage() {
 
       {/* Progress Bar */}
       <div className="flex px-6 pt-6">
-        {[1, 2, 3].map((s) => (
+        {Array.from({ length: TOTAL_STEPS }, (_, i) => i + 1).map((s) => (
           <div key={s} className="flex flex-1 items-center">
             <div
               className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all duration-300"
@@ -117,7 +140,7 @@ export default function CadastroPage() {
             >
               {step > s ? <Check className="h-4 w-4" /> : s}
             </div>
-            {s < 3 && (
+            {s < TOTAL_STEPS && (
               <div
                 className="h-0.5 flex-1 transition-all duration-300"
                 style={{ background: step > s ? "var(--color-ember)" : "var(--color-surface-border)" }}
@@ -127,12 +150,10 @@ export default function CadastroPage() {
         ))}
       </div>
 
-      <main className="flex-1 px-6 pt-8 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto px-6 pt-8">
         <div className="mx-auto max-w-md pb-32">
           {error && (
-            <div
-              className="mb-6 rounded-xl p-4 text-sm text-danger animate-fade-up bg-danger/5 border border-danger/20"
-            >
+            <div className="mb-6 animate-fade-up rounded-xl border border-danger/20 bg-danger/5 p-4 text-sm text-danger">
               {error}
             </div>
           )}
@@ -192,7 +213,7 @@ export default function CadastroPage() {
                       key={d.id}
                       type="button"
                       onClick={() => setFormData({ ...formData, dia_aplicacao: String(d.id) })}
-                      className="flex-1 min-w-[60px] rounded-full py-2.5 text-xs font-bold transition-all duration-200"
+                      className="min-w-[60px] flex-1 rounded-full py-2.5 text-xs font-bold transition-all duration-200"
                       style={
                         formData.dia_aplicacao === String(d.id)
                           ? { background: "var(--color-ember)", color: "#fff", boxShadow: "var(--shadow-ember)", transform: "scale(1.05)" }
@@ -207,32 +228,120 @@ export default function CadastroPage() {
               </div>
             </div>
           )}
+
+          {step === 4 && (
+            <div className="space-y-5 animate-fade-up">
+              <StepHeader icon={<Star className="h-5 w-5" />} title="Seu plano" subtitle="7 dias grátis para começar" />
+
+              {showCheckout ? (
+                <StripeCheckout signup />
+              ) : (
+                <div
+                  className="space-y-5 rounded-[24px] p-6"
+                  style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
+                >
+                  {/* Header do plano */}
+                  <div
+                    className="relative overflow-hidden rounded-2xl p-5"
+                    style={{ background: "linear-gradient(135deg, #1a0800, #2d1200)", border: "1px solid rgba(255,101,0,0.2)" }}
+                  >
+                    <div
+                      className="absolute right-0 top-0 h-32 w-32 rounded-full opacity-10"
+                      style={{ background: "#ff6500", filter: "blur(40px)", transform: "translate(20%, -20%)" }}
+                    />
+                    <div className="relative z-10">
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: "rgba(255,101,0,0.8)" }}>
+                        Momo Premium
+                      </p>
+                      <div className="mt-2 flex items-end gap-1">
+                        <span className="text-3xl font-black text-white">R$ 29,90</span>
+                        <span className="mb-1 text-sm font-medium text-white/50">/mês</span>
+                      </div>
+                      <p className="mt-1 text-sm font-bold" style={{ color: "rgba(255,101,0,0.9)" }}>
+                        7 dias grátis — cancele quando quiser
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Benefícios */}
+                  <div className="space-y-3">
+                    {BENEFICIOS.map((b, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div
+                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                          style={{ background: "rgba(255,101,0,0.1)", color: "#ff6500" }}
+                        >
+                          {b.icon}
+                        </div>
+                        <span className="text-sm font-medium text-text">{b.text}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Badge segurança */}
+                  <div className="flex items-center justify-center gap-2 text-[11px] font-medium text-text-dim">
+                    <ShieldCheck size={13} style={{ color: "#ff6500" }} />
+                    Pagamento seguro · Cancele quando quiser
+                  </div>
+
+                  {/* CTA */}
+                  <button
+                    onClick={() => setShowCheckout(true)}
+                    className="flex w-full items-center justify-center gap-2 rounded-full py-4 text-base font-black text-white transition-all active:scale-[0.97]"
+                    style={{
+                      background: "linear-gradient(135deg, #ff6500, #e05500)",
+                      boxShadow: "0 8px 24px rgba(255,101,0,0.4)",
+                    }}
+                  >
+                    Começar meu teste grátis
+                    <ArrowRight className="h-5 w-5" />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </main>
 
       <footer
-        className="fixed bottom-0 left-0 right-0 p-6 z-40"
+        className="fixed bottom-0 left-0 right-0 z-40 p-6"
         style={{ background: "var(--color-surface)", borderTop: "1px solid var(--color-surface-border)" }}
       >
         <div className="mx-auto max-w-md">
-          {step < 3 ? (
+          {step < 3 && (
             <button
               onClick={nextStep}
-              className="flex h-14 w-full items-center justify-center gap-2 rounded-full text-base font-bold text-white transition-all active:scale-95 shadow-lg"
+              className="flex h-14 w-full items-center justify-center gap-2 rounded-full text-base font-bold text-white shadow-lg transition-all active:scale-95"
               style={{ background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))", boxShadow: "var(--shadow-ember)" }}
             >
               Próximo
               <ArrowRight className="h-5 w-5" />
             </button>
-          ) : (
+          )}
+
+          {step === 3 && (
             <button
-              onClick={handleSubmit}
+              onClick={nextStep}
               disabled={loading}
-              className="flex h-14 w-full items-center justify-center gap-2 rounded-full text-base font-bold text-white transition-all active:scale-95 disabled:opacity-70 shadow-lg"
+              className="flex h-14 w-full items-center justify-center gap-2 rounded-full text-base font-bold text-white shadow-lg transition-all active:scale-95 disabled:opacity-70"
               style={{ background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))", boxShadow: "var(--shadow-ember)" }}
             >
-              {loading ? 'Criando conta...' : 'Concluir e entrar'}
-              {!loading && <Check className="h-5 w-5" />}
+              {loading ? 'Criando conta...' : 'Próximo'}
+              {!loading && <ArrowRight className="h-5 w-5" />}
+            </button>
+          )}
+
+          {step === 4 && !showCheckout && (
+            <button
+              onClick={() => router.push('/')}
+              className="flex h-14 w-full items-center justify-center gap-2 rounded-full text-sm font-bold transition-all active:scale-95"
+              style={{
+                background: "transparent",
+                border: "1px solid var(--color-surface-border)",
+                color: "var(--color-text-dim)",
+              }}
+            >
+              Prefiro pular por agora
             </button>
           )}
         </div>
@@ -251,7 +360,7 @@ function StepHeader({ icon, title, subtitle }: { icon: React.ReactNode; title: s
   return (
     <div className="mb-6 flex items-start gap-4">
       <div
-        className="flex h-12 w-12 items-center justify-center rounded-2xl shrink-0"
+        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
         style={{ background: "var(--color-ember-glow)", color: "var(--color-ember)", border: "1px solid var(--color-ember-glow-strong)" }}
       >
         {icon}
