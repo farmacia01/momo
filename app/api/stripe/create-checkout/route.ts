@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     // Use fetch directly to avoid Stripe SDK v22 connection issues
     const formData = new URLSearchParams()
     formData.append('mode', 'subscription')
-    formData.append('ui_mode', 'embedded')
+    formData.append('ui_mode', 'embedded_page')
     formData.append('customer_email', customerEmail)
     formData.append('line_items[0][price]', priceId)
     formData.append('line_items[0][quantity]', '1')
