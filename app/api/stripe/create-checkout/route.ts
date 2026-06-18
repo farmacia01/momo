@@ -16,18 +16,19 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json().catch(() => ({}))
     const isSignup = body.signup === true
+    const bodyEmail = typeof body.email === 'string' ? body.email : ''
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.usemomo.online'
 
-    // For the signup flow the session cookie may not exist yet (signUp returns
-    // session:null when email confirmation is enabled). Accept the email from
-    // the request body and fall back to the authenticated user's email.
     const customerEmail: string =
-      (isSignup && typeof body.email === 'string' && body.email.includes('@'))
-        ? body.email
+      (isSignup && bodyEmail.includes('@'))
+        ? bodyEmail
         : (user?.email ?? '')
 
     if (!customerEmail) {
-      return Response.json({ error: 'Não autenticado' }, { status: 401 })
+      return Response.json({
+        error: 'Não autenticado',
+        debug: { isSignup, bodyEmail, hasUser: !!user },
+      }, { status: 401 })
     }
 
     const sessionParams: Record<string, any> = {
