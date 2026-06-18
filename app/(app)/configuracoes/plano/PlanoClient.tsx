@@ -1,61 +1,46 @@
 "use client";
 
+import { useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
-import { Star, ExternalLink, Calendar, CreditCard, AlertTriangle, CheckCircle2, ArrowRight, ShieldCheck, TrendingUp, Utensils, Bell, Package } from "lucide-react";
+import { Star, ExternalLink, Calendar, CreditCard, AlertTriangle, ArrowRight, ShieldCheck, TrendingUp, Utensils, Bell, Package } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { StripeCheckout } from "@/components/StripeCheckout";
 
 interface PlanoClientProps {
   planoAtivo: string;
   assinatura: any;
-  checkoutUrl: string;
 }
 
 const DORES = [
-  {
-    icon: <AlertTriangle size={18} />,
-    text: "Uma dose esquecida zera semanas de progresso — e você nem percebe",
-  },
-  {
-    icon: <TrendingUp size={18} />,
-    text: "Sem gráfico de peso, você não sabe se está perdendo gordura ou músculo",
-  },
-  {
-    icon: <Utensils size={18} />,
-    text: "A dieta errada sabota o efeito do Mounjaro sem você notar",
-  },
+  { icon: <AlertTriangle size={18} />, text: "Uma dose esquecida zera semanas de progresso — e você nem percebe" },
+  { icon: <TrendingUp size={18} />, text: "Sem gráfico de peso, você não sabe se está perdendo gordura ou músculo" },
+  { icon: <Utensils size={18} />, text: "A dieta errada sabota o efeito do Mounjaro sem você notar" },
 ];
 
 const SOLUCOES = [
-  {
-    icon: <Bell size={16} />,
-    titulo: "Nunca perca uma dose",
-    desc: "Lembretes automáticos no dia e horário certos",
-  },
-  {
-    icon: <TrendingUp size={16} />,
-    titulo: "Veja seu progresso real",
-    desc: "Gráficos de peso, medidas e sintomas semana a semana",
-  },
-  {
-    icon: <Utensils size={16} />,
-    titulo: "Receitas que não sabotam",
-    desc: "Geradas por IA para sua fase do tratamento",
-  },
-  {
-    icon: <Star size={16} />,
-    titulo: "Histórico para o médico",
-    desc: "Tudo registrado, pronto para a consulta",
-  },
-  {
-    icon: <Package size={16} />,
-    titulo: "Alerta de estoque",
-    desc: "Saiba quando comprar antes de ficar sem ampola",
-  },
+  { icon: <Bell size={16} />, titulo: "Nunca perca uma dose", desc: "Lembretes automáticos no dia e horário certos" },
+  { icon: <TrendingUp size={16} />, titulo: "Veja seu progresso real", desc: "Gráficos de peso, medidas e sintomas semana a semana" },
+  { icon: <Utensils size={16} />, titulo: "Receitas que não sabotam", desc: "Geradas por IA para sua fase do tratamento" },
+  { icon: <Star size={16} />, titulo: "Histórico para o médico", desc: "Tudo registrado, pronto para a consulta" },
+  { icon: <Package size={16} />, titulo: "Alerta de estoque", desc: "Saiba quando comprar antes de ficar sem ampola" },
 ];
 
-export function PlanoClient({ planoAtivo, assinatura, checkoutUrl }: PlanoClientProps) {
+export function PlanoClient({ planoAtivo, assinatura }: PlanoClientProps) {
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [loadingPortal, setLoadingPortal] = useState(false);
   const isPremium = planoAtivo === 'premium' && assinatura?.status === 'ativa';
+
+  async function openPortal() {
+    setLoadingPortal(true);
+    try {
+      const res = await fetch('/api/stripe/portal', { method: 'POST' });
+      const { url } = await res.json();
+      window.location.href = url;
+    } catch {
+      setLoadingPortal(false);
+    }
+  }
 
   if (isPremium) {
     return (
@@ -127,11 +112,10 @@ export function PlanoClient({ planoAtivo, assinatura, checkoutUrl }: PlanoClient
             </div>
           </div>
 
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-full font-bold text-sm transition-all active:scale-[0.98]"
+          <button
+            onClick={openPortal}
+            disabled={loadingPortal}
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-full font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-60"
             style={{
               background: "var(--color-surface)",
               border: "1px solid var(--color-surface-border)",
@@ -139,8 +123,8 @@ export function PlanoClient({ planoAtivo, assinatura, checkoutUrl }: PlanoClient
             }}
           >
             <ExternalLink size={16} />
-            Gerenciar Assinatura na Cakto
-          </a>
+            {loadingPortal ? "Abrindo..." : "Gerenciar Assinatura"}
+          </button>
         </div>
       </div>
     );
@@ -151,7 +135,7 @@ export function PlanoClient({ planoAtivo, assinatura, checkoutUrl }: PlanoClient
       <PageHeader title="Meu Plano" />
 
       <div className="space-y-5 animate-fade-in">
-        {/* HERO — Headline da dor */}
+        {/* HERO */}
         <div
           className="rounded-[24px] p-6 relative overflow-hidden"
           style={{
@@ -162,62 +146,43 @@ export function PlanoClient({ planoAtivo, assinatura, checkoutUrl }: PlanoClient
           <div className="absolute top-0 right-0 w-48 h-48 rounded-full opacity-10" style={{ background: "var(--color-ember)", filter: "blur(50px)", transform: "translate(20%, -20%)" }} />
 
           <div className="relative z-10 space-y-3">
-            <p
-              className="text-[10px] font-black uppercase tracking-[0.2em] text-ember opacity-80"
-            >
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-ember opacity-80">
               Acompanhamento Mounjaro
             </p>
-            <h1
-              className="text-[22px] font-black leading-[1.2] text-white"
-            >
+            <h1 className="text-[22px] font-black leading-[1.2] text-white">
               Você investe R$ 1.500/mês no tratamento. Sabe se está funcionando?
             </h1>
-            <p
-              className="text-[13px] font-medium leading-relaxed text-white/60"
-            >
+            <p className="text-[13px] font-medium leading-relaxed text-white/60">
               Sem dados, você está apostando no escuro.
             </p>
           </div>
         </div>
 
-        {/* 3 DORES */}
+        {/* DORES */}
         <div className="space-y-2.5">
-          <p
-            className="text-[10px] font-black uppercase tracking-[0.18em] ml-1 text-text-dim"
-          >
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] ml-1 text-text-dim">
             O que acontece sem acompanhamento
           </p>
           {DORES.map((dor, i) => (
             <div
               key={i}
               className="flex items-start gap-3 rounded-2xl p-4"
-              style={{
-                background: "rgba(239,68,68,0.06)",
-                border: "1px solid rgba(239,68,68,0.15)",
-              }}
+              style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)" }}
             >
               <span className="shrink-0 mt-0.5 text-danger">{dor.icon}</span>
-              <p className="text-sm font-medium leading-snug text-text">
-                {dor.text}
-              </p>
+              <p className="text-sm font-medium leading-snug text-text">{dor.text}</p>
             </div>
           ))}
         </div>
 
-        {/* 5 SOLUÇÕES */}
+        {/* SOLUÇÕES */}
         <div
           className="rounded-[24px] p-5 space-y-4"
-          style={{
-            background: "var(--color-surface)",
-            border: "1px solid var(--color-surface-border)",
-          }}
+          style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
         >
-          <p
-            className="text-[10px] font-black uppercase tracking-[0.18em] text-text-dim"
-          >
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-text-dim">
             O que o Momo resolve
           </p>
-
           {SOLUCOES.map((sol, i) => (
             <div key={i} className="flex items-start gap-3">
               <div
@@ -227,12 +192,8 @@ export function PlanoClient({ planoAtivo, assinatura, checkoutUrl }: PlanoClient
                 {sol.icon}
               </div>
               <div>
-                <p className="text-sm font-bold text-text">
-                  {sol.titulo}
-                </p>
-                <p className="text-xs leading-snug mt-0.5 text-text-muted">
-                  {sol.desc}
-                </p>
+                <p className="text-sm font-bold text-text">{sol.titulo}</p>
+                <p className="text-xs leading-snug mt-0.5 text-text-muted">{sol.desc}</p>
               </div>
             </div>
           ))}
@@ -241,38 +202,33 @@ export function PlanoClient({ planoAtivo, assinatura, checkoutUrl }: PlanoClient
         {/* PREÇO + CTA */}
         <div
           className="rounded-[24px] p-6 space-y-4"
-          style={{
-            background: "var(--color-surface-mid)",
-            border: "1px solid var(--color-surface-border)",
-          }}
+          style={{ background: "var(--color-surface-mid)", border: "1px solid var(--color-surface-border)" }}
         >
           <div className="text-center space-y-1">
             <p className="text-[11px] font-bold uppercase tracking-widest text-text-dim">
               Acesso completo
             </p>
             <div className="flex items-end justify-center gap-1">
-              <span className="text-[36px] font-black tracking-tight text-text">
-                R$ 29,90
-              </span>
-              <span className="text-sm font-medium mb-2 text-text-muted">
-                /mês
-              </span>
+              <span className="text-[36px] font-black tracking-tight text-text">R$ 29,90</span>
+              <span className="text-sm font-medium mb-2 text-text-muted">/mês</span>
             </div>
           </div>
 
-          <a
-            href={checkoutUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-full text-base font-black text-white transition-all active:scale-[0.97]"
-            style={{
-              background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))",
-              boxShadow: "var(--shadow-ember)",
-            }}
-          >
-            Ativar meu acompanhamento
-            <ArrowRight size={18} />
-          </a>
+          {showCheckout ? (
+            <StripeCheckout />
+          ) : (
+            <button
+              onClick={() => setShowCheckout(true)}
+              className="w-full flex items-center justify-center gap-2 py-4 rounded-full text-base font-black text-white transition-all active:scale-[0.97]"
+              style={{
+                background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))",
+                boxShadow: "var(--shadow-ember)",
+              }}
+            >
+              Ativar meu acompanhamento
+              <ArrowRight size={18} />
+            </button>
+          )}
 
           <div className="flex items-center justify-center gap-4">
             <span className="flex items-center gap-1.5 text-[11px] font-medium text-text-dim">
@@ -280,9 +236,7 @@ export function PlanoClient({ planoAtivo, assinatura, checkoutUrl }: PlanoClient
               Pagamento seguro
             </span>
             <span className="text-[11px] text-surface-border">·</span>
-            <span className="text-[11px] font-medium text-text-dim">
-              Cancele quando quiser
-            </span>
+            <span className="text-[11px] font-medium text-text-dim">Cancele quando quiser</span>
           </div>
         </div>
       </div>

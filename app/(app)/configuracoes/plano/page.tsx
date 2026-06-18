@@ -27,10 +27,9 @@ export default async function PlanoPage() {
     .single();
 
   return (
-    <PlanoClient 
+    <PlanoClient
       planoAtivo={profile?.plano_ativo || 'free'}
       assinatura={assinatura}
-      checkoutUrl={process.env.CAKTO_CHECKOUT_URL || 'https://pay.cakto.com.br/i75hqvn_913965'}
     />
   );
 }
