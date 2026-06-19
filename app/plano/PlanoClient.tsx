@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AlertTriangle, TrendingUp, Utensils, Bell, Star, Package, ShieldCheck, Check, ChevronLeft } from "lucide-react";
-import { StripeCheckout } from "@/components/StripeCheckout";
+import { AbacateCheckout } from "@/components/AbacateCheckout";
 
 const DORES = [
   { icon: <AlertTriangle size={18} />, text: "Uma dose esquecida zera semanas de progresso — e você nem percebe" },
@@ -27,8 +27,6 @@ export function PlanoClient({
   diasRestantesTrial: number;
   assinaturaExpiraEm: string | null;
 }) {
-  const [showCheckout, setShowCheckout] = useState(false);
-
   if (status === "premium") {
     return <PremiumAtivo assinaturaExpiraEm={assinaturaExpiraEm} />;
   }
@@ -146,20 +144,7 @@ export function PlanoClient({
             </div>
           </div>
 
-          {showCheckout ? (
-            <StripeCheckout />
-          ) : (
-            <button
-              onClick={() => setShowCheckout(true)}
-              className="flex w-full items-center justify-center gap-2 rounded-full py-4 text-base font-black text-white transition-transform active:scale-[0.97]"
-              style={{
-                background: "linear-gradient(135deg, #ff6500, #e05500)",
-                boxShadow: "0 8px 24px rgba(255,101,0,0.4)",
-              }}
-            >
-              Ativar meu acompanhamento
-            </button>
-          )}
+          <AbacateCheckout />
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <span className="flex items-center gap-1.5 text-[11px] font-medium" style={{ color: "var(--color-text-dim)" }}>
@@ -179,6 +164,7 @@ export function PlanoClient({
 
 function PremiumAtivo({ assinaturaExpiraEm }: { assinaturaExpiraEm: string | null }) {
   const [loading, setLoading] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
 
   const venc = assinaturaExpiraEm
     ? new Date(assinaturaExpiraEm).toLocaleDateString("pt-BR", {
@@ -188,19 +174,21 @@ function PremiumAtivo({ assinaturaExpiraEm }: { assinaturaExpiraEm: string | nul
       })
     : "Renovação automática";
 
-  async function openPortal() {
+  async function handleCancel() {
+    if (!confirm('Tem certeza? Você continuará com acesso até o fim do período pago.')) return;
     setLoading(true);
+    setCancelError(null);
     try {
-      const res = await fetch('/api/stripe/portal', { method: 'POST' });
+      const res = await fetch('/api/abacate/cancel', { method: 'POST' });
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (data.ok) {
+        window.location.reload();
       } else {
-        alert(data.error || 'Não foi possível abrir o portal. Tente novamente.');
+        setCancelError(data.error || 'Erro ao cancelar.');
         setLoading(false);
       }
     } catch {
-      alert('Erro ao conectar com o servidor.');
+      setCancelError('Erro ao conectar com o servidor.');
       setLoading(false);
     }
   }
@@ -240,29 +228,31 @@ function PremiumAtivo({ assinaturaExpiraEm }: { assinaturaExpiraEm: string | nul
           <p className="mt-1 text-base font-bold text-white">{venc}</p>
         </div>
 
-        <button
-          onClick={openPortal}
-          disabled={loading}
-          className="mt-6 block w-full rounded-full py-3.5 text-sm font-black transition-transform active:scale-[0.98] disabled:opacity-60"
+        <a
+          href="/"
+          className="mt-6 block w-full rounded-full py-3.5 text-sm font-black"
           style={{
             background: "linear-gradient(135deg, #ff6500, #e05500)",
             color: "white",
             boxShadow: "0 4px 16px rgba(255,101,0,0.35)",
-          }}
-        >
-          {loading ? "Abrindo..." : "Gerenciar assinatura"}
-        </button>
-        <a
-          href="/"
-          className="mt-3 block w-full rounded-full py-3.5 text-sm font-bold"
-          style={{
-            border: "1px solid rgba(255,255,255,0.1)",
-            color: "rgba(255,255,255,0.7)",
             textDecoration: "none",
           }}
         >
           Voltar ao app
         </a>
+        <button
+          onClick={handleCancel}
+          disabled={loading}
+          className="mt-3 block w-full rounded-full py-3.5 text-sm font-bold transition-transform active:scale-[0.98] disabled:opacity-60"
+          style={{
+            border: "1px solid rgba(239,68,68,0.3)",
+            color: "#ef4444",
+            background: "transparent",
+          }}
+        >
+          {loading ? "Cancelando..." : "Cancelar assinatura"}
+        </button>
+        {cancelError && <p className="mt-2 text-xs text-red-400">{cancelError}</p>}
       </div>
     </div>
   );

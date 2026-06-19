@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
-import { Star, ExternalLink, Calendar, CreditCard, AlertTriangle, ArrowRight, ShieldCheck, TrendingUp, Utensils, Bell, Package } from "lucide-react";
+import { Star, Calendar, CreditCard, AlertTriangle, ArrowRight, ShieldCheck, TrendingUp, Utensils, Bell, Package } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { StripeCheckout } from "@/components/StripeCheckout";
+import { AbacateCheckout } from "@/components/AbacateCheckout";
 
 interface PlanoClientProps {
   planoAtivo: string;
@@ -28,17 +28,27 @@ const SOLUCOES = [
 
 export function PlanoClient({ planoAtivo, assinatura }: PlanoClientProps) {
   const [showCheckout, setShowCheckout] = useState(false);
-  const [loadingPortal, setLoadingPortal] = useState(false);
+  const [loadingCancel, setLoadingCancel] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
   const isPremium = planoAtivo === 'premium' && assinatura?.status === 'ativa';
+  const isCancelScheduled = assinatura?.cancel_at_period_end === true;
 
-  async function openPortal() {
-    setLoadingPortal(true);
+  async function handleCancel() {
+    if (!confirm('Tem certeza? Você continuará com acesso até o fim do período pago.')) return;
+    setLoadingCancel(true);
+    setCancelError(null);
     try {
-      const res = await fetch('/api/stripe/portal', { method: 'POST' });
-      const { url } = await res.json();
-      window.location.href = url;
+      const res = await fetch('/api/abacate/cancel', { method: 'POST' });
+      const data = await res.json();
+      if (data.ok) {
+        window.location.reload();
+      } else {
+        setCancelError(data.error || 'Erro ao cancelar.');
+        setLoadingCancel(false);
+      }
     } catch {
-      setLoadingPortal(false);
+      setCancelError('Erro ao conectar com o servidor.');
+      setLoadingCancel(false);
     }
   }
 
@@ -108,19 +118,30 @@ export function PlanoClient({ planoAtivo, assinatura }: PlanoClientProps) {
             </div>
           </div>
 
-          <button
-            onClick={openPortal}
-            disabled={loadingPortal}
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-full font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-60"
-            style={{
-              background: "var(--color-surface)",
-              border: "1px solid var(--color-surface-border)",
-              color: "var(--color-text)",
-            }}
-          >
-            <ExternalLink size={16} />
-            {loadingPortal ? "Abrindo..." : "Gerenciar Assinatura"}
-          </button>
+          {isCancelScheduled ? (
+            <div
+              className="w-full py-3 px-4 rounded-full text-center text-sm font-medium"
+              style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)", color: "var(--color-text-muted)" }}
+            >
+              Cancelamento agendado para {assinatura.current_period_end ? format(parseISO(assinatura.current_period_end), "dd/MM/yyyy", { locale: ptBR }) : "fim do período"}
+            </div>
+          ) : (
+            <>
+              <button
+                onClick={handleCancel}
+                disabled={loadingCancel}
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-full font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-60"
+                style={{
+                  background: "var(--color-surface)",
+                  border: "1px solid rgba(239,68,68,0.3)",
+                  color: "#ef4444",
+                }}
+              >
+                {loadingCancel ? "Cancelando..." : "Cancelar Assinatura"}
+              </button>
+              {cancelError && <p className="text-xs text-center text-danger mt-1">{cancelError}</p>}
+            </>
+          )}
         </div>
       </div>
     );
