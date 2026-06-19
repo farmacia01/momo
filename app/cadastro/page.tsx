@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, ArrowRight, Check, User, Activity, Target, Star, Bell, TrendingUp, Utensils, Package, BookOpen, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { StripeCheckout } from '@/components/StripeCheckout';
+import { AbacateCheckout } from '@/components/AbacateCheckout';
 
 const DOSES = ['2.5', '5', '7.5', '10', '12.5', '15'];
 const DIAS_SEMANA = [
@@ -31,7 +31,6 @@ export default function CadastroPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const creatingRef = React.useRef(false);
 
@@ -247,71 +246,56 @@ export default function CadastroPage() {
             <div className="space-y-5 animate-fade-up">
               <StepHeader icon={<Star className="h-5 w-5" />} title="Seu plano" subtitle="7 dias grátis para começar" />
 
-              {showCheckout ? (
-                <StripeCheckout signup email={formData.email} />
-              ) : (
+              <div
+                className="space-y-5 rounded-[24px] p-6"
+                style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
+              >
+                {/* Header do plano */}
                 <div
-                  className="space-y-5 rounded-[24px] p-6"
-                  style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
+                  className="relative overflow-hidden rounded-2xl p-5"
+                  style={{ background: "linear-gradient(135deg, #1a0800, #2d1200)", border: "1px solid rgba(255,101,0,0.2)" }}
                 >
-                  {/* Header do plano */}
                   <div
-                    className="relative overflow-hidden rounded-2xl p-5"
-                    style={{ background: "linear-gradient(135deg, #1a0800, #2d1200)", border: "1px solid rgba(255,101,0,0.2)" }}
-                  >
-                    <div
-                      className="absolute right-0 top-0 h-32 w-32 rounded-full opacity-10"
-                      style={{ background: "#ff6500", filter: "blur(40px)", transform: "translate(20%, -20%)" }}
-                    />
-                    <div className="relative z-10">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: "rgba(255,101,0,0.8)" }}>
-                        Momo Premium
-                      </p>
-                      <div className="mt-2 flex items-end gap-1">
-                        <span className="text-3xl font-black text-white">R$ 29,90</span>
-                        <span className="mb-1 text-sm font-medium text-white/50">/mês</span>
-                      </div>
-                      <p className="mt-1 text-sm font-bold" style={{ color: "rgba(255,101,0,0.9)" }}>
-                        7 dias grátis — cancele quando quiser
-                      </p>
+                    className="absolute right-0 top-0 h-32 w-32 rounded-full opacity-10"
+                    style={{ background: "#ff6500", filter: "blur(40px)", transform: "translate(20%, -20%)" }}
+                  />
+                  <div className="relative z-10">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: "rgba(255,101,0,0.8)" }}>
+                      Momo Premium
+                    </p>
+                    <div className="mt-2 flex items-end gap-1">
+                      <span className="text-3xl font-black text-white">R$ 29,90</span>
+                      <span className="mb-1 text-sm font-medium text-white/50">/mês</span>
                     </div>
+                    <p className="mt-1 text-sm font-bold" style={{ color: "rgba(255,101,0,0.9)" }}>
+                      Cancele quando quiser
+                    </p>
                   </div>
-
-                  {/* Benefícios */}
-                  <div className="space-y-3">
-                    {BENEFICIOS.map((b, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div
-                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
-                          style={{ background: "rgba(255,101,0,0.1)", color: "#ff6500" }}
-                        >
-                          {b.icon}
-                        </div>
-                        <span className="text-sm font-medium text-text">{b.text}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Badge segurança */}
-                  <div className="flex items-center justify-center gap-2 text-[11px] font-medium text-text-dim">
-                    <ShieldCheck size={13} style={{ color: "#ff6500" }} />
-                    Pagamento seguro · Cancele quando quiser
-                  </div>
-
-                  {/* CTA */}
-                  <button
-                    onClick={() => setShowCheckout(true)}
-                    className="flex w-full items-center justify-center gap-2 rounded-full py-4 text-base font-black text-white transition-all active:scale-[0.97]"
-                    style={{
-                      background: "linear-gradient(135deg, #ff6500, #e05500)",
-                      boxShadow: "0 8px 24px rgba(255,101,0,0.4)",
-                    }}
-                  >
-                    Começar meu teste grátis
-                    <ArrowRight className="h-5 w-5" />
-                  </button>
                 </div>
-              )}
+
+                {/* Benefícios */}
+                <div className="space-y-3">
+                  {BENEFICIOS.map((b, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                        style={{ background: "rgba(255,101,0,0.1)", color: "#ff6500" }}
+                      >
+                        {b.icon}
+                      </div>
+                      <span className="text-sm font-medium text-text">{b.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Badge segurança */}
+                <div className="flex items-center justify-center gap-2 text-[11px] font-medium text-text-dim">
+                  <ShieldCheck size={13} style={{ color: "#ff6500" }} />
+                  Pagamento seguro · Cancele quando quiser
+                </div>
+
+                <AbacateCheckout />
+              </div>
             </div>
           )}
         </div>
@@ -345,7 +329,7 @@ export default function CadastroPage() {
             </button>
           )}
 
-          {step === 4 && !showCheckout && (
+          {step === 4 && (
             <button
               onClick={() => router.push('/')}
               className="flex h-14 w-full items-center justify-center gap-2 rounded-full text-sm font-bold transition-all active:scale-95"
