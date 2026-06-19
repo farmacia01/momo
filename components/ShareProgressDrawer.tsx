@@ -520,7 +520,7 @@ const ProgressCard = forwardRef<HTMLDivElement, ProgressCardProps>(
           position: "relative",
           overflow: "hidden",
           borderRadius: 24,
-          background: "#080808",
+          background: "transparent",
         }}
       >
         {/* Bottom ember glow */}
