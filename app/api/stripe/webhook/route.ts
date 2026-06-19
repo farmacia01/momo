@@ -31,14 +31,18 @@ export async function POST(req: NextRequest) {
         }
 
         const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
-        const periodEnd = new Date((subscription as any).current_period_end * 1000)
+        const isTrial = (subscription as any).status === 'trialing'
+        // Durante trial, trial_end é quando vence (e quando cobra); fora de trial usa current_period_end
+        const periodEnd = new Date(
+          ((subscription as any).trial_end ?? (subscription as any).current_period_end) * 1000
+        )
 
         await supabase.from('assinaturas').upsert({
           user_id: userId,
           stripe_session_id: session.id,
           stripe_subscription_id: session.subscription,
           stripe_customer_id: session.customer,
-          status: 'ativa',
+          status: isTrial ? 'trial' : 'ativa',
           current_period_end: periodEnd.toISOString(),
           cancel_at_period_end: false,
         }, { onConflict: 'user_id' })
@@ -132,6 +136,51 @@ export async function POST(req: NextRequest) {
             plano_ativo: 'expirado',
             assinatura_expira_em: null,
           }).eq('id', assinatura.user_id)
+        }
+        break
+      }
+
+      case 'customer.subscription.trial_will_end': {
+        // Dispara 3 dias antes do trial terminar → avisa o cliente
+        const sub = event.data.object as any
+        const { data: assinatura } = await supabase
+          .from('assinaturas')
+          .select('user_id')
+          .eq('stripe_subscription_id', sub.id)
+          .maybeSingle()
+
+        if (assinatura?.user_id) {
+          const trialEnd = sub.trial_end
+            ? new Date(sub.trial_end * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })
+            : 'em breve'
+          const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.usemomo.online'
+          await fetch(`${baseUrl}/api/push/send`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Internal-Key': process.env.N8N_SECRET ?? '' },
+            body: JSON.stringify({
+              userId: assinatura.user_id,
+              title: '⏰ Seu período gratuito termina em 3 dias',
+              body: `No dia ${trialEnd} o cartão cadastrado será cobrado R$29,90. Tudo automático!`,
+              url: '/plano',
+            }),
+          }).catch(() => {})
+        }
+        break
+      }
+
+      case 'customer.subscription.updated': {
+        // Captura transição trial → ativa quando o plano começa a ser cobrado
+        const sub = event.data.object as any
+        const prevAttrs = (event.data as any).previous_attributes ?? {}
+        const wasTrialing = prevAttrs.status === 'trialing'
+        const isNowActive = sub.status === 'active'
+
+        if (wasTrialing && isNowActive) {
+          const periodEnd = new Date((sub as any).current_period_end * 1000)
+          await supabase
+            .from('assinaturas')
+            .update({ status: 'ativa', current_period_end: periodEnd.toISOString() })
+            .eq('stripe_subscription_id', sub.id)
         }
         break
       }

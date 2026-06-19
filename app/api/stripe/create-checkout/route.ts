@@ -26,6 +26,10 @@ export async function POST(_req: NextRequest) {
       line_items: [{ price: priceId, quantity: 1 }],
       return_url: `${baseUrl}/plano?success=1`,
       metadata: { user_id: user.id },
+      subscription_data: {
+        trial_period_days: 7,
+        metadata: { user_id: user.id },
+      },
     })
 
     return Response.json({ clientSecret: session.client_secret })
