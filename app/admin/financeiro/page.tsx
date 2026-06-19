@@ -21,7 +21,7 @@ export default async function AdminFinanceiroPage() {
     admin.from("profiles").select("id", { count: "exact", head: true }).eq("plano_ativo", "premium"),
     admin
       .from("assinaturas")
-      .select("user_id, plano, status, valor, criado_em, proximo_vencimento, profiles!user_id(nome, email)")
+      .select("user_id, status, current_period_end, criado_em, profiles!user_id(nome, email)")
       .eq("status", "ativa")
       .order("criado_em", { ascending: false }),
     admin.from("assinaturas").select("status, criado_em").order("criado_em", { ascending: true }),

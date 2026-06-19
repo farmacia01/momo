@@ -43,9 +43,10 @@ export function AdminFinanceiroClient({ premiumCount, assinaturasAtivas, mrrData
         <button onClick={() => {
           const rows = assinaturasAtivas.map((a) => ({
             nome: a.profiles?.nome || "", email: a.profiles?.email || "",
-            plano: a.plano, status: a.status, valor: a.valor || PRECO_PLANO,
+            status: a.status,
+            valor: PRECO_PLANO,
             desde: a.criado_em ? format(new Date(a.criado_em), "dd/MM/yyyy") : "",
-            proximo_venc: a.proximo_vencimento ? format(new Date(a.proximo_vencimento), "dd/MM/yyyy") : "",
+            proximo_venc: a.current_period_end ? format(new Date(a.current_period_end), "dd/MM/yyyy") : "",
           }));
           downloadCSV(rows, `momo-financeiro-${format(new Date(), "yyyyMM")}.csv`);
         }} className="a-btn-ghost flex items-center gap-2">
@@ -90,7 +91,7 @@ export function AdminFinanceiroClient({ premiumCount, assinaturasAtivas, mrrData
             <table className="w-full text-[12px]">
               <thead>
                 <tr className="border-b border-[rgba(255,255,255,0.06)]">
-                  {["Usuário", "Plano", "Valor", "Desde", "Próx. vencto", "Status"].map((h) => (
+                  {["Usuário", "Valor", "Desde", "Próx. vencto", "Status"].map((h) => (
                     <th key={h} className="text-left text-[10px] font-bold text-[rgba(255,255,255,0.28)] uppercase tracking-wider pb-3 px-1">{h}</th>
                   ))}
                 </tr>
@@ -99,10 +100,9 @@ export function AdminFinanceiroClient({ premiumCount, assinaturasAtivas, mrrData
                 {assinaturasAtivas.map((a, i) => (
                   <tr key={i} className="border-b border-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.02)] transition-colors">
                     <td className="py-3 px-1"><p className="text-white font-semibold truncate max-w-[140px]">{a.profiles?.nome || "–"}</p><p className="text-[rgba(255,255,255,0.3)] truncate max-w-[140px]">{a.profiles?.email || "–"}</p></td>
-                    <td className="py-3 px-1 capitalize text-[rgba(255,255,255,0.55)]">{a.plano}</td>
-                    <td className="py-3 px-1 font-bold text-white">{formatBRL(a.valor || PRECO_PLANO)}</td>
+                    <td className="py-3 px-1 font-bold text-white">{formatBRL(PRECO_PLANO)}</td>
                     <td className="py-3 px-1 text-[rgba(255,255,255,0.4)]">{a.criado_em ? format(new Date(a.criado_em), "dd/MM/yyyy") : "–"}</td>
-                    <td className="py-3 px-1 text-[rgba(255,255,255,0.4)]">{a.proximo_vencimento ? format(new Date(a.proximo_vencimento), "dd/MM/yyyy") : "–"}</td>
+                    <td className="py-3 px-1 text-[rgba(255,255,255,0.4)]">{a.current_period_end ? format(new Date(a.current_period_end), "dd/MM/yyyy") : "–"}</td>
                     <td className="py-3 px-1"><span className={a.status === "ativa" ? "a-badge-green" : a.status === "cancelada" ? "a-badge-red" : "a-badge-gray"}>{a.status?.toUpperCase() || "–"}</span></td>
                   </tr>
                 ))}

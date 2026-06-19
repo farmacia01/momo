@@ -69,7 +69,7 @@ export default async function AdminDashboardPage() {
     { data: allSubscriptions }, // from push_subscriptions for usage metrics
   ] = await Promise.all([
     admin.from("profiles").select("id, created_at, plano_ativo, trial_expira_em, assinatura_expira_em, nome, email"),
-    admin.from("assinaturas").select("valor, status, criado_em, user_id, proximo_vencimento"),
+    admin.from("assinaturas").select("status, criado_em, user_id, current_period_end"),
     admin.from("medicoes_saude").select("user_id, data_medicao"),
     admin.from("doses").select("user_id, data_aplicacao"),
     admin.from("pedidos").select("id, codigo, status, created_at").order("created_at", { ascending: false }).limit(5),
@@ -86,7 +86,7 @@ export default async function AdminDashboardPage() {
   
   // MRR (Active Premium Subscriptions)
   const activePremium = assinaturas.filter(s => s.status === 'ativa');
-  const mrr = activePremium.reduce((acc, s) => acc + (Number(s.valor) || 0), 0);
+  const mrr = activePremium.length * 29.9;
   
   // Growth & Churn
   const newThisMonth = profiles.filter(p => parseISO(p.created_at) >= startCurrentMonth).length;
@@ -131,7 +131,7 @@ export default async function AdminDashboardPage() {
   ]).size;
 
   // --- 3. Chart Data ---
-  const revenueChart = buildMonthlyChartData(activePremium, "criado_em", "valor");
+  const revenueChart = buildMonthlyChartData(activePremium.map(s => ({ ...s, valor: 29.9 })), "criado_em", "valor");
   const growthChart = buildMonthlyChartData(profiles, "created_at");
 
   // Plan Distribution
@@ -146,7 +146,7 @@ export default async function AdminDashboardPage() {
   
   // Prox Renovacao (next 5 days)
   const fiveDaysFromNow = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
-  const proxRenovacao = activePremium.filter(s => s.proximo_vencimento && new Date(s.proximo_vencimento) <= fiveDaysFromNow).length;
+  const proxRenovacao = activePremium.filter(s => s.current_period_end && new Date(s.current_period_end) <= fiveDaysFromNow).length;
   if (proxRenovacao > 0) alerts.push({ type: 'warning', text: `${proxRenovacao} assinaturas vencem nos próximos 5 dias` });
 
   // Inativos > 15 dias
@@ -182,7 +182,7 @@ export default async function AdminDashboardPage() {
         nome: p.nome || 'Sem nome',
         email: p.email,
         plano: p.plano_ativo,
-        valor: assinaturas.find(s => s.user_id === p.id)?.valor || 0,
+        valor: 29.9,
         status: p.plano_ativo === 'premium' ? 'ativo' : p.plano_ativo,
         data: p.created_at
       }))}

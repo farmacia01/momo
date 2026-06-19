@@ -92,9 +92,9 @@ export function AdminUserDetailClient({ usuario, doses, medicoes, pedidos, assin
           <div className="space-y-2">
             {assinaturas.map((a, i) => (
               <div key={i} className="flex items-center justify-between py-2 border-b border-[rgba(255,255,255,0.05)] last:border-0">
-                <div><p className="text-[13px] font-semibold text-white capitalize">{a.plano}</p><p className="text-[11px] text-[rgba(255,255,255,0.35)]">Desde {format(new Date(a.criado_em), "dd/MM/yyyy")}</p></div>
+                <div><p className="text-[13px] font-semibold text-white">Mensal</p><p className="text-[11px] text-[rgba(255,255,255,0.35)]">Desde {format(new Date(a.criado_em), "dd/MM/yyyy")}</p></div>
                 <div className="text-right">
-                  {a.valor && <p className="text-[13px] font-bold text-white">{formatBRL(a.valor)}</p>}
+                  <p className="text-[13px] font-bold text-white">{formatBRL(29.9)}</p>
                   <span className={a.status === "ativa" ? "a-badge-green" : a.status === "cancelada" ? "a-badge-red" : "a-badge-gray"}>{a.status?.toUpperCase() || "–"}</span>
                 </div>
               </div>

@@ -17,7 +17,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}))
     const isSignup = body.signup === true
     const bodyEmail = typeof body.email === 'string' ? body.email : ''
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.usemomo.online'
+    // NEXT_PUBLIC_APP_URL may be localhost in dev; use real domain in production
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || ''
+    const baseUrl = appUrl.startsWith('http://localhost') ? appUrl : 'https://www.usemomo.online'
 
     const customerEmail: string =
       (isSignup && bodyEmail.includes('@'))

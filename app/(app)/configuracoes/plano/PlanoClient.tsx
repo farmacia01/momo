@@ -67,7 +67,7 @@ export function PlanoClient({ planoAtivo, assinatura }: PlanoClientProps) {
               <div>
                 <h2 className="text-lg font-bold text-white">Momo Premium</h2>
                 <p className="text-xs font-medium text-white/60">
-                  Assinatura {assinatura.plano}
+                  Assinatura Mensal
                 </p>
               </div>
             </div>
@@ -86,29 +86,25 @@ export function PlanoClient({ planoAtivo, assinatura }: PlanoClientProps) {
                 </span>
               </div>
 
-              {assinatura.proximo_vencimento && (
+              {assinatura.current_period_end && (
                 <div className="flex justify-between items-center gap-2">
                   <div className="flex items-center gap-2 text-sm text-white/60 min-w-0">
                     <Calendar size={15} className="shrink-0" />
                     <span className="truncate">Próxima renovação</span>
                   </div>
                   <span className="text-sm font-bold text-white shrink-0">
-                    {format(parseISO(assinatura.proximo_vencimento), "dd 'de' MMM, yyyy", { locale: ptBR })}
+                    {format(parseISO(assinatura.current_period_end), "dd 'de' MMM, yyyy", { locale: ptBR })}
                   </span>
                 </div>
               )}
 
-              {assinatura.valor && (
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2 text-sm text-white/60">
-                    <Star size={15} />
-                    <span>Valor</span>
-                  </div>
-                  <span className="text-sm font-bold text-white">
-                    R$ {assinatura.valor.toFixed(2).replace('.', ',')}
-                  </span>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2 text-sm text-white/60">
+                  <Star size={15} />
+                  <span>Valor</span>
                 </div>
-              )}
+                <span className="text-sm font-bold text-white">R$ 29,90</span>
+              </div>
             </div>
           </div>
 

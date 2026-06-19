@@ -24,7 +24,7 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
     admin.from("doses").select("*").eq("user_id", params.id).order("data_aplicacao", { ascending: false }).limit(10),
     admin.from("medicoes_saude").select("data_medicao, peso_kg, imc").eq("user_id", params.id).order("data_medicao", { ascending: false }).limit(30),
     admin.from("pedidos").select("id, codigo, status, preco_total, created_at").eq("paciente_id", params.id).order("created_at", { ascending: false }).limit(10),
-    admin.from("assinaturas").select("plano, status, valor, criado_em, proximo_vencimento").eq("user_id", params.id).order("criado_em", { ascending: false }),
+    admin.from("assinaturas").select("status, criado_em, current_period_end").eq("user_id", params.id).order("criado_em", { ascending: false }),
     admin.from("avaliacoes_fornecedor").select("nota, comentario, created_at").eq("paciente_id", params.id).order("created_at", { ascending: false }).limit(5),
   ]);
 
