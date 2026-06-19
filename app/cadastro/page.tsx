@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, ArrowRight, Check, User, Activity, Target, Star, Bell, TrendingUp, Utensils, Package, BookOpen, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, User, Activity, Target, Star, Bell, TrendingUp, Utensils, Package, BookOpen, ShieldCheck, Smartphone, Share2, MoreVertical, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { AbacateCheckout } from '@/components/AbacateCheckout';
 
@@ -111,11 +111,11 @@ export default function CadastroPage() {
 
   const prevStep = () => {
     if (step === 1) { router.push('/login'); }
-    else if (step === 4) { /* can't go back after account created */ }
+    else if (step === 4 || step === 5) { /* can't go back after account created */ }
     else { setStep(step - 1); }
   };
 
-  const TOTAL_STEPS = 4;
+  const TOTAL_STEPS = 5;
 
   return (
     <div className="flex min-h-screen flex-col bg-bg text-text transition-colors duration-300">
@@ -244,7 +244,66 @@ export default function CadastroPage() {
 
           {step === 4 && (
             <div className="space-y-5 animate-fade-up">
-              <StepHeader icon={<Star className="h-5 w-5" />} title="Seu plano" subtitle="7 dias grátis para começar" />
+              <StepHeader icon={<Smartphone className="h-5 w-5" />} title="Baixe o app" subtitle="Adicione o Momo à tela inicial" />
+
+              <div
+                className="rounded-[24px] p-5 space-y-5"
+                style={{ background: "var(--color-surface)", border: "1px solid var(--color-surface-border)" }}
+              >
+                <p className="text-sm font-medium text-center" style={{ color: "var(--color-text-muted)" }}>
+                  O Momo é um app que funciona direto no seu navegador — sem precisar da App Store.
+                </p>
+
+                {/* iOS */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black text-white shrink-0" style={{ background: "var(--color-ember)" }}>
+                      🍎
+                    </div>
+                    <p className="text-sm font-bold" style={{ color: "var(--color-text)" }}>iPhone (Safari)</p>
+                  </div>
+                  <div className="space-y-2 ml-8">
+                    {[
+                      { icon: <Share2 size={14} />, text: 'Toque no botão Compartilhar (ícone de caixa com seta)' },
+                      { icon: <Plus size={14} />, text: 'Role para baixo e toque em "Adicionar à Tela de Início"' },
+                      { icon: <Check size={14} />, text: 'Toque em "Adicionar" — pronto!' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-start gap-3 rounded-xl p-3" style={{ background: "var(--color-surface-mid)", border: "1px solid var(--color-surface-border)" }}>
+                        <span className="mt-0.5 shrink-0" style={{ color: "var(--color-ember)" }}>{item.icon}</span>
+                        <p className="text-xs font-medium leading-snug" style={{ color: "var(--color-text)" }}>{item.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Android */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black text-white shrink-0" style={{ background: "var(--color-ember)" }}>
+                      🤖
+                    </div>
+                    <p className="text-sm font-bold" style={{ color: "var(--color-text)" }}>Android (Chrome)</p>
+                  </div>
+                  <div className="space-y-2 ml-8">
+                    {[
+                      { icon: <MoreVertical size={14} />, text: 'Toque no menu (3 pontinhos) no canto superior direito' },
+                      { icon: <Plus size={14} />, text: 'Toque em "Adicionar à tela inicial"' },
+                      { icon: <Check size={14} />, text: 'Confirme tocando em "Adicionar" — pronto!' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-start gap-3 rounded-xl p-3" style={{ background: "var(--color-surface-mid)", border: "1px solid var(--color-surface-border)" }}>
+                        <span className="mt-0.5 shrink-0" style={{ color: "var(--color-ember)" }}>{item.icon}</span>
+                        <p className="text-xs font-medium leading-snug" style={{ color: "var(--color-text)" }}>{item.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {step === 5 && (
+            <div className="space-y-5 animate-fade-up">
+              <StepHeader icon={<Star className="h-5 w-5" />} title="Seu plano" subtitle="Comece agora" />
 
               <div
                 className="space-y-5 rounded-[24px] p-6"
@@ -330,6 +389,17 @@ export default function CadastroPage() {
           )}
 
           {step === 4 && (
+            <button
+              onClick={() => setStep(5)}
+              className="flex h-14 w-full items-center justify-center gap-2 rounded-full text-base font-bold text-white shadow-lg transition-all active:scale-95"
+              style={{ background: "linear-gradient(135deg, var(--color-ember), var(--color-ember-dim))", boxShadow: "var(--shadow-ember)" }}
+            >
+              Já adicionei, continuar
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          )}
+
+          {step === 5 && (
             <button
               onClick={() => router.push('/')}
               className="flex h-14 w-full items-center justify-center gap-2 rounded-full text-sm font-bold transition-all active:scale-95"
