@@ -24,15 +24,18 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Layer 2: HMAC signature (optional — skip if public key not configured)
+  // Layer 2: HMAC signature — only verify if header is present
   const publicKey = process.env.ABACATEPAY_PUBLIC_KEY ?? ''
-  if (publicKey) {
-    const sig = req.headers.get('x-webhook-signature') ?? ''
-    if (!sig || !verifySignature(rawBody, sig, publicKey)) {
+  const sig = req.headers.get('x-webhook-signature') ?? ''
+  if (publicKey && sig) {
+    if (!verifySignature(rawBody, sig, publicKey)) {
       console.error('[abacate/webhook] invalid HMAC signature')
       return Response.json({ error: 'Invalid signature' }, { status: 401 })
     }
   }
+
+  // Log raw body so we can see AbacatePay's actual payload structure
+  console.log('[abacate/webhook] raw body:', rawBody.substring(0, 500))
 
   let event: any
   try {

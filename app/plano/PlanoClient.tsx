@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AlertTriangle, TrendingUp, Utensils, Bell, Star, Package, ShieldCheck, Check, ChevronLeft } from "lucide-react";
 import { AbacateCheckout } from "@/components/AbacateCheckout";
 
@@ -27,6 +27,35 @@ export function PlanoClient({
   diasRestantesTrial: number;
   assinaturaExpiraEm: string | null;
 }) {
+  const [syncing, setSyncing] = useState(false);
+  const [syncDone, setSyncDone] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('success') === '1' && status !== 'premium') {
+      setSyncing(true);
+      fetch('/api/abacate/sync', { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+          if (data.synced) {
+            window.location.replace('/plano');
+          } else {
+            setSyncing(false);
+          }
+        })
+        .catch(() => setSyncing(false));
+    }
+  }, []);
+
+  if (syncing) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6" style={{ background: "#0d0d0d" }}>
+        <div className="h-10 w-10 animate-spin rounded-full border-4" style={{ borderColor: "rgba(255,101,0,0.2)", borderTopColor: "#ff6500" }} />
+        <p className="text-base font-bold text-white">Ativando sua assinatura...</p>
+      </div>
+    );
+  }
+
   if (status === "premium") {
     return <PremiumAtivo assinaturaExpiraEm={assinaturaExpiraEm} />;
   }
