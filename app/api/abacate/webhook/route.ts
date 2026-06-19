@@ -16,26 +16,28 @@ function verifySignature(rawBody: string, signature: string, publicKey: string):
 export async function POST(req: NextRequest) {
   const rawBody = await req.text()
 
-  // Layer 1: query param secret
+  // Log headers and query for debugging
   const querySecret = req.nextUrl.searchParams.get('secret') ?? ''
+  const sig = req.headers.get('x-webhook-signature') ?? ''
+  const allHeaders = Object.fromEntries(req.headers.entries())
+  console.log('[abacate/webhook] headers:', JSON.stringify(allHeaders))
+  console.log('[abacate/webhook] querySecret present:', !!querySecret, '| sig present:', !!sig)
+  console.log('[abacate/webhook] raw body:', rawBody.substring(0, 500))
+
   const envSecret = process.env.ABACATEPAY_WEBHOOK_SECRET ?? ''
-  if (!envSecret || querySecret !== envSecret) {
-    console.error('[abacate/webhook] invalid secret param')
+  const publicKey = process.env.ABACATEPAY_PUBLIC_KEY ?? ''
+
+  // Accept if: secret param matches OR valid HMAC signature
+  // (AbacatePay may not send query param)
+  const secretOk = envSecret && querySecret === envSecret
+  const hmacOk = publicKey && sig && verifySignature(rawBody, sig, publicKey)
+
+  if (!secretOk && !hmacOk) {
+    console.error('[abacate/webhook] auth failed — secretOk:', secretOk, 'hmacOk:', hmacOk)
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Layer 2: HMAC signature — only verify if header is present
-  const publicKey = process.env.ABACATEPAY_PUBLIC_KEY ?? ''
-  const sig = req.headers.get('x-webhook-signature') ?? ''
-  if (publicKey && sig) {
-    if (!verifySignature(rawBody, sig, publicKey)) {
-      console.error('[abacate/webhook] invalid HMAC signature')
-      return Response.json({ error: 'Invalid signature' }, { status: 401 })
-    }
-  }
-
-  // Log raw body so we can see AbacatePay's actual payload structure
-  console.log('[abacate/webhook] raw body:', rawBody.substring(0, 500))
+  console.log('[abacate/webhook] auth passed')
 
   let event: any
   try {
