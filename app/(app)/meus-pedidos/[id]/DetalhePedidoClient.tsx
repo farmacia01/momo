@@ -133,7 +133,7 @@ export function DetalhePedidoClient({ pedido }: { pedido: any }) {
       
       toast.success("Comprovante enviado com sucesso!");
       // Realtime update should catch the change, but let's be sure
-      setPedido(prev => ({ ...prev, comprovante_url: publicUrl }));
+      setPedido((prev: any) => ({ ...prev, comprovante_url: publicUrl }));
     } catch (error) {
       console.error(error);
       toast.error("Erro ao enviar o comprovante.");
