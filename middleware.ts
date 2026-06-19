@@ -8,7 +8,7 @@ const ROTAS_LIVRES = [
   '/login',
   '/cadastro',
   '/plano',
-  '/api/abacate',
+  '/api/stripe/webhook',
   '/esqueceu-senha',
   '/redefinir-senha',
 ];

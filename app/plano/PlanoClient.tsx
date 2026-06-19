@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { AlertTriangle, TrendingUp, Utensils, Bell, Star, Package, ShieldCheck, Check, ChevronLeft } from "lucide-react";
-import { AbacateCheckout } from "@/components/AbacateCheckout";
+import { StripeCheckout } from "@/components/StripeCheckout";
 
 const DORES = [
   { icon: <AlertTriangle size={18} />, text: "Uma dose esquecida zera semanas de progresso — e você nem percebe" },
@@ -34,16 +34,8 @@ export function PlanoClient({
     const params = new URLSearchParams(window.location.search);
     if (params.get('success') === '1' && status !== 'premium') {
       setSyncing(true);
-      fetch('/api/abacate/sync', { method: 'POST' })
-        .then(r => r.json())
-        .then(data => {
-          if (data.synced) {
-            window.location.replace('/plano');
-          } else {
-            setSyncing(false);
-          }
-        })
-        .catch(() => setSyncing(false));
+      // Webhook fires within seconds after checkout — reload to pick up premium status
+      setTimeout(() => window.location.replace('/plano'), 2500);
     }
   }, []);
 
@@ -173,7 +165,7 @@ export function PlanoClient({
             </div>
           </div>
 
-          <AbacateCheckout />
+          <StripeCheckout />
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <span className="flex items-center gap-1.5 text-[11px] font-medium" style={{ color: "var(--color-text-dim)" }}>
@@ -193,7 +185,7 @@ export function PlanoClient({
 
 function PremiumAtivo({ assinaturaExpiraEm }: { assinaturaExpiraEm: string | null }) {
   const [loading, setLoading] = useState(false);
-  const [cancelError, setCancelError] = useState<string | null>(null);
+  const [portalError, setPortalError] = useState<string | null>(null);
 
   const venc = assinaturaExpiraEm
     ? new Date(assinaturaExpiraEm).toLocaleDateString("pt-BR", {
@@ -203,21 +195,20 @@ function PremiumAtivo({ assinaturaExpiraEm }: { assinaturaExpiraEm: string | nul
       })
     : "Renovação automática";
 
-  async function handleCancel() {
-    if (!confirm('Tem certeza? Você continuará com acesso até o fim do período pago.')) return;
+  async function handlePortal() {
     setLoading(true);
-    setCancelError(null);
+    setPortalError(null);
     try {
-      const res = await fetch('/api/abacate/cancel', { method: 'POST' });
+      const res = await fetch('/api/stripe/portal', { method: 'POST' });
       const data = await res.json();
-      if (data.ok) {
-        window.location.reload();
+      if (data.url) {
+        window.location.href = data.url;
       } else {
-        setCancelError(data.error || 'Erro ao cancelar.');
+        setPortalError(data.error || 'Erro ao abrir portal.');
         setLoading(false);
       }
     } catch {
-      setCancelError('Erro ao conectar com o servidor.');
+      setPortalError('Erro ao conectar com o servidor.');
       setLoading(false);
     }
   }
@@ -270,18 +261,18 @@ function PremiumAtivo({ assinaturaExpiraEm }: { assinaturaExpiraEm: string | nul
           Voltar ao app
         </a>
         <button
-          onClick={handleCancel}
+          onClick={handlePortal}
           disabled={loading}
           className="mt-3 block w-full rounded-full py-3.5 text-sm font-bold transition-transform active:scale-[0.98] disabled:opacity-60"
           style={{
-            border: "1px solid rgba(239,68,68,0.3)",
-            color: "#ef4444",
+            border: "1px solid rgba(255,255,255,0.1)",
+            color: "rgba(255,255,255,0.5)",
             background: "transparent",
           }}
         >
-          {loading ? "Cancelando..." : "Cancelar assinatura"}
+          {loading ? "Abrindo..." : "Gerenciar assinatura"}
         </button>
-        {cancelError && <p className="mt-2 text-xs text-red-400">{cancelError}</p>}
+        {portalError && <p className="mt-2 text-xs text-red-400">{portalError}</p>}
       </div>
     </div>
   );

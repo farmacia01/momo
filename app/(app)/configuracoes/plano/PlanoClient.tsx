@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { Star, Calendar, CreditCard, AlertTriangle, ShieldCheck, TrendingUp, Utensils, Bell, Package } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { AbacateCheckout } from "@/components/AbacateCheckout";
+import { StripeCheckout } from "@/components/StripeCheckout";
 
 interface PlanoClientProps {
   planoAtivo: string;
@@ -27,27 +27,26 @@ const SOLUCOES = [
 ];
 
 export function PlanoClient({ planoAtivo, assinatura }: PlanoClientProps) {
-  const [loadingCancel, setLoadingCancel] = useState(false);
-  const [cancelError, setCancelError] = useState<string | null>(null);
+  const [loadingPortal, setLoadingPortal] = useState(false);
+  const [portalError, setPortalError] = useState<string | null>(null);
   const isPremium = planoAtivo === 'premium' && assinatura?.status === 'ativa';
   const isCancelScheduled = assinatura?.cancel_at_period_end === true;
 
-  async function handleCancel() {
-    if (!confirm('Tem certeza? Você continuará com acesso até o fim do período pago.')) return;
-    setLoadingCancel(true);
-    setCancelError(null);
+  async function handlePortal() {
+    setLoadingPortal(true);
+    setPortalError(null);
     try {
-      const res = await fetch('/api/abacate/cancel', { method: 'POST' });
+      const res = await fetch('/api/stripe/portal', { method: 'POST' });
       const data = await res.json();
-      if (data.ok) {
-        window.location.reload();
+      if (data.url) {
+        window.location.href = data.url;
       } else {
-        setCancelError(data.error || 'Erro ao cancelar.');
-        setLoadingCancel(false);
+        setPortalError(data.error || 'Erro ao abrir portal.');
+        setLoadingPortal(false);
       }
     } catch {
-      setCancelError('Erro ao conectar com o servidor.');
-      setLoadingCancel(false);
+      setPortalError('Erro ao conectar com o servidor.');
+      setLoadingPortal(false);
     }
   }
 
@@ -127,18 +126,18 @@ export function PlanoClient({ planoAtivo, assinatura }: PlanoClientProps) {
           ) : (
             <>
               <button
-                onClick={handleCancel}
-                disabled={loadingCancel}
+                onClick={handlePortal}
+                disabled={loadingPortal}
                 className="w-full flex items-center justify-center gap-2 py-4 rounded-full font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-60"
                 style={{
                   background: "var(--color-surface)",
-                  border: "1px solid rgba(239,68,68,0.3)",
-                  color: "#ef4444",
+                  border: "1px solid var(--color-surface-border)",
+                  color: "var(--color-text-muted)",
                 }}
               >
-                {loadingCancel ? "Cancelando..." : "Cancelar Assinatura"}
+                {loadingPortal ? "Abrindo..." : "Gerenciar Assinatura"}
               </button>
-              {cancelError && <p className="text-xs text-center text-danger mt-1">{cancelError}</p>}
+              {portalError && <p className="text-xs text-center text-danger mt-1">{portalError}</p>}
             </>
           )}
         </div>
@@ -230,7 +229,7 @@ export function PlanoClient({ planoAtivo, assinatura }: PlanoClientProps) {
             </div>
           </div>
 
-          <AbacateCheckout />
+          <StripeCheckout />
 
           <div className="flex items-center justify-center gap-4">
             <span className="flex items-center gap-1.5 text-[11px] font-medium text-text-dim">

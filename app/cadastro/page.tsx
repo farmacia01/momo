@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, ArrowRight, Check, User, Activity, Target, Star, Bell, TrendingUp, Utensils, Package, BookOpen, ShieldCheck, Smartphone, Share2, MoreVertical, Plus, Phone } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { AbacateCheckout } from '@/components/AbacateCheckout';
+import { StripeCheckout } from '@/components/StripeCheckout';
 
 const DOSES = ['2.5', '5', '7.5', '10', '12.5', '15'];
 const DIAS_SEMANA = [
@@ -361,7 +361,7 @@ export default function CadastroPage() {
                   Pagamento seguro · Cancele quando quiser
                 </div>
 
-                <AbacateCheckout />
+                <StripeCheckout />
               </div>
             </div>
           )}
