@@ -437,6 +437,8 @@ function TplBA({ data }: { data: ShareProgressData }) {
 // ── Template: Milestone ────────────────────────────────────────────────────────
 
 function TplMilestone({ milestoneKg }: { milestoneKg: number }) {
+  const fs = pesoFontSize(String(milestoneKg));
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <span
@@ -455,10 +457,10 @@ function TplMilestone({ milestoneKg }: { milestoneKg: number }) {
           animation: "spNumIn 0.7s 0.1s cubic-bezier(0.34,1.56,0.64,1) both",
         }}
       >
-        <span style={{ fontSize: 200, fontWeight: 900, color: "#FF6B00", letterSpacing: "-10px", lineHeight: 0.84, fontFamily: "Syne,sans-serif" }}>
+        <span style={{ fontSize: fs, fontWeight: 900, color: "#FF6B00", letterSpacing: "-10px", lineHeight: 0.84, fontFamily: "Syne,sans-serif" }}>
           {milestoneKg}
         </span>
-        <span style={{ fontSize: 68, fontWeight: 900, color: "rgba(255,107,0,0.55)", letterSpacing: "-2px", marginBottom: 20, marginLeft: 6, fontFamily: "Syne,sans-serif" }}>
+        <span style={{ fontSize: Math.round(fs * 0.34), fontWeight: 900, color: "rgba(255,107,0,0.55)", letterSpacing: "-2px", marginBottom: Math.round(fs * 0.1), marginLeft: 6, fontFamily: "Syne,sans-serif" }}>
           KG
         </span>
       </div>
