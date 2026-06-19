@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
           user_id: user.id,
           abacate_subscription_id: subId || null,
           abacate_billing_id: billingId || null,
-          status: 'pending',
+          status: 'pendente',
         }, { onConflict: 'user_id' })
       } catch (e: any) {
         console.error('[abacate/create-checkout] failed to store pending sub:', e?.message)
