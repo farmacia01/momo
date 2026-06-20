@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
       line_items: [{ price: priceId, quantity: 1 }],
       return_url: `${baseUrl}/plano?success=1`,
       metadata: { user_id: user.id, plano: plan },
+      payment_method_configuration: 'pmc_1TjVfQH7t2oko0FsF3Q1JwoF',
       subscription_data: {
         metadata: { user_id: user.id, plano: plan },
       },
