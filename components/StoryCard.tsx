@@ -22,15 +22,23 @@ export type TemplateType =
   | "record"
   | "streak"
   | "beforeafter"
-  | "milestone";
+  | "milestone"
+  | "imc"
+  | "weekly"
+  | "halfway"
+  | "clean";
 
 export const TEMPLATES: { key: TemplateType; emoji: string; label: string }[] = [
-  { key: "weight",      emoji: "🔥", label: "Peso perdido"   },
-  { key: "goal",        emoji: "🎯", label: "Meta alcançada" },
-  { key: "record",      emoji: "🏆", label: "Novo recorde"   },
-  { key: "streak",      emoji: "🔥", label: "Sequência"      },
-  { key: "beforeafter", emoji: "✨", label: "Antes e agora"  },
-  { key: "milestone",   emoji: "🏆", label: "Milestone"      },
+  { key: "weight",      emoji: "🔥", label: "Peso perdido"      },
+  { key: "beforeafter", emoji: "✨", label: "Antes e agora"     },
+  { key: "clean",       emoji: "💫", label: "Minimalista"       },
+  { key: "weekly",      emoji: "📈", label: "Ritmo semanal"     },
+  { key: "imc",         emoji: "💪", label: "IMC em queda"      },
+  { key: "halfway",     emoji: "🎯", label: "Rumo à meta"       },
+  { key: "record",      emoji: "🏆", label: "Menor peso"        },
+  { key: "streak",      emoji: "🗓️", label: "Dias em tratamento"},
+  { key: "milestone",   emoji: "🏅", label: "Milestone"         },
+  { key: "goal",        emoji: "🎉", label: "Meta batida"       },
 ];
 
 // ── Color themes ───────────────────────────────────────────────────────────────
@@ -365,6 +373,10 @@ export const StoryCard = forwardRef<HTMLDivElement, CardProps>(
             {template === "streak"      && <TplStreak dias={dias} calorias={caloriasEconomizadas} ct={ct} />}
             {template === "beforeafter" && <TplBA data={data} dias={dias} calorias={caloriasEconomizadas} ct={ct} />}
             {template === "milestone"   && <TplMilestone milestoneKg={milestoneKg} calorias={caloriasEconomizadas} ct={ct} />}
+            {template === "imc"         && <TplImc data={data} ct={ct} />}
+            {template === "weekly"      && <TplWeekly data={data} ct={ct} />}
+            {template === "halfway"     && <TplHalfway data={data} ct={ct} />}
+            {template === "clean"       && <TplClean data={data} displayPeso={displayPeso} ct={ct} />}
           </div>
 
           {/* Bottom logo */}
@@ -618,6 +630,221 @@ function TplMilestone({ milestoneKg, calorias, ct }: { milestoneKg: number; calo
       <MetricSection label="KG vencidos" value={String(milestoneKg)} unit="KG" valueFontSize={68} ct={ct} />
       <GoldDivider color={ct.divider} />
       <MetricSection label="Calorias economizadas" value={formatKcal(calorias)} unit="kcal" emoji="🔥" valueFontSize={36} ct={ct} />
+    </div>
+  );
+}
+
+// ── Template: IMC em queda ─────────────────────────────────────────────────────
+
+function TplImc({ data, ct }: { data: ShareProgressData; ct: ColorTheme }) {
+  const imc = data.imc;
+  const imcStr = imc > 0 ? imc.toFixed(1) : "—";
+  const categoria =
+    imc <= 0   ? "—"
+    : imc < 18.5 ? "Abaixo do peso"
+    : imc < 25   ? "Peso normal"
+    : imc < 30   ? "Sobrepeso"
+    : imc < 35   ? "Obesidade grau I"
+    : imc < 40   ? "Obesidade grau II"
+    :              "Obesidade grau III";
+
+  // IMC inicial estimado a partir do peso inicial (se disponível)
+  const pesoInicial = data.pesoInicial;
+  const pesoAtual = data.pesoAtual;
+  const alturaEstimada = pesoAtual && imc > 0 ? Math.sqrt(pesoAtual / imc) : 0;
+  const imcInicial = pesoInicial && alturaEstimada > 0
+    ? pesoInicial / (alturaEstimada * alturaEstimada)
+    : 0;
+  const deltaImc = imcInicial > 0 && imc > 0 ? imcInicial - imc : 0;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 22, width: "100%" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+        <span style={{ fontSize: 36, lineHeight: 1 }}>💪</span>
+        <span style={{
+          fontSize: 11, fontWeight: 700, color: ct.soft,
+          letterSpacing: "0.22em", textTransform: "uppercase",
+          fontFamily: "Outfit,sans-serif",
+        }}>IMC em queda</span>
+      </div>
+      <MetricSection label="IMC atual" value={imcStr} valueFontSize={72} ct={ct} />
+      <GoldDivider color={ct.divider} />
+      {deltaImc > 0.3 ? (
+        <MetricSection label="Queda de IMC" value={`-${deltaImc.toFixed(1)}`} unit="pontos" valueFontSize={40} ct={ct} />
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+          <span style={{
+            fontSize: 10, fontWeight: 700, color: ct.soft,
+            letterSpacing: "0.22em", textTransform: "uppercase",
+            fontFamily: "Outfit,sans-serif",
+          }}>Classificação</span>
+          <span style={{
+            fontSize: 20, fontWeight: 900, color: ct.main,
+            fontFamily: "Syne,sans-serif", letterSpacing: "-0.02em",
+          }}>{categoria}</span>
+        </div>
+      )}
+      <GoldDivider color={ct.divider} />
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+        <span style={{
+          fontSize: 10, fontWeight: 700, color: ct.soft,
+          letterSpacing: "0.22em", textTransform: "uppercase",
+          fontFamily: "Outfit,sans-serif",
+        }}>Classificação</span>
+        <span style={{
+          fontSize: deltaImc > 0.3 ? 20 : 24, fontWeight: 900, color: ct.main,
+          fontFamily: "Syne,sans-serif", letterSpacing: "-0.02em",
+        }}>{categoria}</span>
+      </div>
+    </div>
+  );
+}
+
+// ── Template: Ritmo Semanal ────────────────────────────────────────────────────
+
+function TplWeekly({ data, ct }: { data: ShareProgressData; ct: ColorTheme }) {
+  const media = data.mediaSemana;
+  const mediaStr = media > 0 ? media.toFixed(2) : "—";
+  const semanas = Math.max(1, data.semanas);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24, width: "100%" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+        <span style={{ fontSize: 36, lineHeight: 1 }}>📈</span>
+        <span style={{
+          fontSize: 11, fontWeight: 700, color: ct.soft,
+          letterSpacing: "0.22em", textTransform: "uppercase",
+          fontFamily: "Outfit,sans-serif",
+        }}>Meu ritmo</span>
+      </div>
+      <MetricSection label="Média semanal" value={`-${mediaStr}`} unit="KG/SEM" valueFontSize={58} ct={ct} />
+      <GoldDivider color={ct.divider} />
+      <div style={{ display: "flex", gap: 36, alignItems: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+          <span style={{ fontSize: 9, fontWeight: 700, color: ct.soft, letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "Outfit,sans-serif" }}>Semanas</span>
+          <span style={{ fontSize: 36, fontWeight: 900, color: ct.main, fontFamily: "Syne,sans-serif", lineHeight: 1 }}>{semanas}</span>
+        </div>
+        <div style={{ width: 1, height: 40, background: ct.divider }} />
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+          <span style={{ fontSize: 9, fontWeight: 700, color: ct.soft, letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "Outfit,sans-serif" }}>Total perdido</span>
+          <span style={{ fontSize: 36, fontWeight: 900, color: ct.main, fontFamily: "Syne,sans-serif", lineHeight: 1 }}>-{data.pesoPerdido.toFixed(1)}</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: ct.soft, fontFamily: "Syne,sans-serif" }}>kg</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Template: Rumo à Meta ──────────────────────────────────────────────────────
+
+function TplHalfway({ data, ct }: { data: ShareProgressData; ct: ColorTheme }) {
+  const meta    = data.pesoMeta;
+  const inicial = data.pesoInicial;
+  const atual   = data.pesoAtual;
+
+  // Progresso percentual rumo à meta
+  const totalParaPerder = (inicial && meta) ? inicial - meta : 0;
+  const pct = totalParaPerder > 0
+    ? Math.min(100, Math.round((data.pesoPerdido / totalParaPerder) * 100))
+    : 0;
+  const faltam = (atual && meta) ? Math.max(0, atual - meta) : null;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 22, width: "100%" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+        <span style={{ fontSize: 36, lineHeight: 1 }}>🎯</span>
+        <span style={{
+          fontSize: 11, fontWeight: 700, color: ct.soft,
+          letterSpacing: "0.22em", textTransform: "uppercase",
+          fontFamily: "Outfit,sans-serif",
+        }}>Rumo à meta</span>
+      </div>
+
+      {pct > 0 ? (
+        <>
+          <MetricSection label="Da meta conquistado" value={`${pct}`} unit="%" valueFontSize={72} ct={ct} />
+          <GoldDivider color={ct.divider} />
+          <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
+            {inicial && (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+                <span style={{ fontSize: 9, fontWeight: 700, color: ct.soft, letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "Outfit,sans-serif" }}>Início</span>
+                <span style={{ fontSize: 30, fontWeight: 900, color: ct.main, fontFamily: "Syne,sans-serif", lineHeight: 1 }}>{Math.round(inicial)}</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: ct.soft, fontFamily: "Syne,sans-serif" }}>kg</span>
+              </div>
+            )}
+            {faltam !== null && (
+              <>
+                <div style={{ width: 1, height: 40, background: ct.divider }} />
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: ct.soft, letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "Outfit,sans-serif" }}>Faltam</span>
+                  <span style={{ fontSize: 30, fontWeight: 900, color: ct.accent, fontFamily: "Syne,sans-serif", lineHeight: 1 }}>{faltam.toFixed(1)}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: ct.accent, fontFamily: "Syne,sans-serif" }}>kg</span>
+                </div>
+              </>
+            )}
+            {meta && (
+              <>
+                <div style={{ width: 1, height: 40, background: ct.divider }} />
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: ct.soft, letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "Outfit,sans-serif" }}>Meta</span>
+                  <span style={{ fontSize: 30, fontWeight: 900, color: ct.main, fontFamily: "Syne,sans-serif", lineHeight: 1 }}>{Math.round(meta)}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: ct.soft, fontFamily: "Syne,sans-serif" }}>kg</span>
+                </div>
+              </>
+            )}
+          </div>
+        </>
+      ) : (
+        // Fallback sem meta definida: mostra progresso geral
+        <>
+          <MetricSection label="Já perdi" value={`-${data.pesoPerdido.toFixed(1)}`} unit="KG" valueFontSize={72} ct={ct} />
+          <GoldDivider color={ct.divider} />
+          <MetricSection label="Em" value={String(Math.max(1, data.semanas))} unit="SEMANAS" valueFontSize={46} ct={ct} />
+        </>
+      )}
+    </div>
+  );
+}
+
+// ── Template: Minimalista ──────────────────────────────────────────────────────
+
+function TplClean({ data, displayPeso, ct }: { data: ShareProgressData; displayPeso: number; ct: ColorTheme }) {
+  const numStr = displayPeso.toFixed(1);
+  const semanas = Math.max(1, data.semanas);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20, width: "100%" }}>
+      <span style={{
+        fontSize: 11, fontWeight: 700, color: ct.soft,
+        letterSpacing: "0.28em", textTransform: "uppercase",
+        fontFamily: "Outfit,sans-serif",
+      }}>Minha jornada</span>
+
+      {/* Número principal gigante */}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 4 }}>
+        <span style={{
+          fontSize: 14, fontWeight: 900, color: ct.soft,
+          fontFamily: "Syne,sans-serif", marginTop: 16, lineHeight: 1,
+        }}>-</span>
+        <span style={{
+          fontSize: 96, fontWeight: 900, color: ct.main,
+          fontFamily: "Syne,sans-serif", lineHeight: 0.9,
+          letterSpacing: "-0.04em",
+        }}>{numStr}</span>
+        <span style={{
+          fontSize: 24, fontWeight: 700, color: ct.soft,
+          fontFamily: "Syne,sans-serif", marginTop: 56, lineHeight: 1,
+        }}>kg</span>
+      </div>
+
+      <GoldDivider width={100} color={ct.divider} />
+
+      <span style={{
+        fontSize: 13, fontWeight: 700, color: ct.soft,
+        fontFamily: "Outfit,sans-serif", letterSpacing: "0.08em",
+      }}>
+        {semanas} semana{semanas === 1 ? "" : "s"} com Mounjaro
+      </span>
     </div>
   );
 }
