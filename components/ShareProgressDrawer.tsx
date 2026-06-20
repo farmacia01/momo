@@ -194,15 +194,15 @@ export function ShareProgressDrawer({ open, onClose, data }: DrawerProps) {
           {/* Scrollable */}
           <div style={{ flex: 1, overflowY: "auto", padding: "20px 20px 48px" }}>
 
-            {/* Preview — dark wrapper so white text is visible, card itself is transparent */}
+            {/* Preview — white wrapper matching the new white/gold card */}
             <div ref={wrapRef} style={{ display: "flex", justifyContent: "center", marginBottom: 22 }}>
               <div style={{
                 width:  CARD_W * scale,
                 height: CARD_H * scale,
                 overflow: "hidden",
                 borderRadius: 22 * scale,
-                background: "linear-gradient(135deg,#0d0d0d 0%,#1a0a00 100%)",
-                boxShadow: "0 36px 100px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.07)",
+                background: "#ffffff",
+                boxShadow: "0 36px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1)",
               }}>
                 <div style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}>
                   <StoryCard
