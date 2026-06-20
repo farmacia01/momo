@@ -34,31 +34,29 @@ export const TEMPLATES: { key: TemplateType; emoji: string; label: string }[] = 
 ];
 
 // ── Constants ──────────────────────────────────────────────────────────────────
-
+// Mantém o mesmo aspect ratio original que cabia na tela
 export const CARD_W = 360;
 export const CARD_H = 640;
 
-// ── Palette ────────────────────────────────────────────────────────────────────
+// ── Palette — cores 100% sólidas, sem rgba/opacity ─────────────────────────────
 
-const GOLD        = "#C8952E";
-const GOLD_LIGHT  = "#E5C87A";
-const GOLD_FADED  = "rgba(200,149,46,0.35)";
-const GOLD_GLOW   = "rgba(200,149,46,0.18)";
-const TEXT_LABEL   = "rgba(180,140,60,0.55)";
-const TEXT_NUM     = "rgba(180,140,60,0.40)";
-const DIVIDER      = "linear-gradient(90deg, transparent 5%, rgba(200,149,46,0.25) 30%, rgba(200,149,46,0.25) 70%, transparent 95%)";
+const GOLD       = "#C8952E";   // dourado principal
+const GOLD_SOFT  = "#D4AE5A";   // dourado labels — sólido, legível
+const GOLD_NUM   = "#B8862B";   // dourado números — sólido, contraste forte
+const GOLD_LIGHT = "#E5C87A";   // sparkles / efeitos decorativos
+const DIVIDER_C  = "#E0D0A8";   // cor do divisor — sólida
 
 // ── Sparkle SVG ────────────────────────────────────────────────────────────────
+// Sem animation de opacity — apenas transform pra html2canvas não quebrar
 
-function Sparkle({ x, y, size = 14, delay = 0, opacity = 0.7 }: { x: number; y: number; size?: number; delay?: number; opacity?: number }) {
+function Sparkle({ x, y, size = 14 }: { x: number; y: number; size?: number }) {
   return (
     <svg
       width={size} height={size}
       viewBox="0 0 24 24" fill="none"
       style={{
         position: "absolute", left: x, top: y,
-        opacity,
-        animation: `spSparkle 2.5s ${delay}s ease-in-out infinite`,
+        animation: "spSparkle 2.5s ease-in-out infinite",
       }}
     >
       <path
@@ -73,7 +71,8 @@ function Sparkle({ x, y, size = 14, delay = 0, opacity = 0.7 }: { x: number; y: 
   );
 }
 
-// ── Light rays (bottom glow) ───────────────────────────────────────────────────
+// ── Light rays (bottom decorations) ────────────────────────────────────────────
+// Sem opacity em animation — apenas transform
 
 function LightRays() {
   return (
@@ -81,25 +80,17 @@ function LightRays() {
       style={{
         position: "absolute",
         bottom: 0, left: 0, right: 0,
-        height: 220,
+        height: 180,
         overflow: "hidden",
         pointerEvents: "none",
       }}
     >
-      {/* Main golden glow */}
-      <div style={{
-        position: "absolute",
-        bottom: -60, left: "50%", transform: "translateX(-50%)",
-        width: 500, height: 200,
-        background: "radial-gradient(ellipse at center, rgba(200,149,46,0.18) 0%, rgba(200,149,46,0.06) 40%, transparent 70%)",
-      }} />
-
-      {/* Diagonal streaks */}
+      {/* Diagonal streaks — cor sólida, sem opacity animada */}
       {[
-        { rotate: -35, left: "10%", bottom: 10, w: 280, opacity: 0.12, delay: 0 },
-        { rotate: -25, left: "15%", bottom: 40, w: 200, opacity: 0.09, delay: 0.5 },
-        { rotate: -40, left: "5%",  bottom: 30, w: 320, opacity: 0.08, delay: 1.0 },
-        { rotate: -20, left: "25%", bottom: 5,  w: 260, opacity: 0.10, delay: 0.3 },
+        { rotate: -35, left: "10%", bottom: 10, w: 250 },
+        { rotate: -25, left: "20%", bottom: 40, w: 180 },
+        { rotate: -40, left: "5%",  bottom: 25, w: 280 },
+        { rotate: -20, left: "30%", bottom: 5,  w: 220 },
       ].map((s, i) => (
         <div
           key={i}
@@ -110,24 +101,21 @@ function LightRays() {
             width: s.w,
             height: 2,
             background: `linear-gradient(90deg, transparent, ${GOLD_LIGHT}, transparent)`,
-            opacity: s.opacity,
             transform: `rotate(${s.rotate}deg)`,
             transformOrigin: "left center",
-            animation: `spRayShimmer 4s ${s.delay}s ease-in-out infinite`,
+            animation: "spRayShimmer 4s ease-in-out infinite",
           }}
         />
       ))}
 
-      {/* Particle dots */}
+      {/* Particle dots — cor sólida */}
       {[
-        { x: "20%", y: 40, size: 3, delay: 0 },
-        { x: "35%", y: 80, size: 2, delay: 0.8 },
-        { x: "60%", y: 30, size: 2.5, delay: 1.2 },
-        { x: "75%", y: 60, size: 2, delay: 0.4 },
-        { x: "45%", y: 100, size: 3, delay: 1.6 },
-        { x: "80%", y: 90, size: 2, delay: 0.9 },
-        { x: "15%", y: 110, size: 2.5, delay: 1.4 },
-        { x: "55%", y: 130, size: 2, delay: 0.6 },
+        { x: "22%", y: 35, size: 3 },
+        { x: "38%", y: 70, size: 2 },
+        { x: "62%", y: 25, size: 2.5 },
+        { x: "78%", y: 55, size: 2 },
+        { x: "48%", y: 90, size: 3 },
+        { x: "85%", y: 80, size: 2 },
       ].map((p, i) => (
         <div
           key={`dot-${i}`}
@@ -139,8 +127,7 @@ function LightRays() {
             height: p.size,
             borderRadius: "50%",
             background: GOLD_LIGHT,
-            opacity: 0.4,
-            animation: `spDotFloat 3s ${p.delay}s ease-in-out infinite`,
+            animation: "spDotFloat 3s ease-in-out infinite",
           }}
         />
       ))}
@@ -156,49 +143,41 @@ function MomoLogoBadge() {
       display: "flex", flexDirection: "column",
       alignItems: "center", gap: 6,
     }}>
-      {/* Outer ring glow */}
+      {/* Ring + logo */}
       <div style={{
         position: "relative",
-        width: 72, height: 72,
+        width: 64, height: 64,
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>
-        {/* Glow ring */}
+        {/* Gold ring border */}
         <div style={{
-          position: "absolute", inset: -4,
+          position: "absolute", inset: -3,
           borderRadius: "50%",
-          background: `conic-gradient(from 0deg, ${GOLD_FADED}, ${GOLD_LIGHT}40, ${GOLD_FADED}, ${GOLD_LIGHT}40, ${GOLD_FADED})`,
-          animation: "spRingRotate 6s linear infinite",
-        }} />
-        <div style={{
-          position: "absolute", inset: -1,
-          borderRadius: "50%",
-          background: "#fff",
+          border: `2px solid ${GOLD_LIGHT}`,
         }} />
         {/* Logo circle */}
         <div style={{
           position: "relative",
-          width: 64, height: 64,
+          width: 56, height: 56,
           borderRadius: "50%",
           background: "linear-gradient(135deg, #ff8c00, #ff6500)",
           display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: `0 4px 20px rgba(255,101,0,0.3), 0 0 40px ${GOLD_GLOW}`,
         }}>
           <img
             src="/logo.png"
             alt="Momo"
-            style={{ width: 40, height: 40, objectFit: "contain" }}
+            style={{ width: 36, height: 36, objectFit: "contain" }}
           />
         </div>
       </div>
 
       {/* Brand name */}
       <span style={{
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: 800,
         color: GOLD,
         letterSpacing: "0.22em",
         fontFamily: "Syne,sans-serif",
-        textTransform: "uppercase",
       }}>
         MOMO
       </span>
@@ -206,13 +185,13 @@ function MomoLogoBadge() {
   );
 }
 
-// ── Divider ────────────────────────────────────────────────────────────────────
+// ── Divider — cor sólida ───────────────────────────────────────────────────────
 
 function GoldDivider({ width = 140 }: { width?: number }) {
   return (
     <div style={{
       width, height: 1, margin: "0 auto",
-      background: DIVIDER,
+      background: DIVIDER_C,
     }} />
   );
 }
@@ -230,7 +209,6 @@ export const StoryCard = forwardRef<HTMLDivElement, CardProps>(
   function StoryCard({ template, data, displayPeso, mesAno }, ref) {
     const dias        = Math.round(data.semanas * 7);
     const milestoneKg = Math.floor(data.pesoPerdido / 5) * 5;
-    // Calorias economizadas: ~7700 kcal per kg lost
     const caloriasEconomizadas = Math.round(data.pesoPerdido * 7700);
 
     return (
@@ -240,54 +218,46 @@ export const StoryCard = forwardRef<HTMLDivElement, CardProps>(
           width: CARD_W, height: CARD_H,
           position: "relative",
           fontFamily: "Syne,sans-serif",
-          background: "#ffffff",
-          overflow: "hidden",
+          // SEM background — PNG transparente para figurinha no Story
         }}
       >
-        {/* Animations */}
+        {/*
+          REGRA CRÍTICA para html2canvas:
+          Nenhuma animação usa opacity — apenas transform.
+          Isso garante que no momento da captura tudo está 100% visível.
+        */}
         <style>{`
           @keyframes spSparkle {
-            0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.1); }
+            0%, 100% { transform: scale(0.85); }
+            50%      { transform: scale(1.15); }
           }
           @keyframes spRayShimmer {
-            0%, 100% { opacity: 0.06; }
-            50% { opacity: 0.18; }
+            0%, 100% { transform: scaleX(0.9); }
+            50%      { transform: scaleX(1.1); }
           }
           @keyframes spDotFloat {
-            0%, 100% { transform: translateY(0); opacity: 0.2; }
-            50% { transform: translateY(-8px); opacity: 0.6; }
-          }
-          @keyframes spRingRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-6px); }
           }
           @keyframes spNumIn {
-            from { transform: scale(0.7) translateY(12px); opacity: 0.4; }
-            to   { transform: scale(1) translateY(0); opacity: 1; }
+            from { transform: scale(0.7) translateY(10px); }
+            to   { transform: scale(1)   translateY(0);    }
           }
           @keyframes spFadeUp {
-            from { transform: translateY(8px); opacity: 0.3; }
-            to   { transform: translateY(0); opacity: 1; }
+            from { transform: translateY(8px); }
+            to   { transform: translateY(0);   }
           }
           @keyframes spEmojiPop {
             0%   { transform: scale(0) rotate(-20deg); }
             70%  { transform: scale(1.25) rotate(6deg); }
-            100% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1)   rotate(0deg); }
           }
         `}</style>
 
-        {/* Subtle radial background warmth */}
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "radial-gradient(ellipse at 50% 30%, rgba(200,149,46,0.04) 0%, transparent 60%)",
-          pointerEvents: "none",
-        }} />
-
         {/* Sparkle decorations */}
-        <Sparkle x={200} y={70} size={18} delay={0} opacity={0.6} />
-        <Sparkle x={230} y={50} size={12} delay={0.8} opacity={0.4} />
-        <Sparkle x={260} y={80} size={10} delay={1.5} opacity={0.5} />
+        <Sparkle x={210} y={60} size={18} />
+        <Sparkle x={245} y={38} size={13} />
+        <Sparkle x={275} y={72} size={10} />
 
         {/* Light rays at the bottom */}
         <LightRays />
@@ -297,7 +267,8 @@ export const StoryCard = forwardRef<HTMLDivElement, CardProps>(
           position: "absolute", inset: 0,
           display: "flex", flexDirection: "column",
           alignItems: "center",
-          padding: "40px 30px 28px",
+          justifyContent: "center",
+          padding: "32px 24px 24px",
         }}>
 
           {/* Hero — template content */}
@@ -316,7 +287,7 @@ export const StoryCard = forwardRef<HTMLDivElement, CardProps>(
           </div>
 
           {/* Bottom logo */}
-          <div style={{ flexShrink: 0, marginTop: 12 }}>
+          <div style={{ flexShrink: 0, marginTop: 8 }}>
             <MomoLogoBadge />
           </div>
         </div>
@@ -334,7 +305,7 @@ function formatKcal(n: number): string {
   return String(n);
 }
 
-// ── Section component ──────────────────────────────────────────────────────────
+// ── MetricSection — sem opacity em nada ────────────────────────────────────────
 
 function MetricSection({
   label,
@@ -342,53 +313,49 @@ function MetricSection({
   unit,
   emoji,
   valueFontSize = 64,
-  animDelay = 0,
 }: {
   label: string;
   value: string;
   unit?: string;
   emoji?: string;
   valueFontSize?: number;
-  animDelay?: number;
 }) {
   return (
     <div style={{
       display: "flex", flexDirection: "column",
-      alignItems: "center", gap: 4,
-      animation: `spFadeUp 0.6s ${animDelay}s ease both`,
+      alignItems: "center", gap: 6,
     }}>
       <span style={{
-        fontSize: 10,
+        fontSize: 11,
         fontWeight: 700,
-        color: TEXT_LABEL,
-        letterSpacing: "0.25em",
+        color: GOLD_SOFT,
+        letterSpacing: "0.20em",
         textTransform: "uppercase",
         fontFamily: "Outfit,sans-serif",
-        display: "flex", alignItems: "center", gap: 4,
+        display: "flex", alignItems: "center", gap: 5,
       }}>
-        {emoji && <span style={{ fontSize: 12 }}>{emoji}</span>}
+        {emoji && <span style={{ fontSize: 13 }}>{emoji}</span>}
         {label}
       </span>
       <div style={{
-        display: "flex", alignItems: "baseline", gap: 3,
-        animation: `spNumIn 0.7s ${animDelay + 0.15}s cubic-bezier(0.34,1.56,0.64,1) both`,
+        display: "flex", alignItems: "baseline", gap: 6,
       }}>
         <span style={{
           fontSize: valueFontSize,
           fontWeight: 900,
-          color: TEXT_NUM,
-          letterSpacing: "-0.04em",
-          lineHeight: 0.9,
+          color: GOLD_NUM,
+          letterSpacing: "0.01em",
+          lineHeight: 1,
           fontFamily: "Syne,sans-serif",
         }}>
           {value}
         </span>
         {unit && (
           <span style={{
-            fontSize: Math.max(16, valueFontSize * 0.3),
+            fontSize: Math.max(18, valueFontSize * 0.32),
             fontWeight: 700,
-            color: TEXT_LABEL,
-            letterSpacing: "0.04em",
+            color: GOLD_SOFT,
+            letterSpacing: "0.06em",
             textTransform: "uppercase",
             fontFamily: "Syne,sans-serif",
           }}>
@@ -400,7 +367,7 @@ function MetricSection({
   );
 }
 
-// ── Template: Peso Perdido (main — like the reference image) ───────────────────
+// ── Template: Peso Perdido ─────────────────────────────────────────────────────
 
 function TplWeight({
   data, displayPeso, dias, calorias,
@@ -412,39 +379,33 @@ function TplWeight({
   return (
     <div style={{
       display: "flex", flexDirection: "column",
-      alignItems: "center", gap: 20,
+      alignItems: "center", gap: 24,
       width: "100%",
     }}>
-      {/* Peso Perdido */}
       <MetricSection
         label="Peso perdido"
         value={`-${numStr}`}
         unit="KG"
-        valueFontSize={72}
-        animDelay={0}
+        valueFontSize={68}
       />
 
       <GoldDivider />
 
-      {/* Tempo de Jornada */}
       <MetricSection
         label="Tempo de jornada"
         value={String(dias)}
         unit="DIAS"
-        valueFontSize={58}
-        animDelay={0.2}
+        valueFontSize={54}
       />
 
       <GoldDivider />
 
-      {/* Calorias Economizadas */}
       <MetricSection
         label="Calorias economizadas"
         value={formatKcal(calorias)}
         unit="kcal"
         emoji="🔥"
-        valueFontSize={42}
-        animDelay={0.4}
+        valueFontSize={38}
       />
     </div>
   );
@@ -459,20 +420,19 @@ function TplGoal({ data, calorias }: { data: ShareProgressData; calorias: number
   return (
     <div style={{
       display: "flex", flexDirection: "column",
-      alignItems: "center", gap: 20,
+      alignItems: "center", gap: 22,
       width: "100%",
     }}>
       <div style={{
         display: "flex", flexDirection: "column",
-        alignItems: "center", gap: 4,
-        animation: "spFadeUp 0.5s ease both",
+        alignItems: "center", gap: 6,
       }}>
-        <span style={{ fontSize: 40, lineHeight: 1, animation: "spEmojiPop 0.65s cubic-bezier(0.34,1.56,0.64,1) both" }}>
+        <span style={{ fontSize: 38, lineHeight: 1 }}>
           🎯
         </span>
         <span style={{
-          fontSize: 32, fontWeight: 900, color: GOLD,
-          letterSpacing: "0.06em", lineHeight: 0.9,
+          fontSize: 30, fontWeight: 900, color: GOLD,
+          letterSpacing: "0.06em", lineHeight: 1,
           fontFamily: "Syne,sans-serif",
         }}>
           META BATIDA
@@ -483,8 +443,7 @@ function TplGoal({ data, calorias }: { data: ShareProgressData; calorias: number
         label="Peso alcançado"
         value={str}
         unit="KG"
-        valueFontSize={72}
-        animDelay={0.15}
+        valueFontSize={68}
       />
 
       <GoldDivider />
@@ -494,8 +453,7 @@ function TplGoal({ data, calorias }: { data: ShareProgressData; calorias: number
         value={formatKcal(calorias)}
         unit="kcal"
         emoji="🔥"
-        valueFontSize={38}
-        animDelay={0.35}
+        valueFontSize={36}
       />
     </div>
   );
@@ -510,20 +468,19 @@ function TplRecord({ data, calorias }: { data: ShareProgressData; calorias: numb
   return (
     <div style={{
       display: "flex", flexDirection: "column",
-      alignItems: "center", gap: 20,
+      alignItems: "center", gap: 22,
       width: "100%",
     }}>
       <div style={{
         display: "flex", flexDirection: "column",
-        alignItems: "center", gap: 4,
-        animation: "spFadeUp 0.5s ease both",
+        alignItems: "center", gap: 6,
       }}>
-        <span style={{ fontSize: 40, lineHeight: 1, animation: "spEmojiPop 0.65s cubic-bezier(0.34,1.56,0.64,1) both" }}>
+        <span style={{ fontSize: 38, lineHeight: 1 }}>
           🏆
         </span>
         <span style={{
-          fontSize: 32, fontWeight: 900, color: GOLD,
-          letterSpacing: "0.06em", lineHeight: 0.9,
+          fontSize: 30, fontWeight: 900, color: GOLD,
+          letterSpacing: "0.06em", lineHeight: 1,
           fontFamily: "Syne,sans-serif",
         }}>
           MEU RECORDE
@@ -534,8 +491,7 @@ function TplRecord({ data, calorias }: { data: ShareProgressData; calorias: numb
         label="Menor peso"
         value={str}
         unit="KG"
-        valueFontSize={72}
-        animDelay={0.15}
+        valueFontSize={68}
       />
 
       <GoldDivider />
@@ -545,8 +501,7 @@ function TplRecord({ data, calorias }: { data: ShareProgressData; calorias: numb
         value={formatKcal(calorias)}
         unit="kcal"
         emoji="🔥"
-        valueFontSize={38}
-        animDelay={0.35}
+        valueFontSize={36}
       />
     </div>
   );
@@ -558,25 +513,18 @@ function TplStreak({ dias, calorias }: { dias: number; calorias: number }) {
   return (
     <div style={{
       display: "flex", flexDirection: "column",
-      alignItems: "center", gap: 20,
+      alignItems: "center", gap: 22,
       width: "100%",
     }}>
-      <div style={{
-        display: "flex", flexDirection: "column",
-        alignItems: "center", gap: 4,
-        animation: "spFadeUp 0.5s ease both",
-      }}>
-        <span style={{ fontSize: 44, lineHeight: 1, animation: "spEmojiPop 0.65s cubic-bezier(0.34,1.56,0.64,1) both" }}>
-          🔥
-        </span>
-      </div>
+      <span style={{ fontSize: 42, lineHeight: 1 }}>
+        🔥
+      </span>
 
       <MetricSection
         label="Dias sem parar"
         value={String(dias)}
         unit="DIAS"
-        valueFontSize={72}
-        animDelay={0.1}
+        valueFontSize={68}
       />
 
       <GoldDivider />
@@ -586,8 +534,7 @@ function TplStreak({ dias, calorias }: { dias: number; calorias: number }) {
         value={formatKcal(calorias)}
         unit="kcal"
         emoji="🔥"
-        valueFontSize={38}
-        animDelay={0.35}
+        valueFontSize={36}
       />
     </div>
   );
@@ -603,34 +550,33 @@ function TplBA({ data, dias, calorias }: { data: ShareProgressData; dias: number
   return (
     <div style={{
       display: "flex", flexDirection: "column",
-      alignItems: "center", gap: 16,
+      alignItems: "center", gap: 18,
       width: "100%",
     }}>
       {/* Before / After side by side */}
       <div style={{
-        display: "flex", gap: 28, alignItems: "center",
-        animation: "spFadeUp 0.5s 0.1s ease both",
+        display: "flex", gap: 24, alignItems: "center",
       }}>
         {/* Antes */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <span style={{
-            fontSize: 10, fontWeight: 700, color: TEXT_LABEL,
-            letterSpacing: "0.25em", textTransform: "uppercase",
+            fontSize: 10, fontWeight: 700, color: GOLD_SOFT,
+            letterSpacing: "0.20em", textTransform: "uppercase",
             fontFamily: "Outfit,sans-serif", marginBottom: 4,
           }}>ANTES</span>
           <span style={{
-            fontSize: 52, fontWeight: 900, color: TEXT_NUM,
-            letterSpacing: "-0.04em", lineHeight: 0.9,
+            fontSize: 48, fontWeight: 900, color: GOLD_NUM,
+            letterSpacing: "0.01em", lineHeight: 1,
             fontFamily: "Syne,sans-serif",
           }}>{Math.round(antes)}</span>
           <span style={{
-            fontSize: 16, fontWeight: 700, color: TEXT_LABEL,
+            fontSize: 16, fontWeight: 700, color: GOLD_SOFT,
             fontFamily: "Syne,sans-serif", marginTop: 2,
           }}>kg</span>
         </div>
 
         {/* Arrow */}
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style={{ opacity: 0.5 }}>
+        <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
           <path d="M4 14h20M18 8l6 6-6 6" stroke={GOLD} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
 
@@ -638,14 +584,13 @@ function TplBA({ data, dias, calorias }: { data: ShareProgressData; dias: number
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <span style={{
             fontSize: 10, fontWeight: 700, color: GOLD,
-            letterSpacing: "0.25em", textTransform: "uppercase",
+            letterSpacing: "0.20em", textTransform: "uppercase",
             fontFamily: "Outfit,sans-serif", marginBottom: 4,
           }}>AGORA</span>
           <span style={{
-            fontSize: 52, fontWeight: 900, color: GOLD,
-            letterSpacing: "-0.04em", lineHeight: 0.9,
+            fontSize: 48, fontWeight: 900, color: GOLD,
+            letterSpacing: "0.01em", lineHeight: 1,
             fontFamily: "Syne,sans-serif",
-            animation: "spNumIn 0.7s 0.2s cubic-bezier(0.34,1.56,0.64,1) both",
           }}>{Math.round(depois)}</span>
           <span style={{
             fontSize: 16, fontWeight: 700, color: GOLD,
@@ -661,8 +606,7 @@ function TplBA({ data, dias, calorias }: { data: ShareProgressData; dias: number
         label="Peso perdido"
         value={`-${diff.toFixed(1)}`}
         unit="KG"
-        valueFontSize={48}
-        animDelay={0.3}
+        valueFontSize={44}
       />
 
       <GoldDivider width={120} />
@@ -672,8 +616,7 @@ function TplBA({ data, dias, calorias }: { data: ShareProgressData; dias: number
         value={formatKcal(calorias)}
         unit="kcal"
         emoji="🔥"
-        valueFontSize={32}
-        animDelay={0.45}
+        valueFontSize={30}
       />
     </div>
   );
@@ -685,25 +628,18 @@ function TplMilestone({ milestoneKg, calorias }: { milestoneKg: number; calorias
   return (
     <div style={{
       display: "flex", flexDirection: "column",
-      alignItems: "center", gap: 20,
+      alignItems: "center", gap: 22,
       width: "100%",
     }}>
-      <div style={{
-        display: "flex", flexDirection: "column",
-        alignItems: "center", gap: 4,
-        animation: "spFadeUp 0.5s ease both",
-      }}>
-        <span style={{ fontSize: 40, lineHeight: 1, animation: "spEmojiPop 0.65s cubic-bezier(0.34,1.56,0.64,1) both" }}>
-          🏆
-        </span>
-      </div>
+      <span style={{ fontSize: 38, lineHeight: 1 }}>
+        🏆
+      </span>
 
       <MetricSection
         label="KG vencidos"
         value={String(milestoneKg)}
         unit="KG"
-        valueFontSize={72}
-        animDelay={0.1}
+        valueFontSize={68}
       />
 
       <GoldDivider />
@@ -713,8 +649,7 @@ function TplMilestone({ milestoneKg, calorias }: { milestoneKg: number; calorias
         value={formatKcal(calorias)}
         unit="kcal"
         emoji="🔥"
-        valueFontSize={38}
-        animDelay={0.35}
+        valueFontSize={36}
       />
     </div>
   );

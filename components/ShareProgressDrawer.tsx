@@ -86,13 +86,24 @@ export function ShareProgressDrawer({ open, onClose, data }: DrawerProps) {
   async function snapAndWait() {
     cancelAnimationFrame(rafRef.current);
     setDisplay(data.pesoPerdido);
-    await new Promise<void>(r => setTimeout(r, 90));
+    // Espera mais tempo p/ garantir que transform animations terminaram
+    await new Promise<void>(r => setTimeout(r, 300));
   }
 
   async function getCanvas() {
     if (!cardRef.current) return null;
     const h2c = (await import("html2canvas")).default;
-    return h2c(cardRef.current, { backgroundColor: null, scale: EXPORT_SCALE, useCORS: true, logging: false });
+    return h2c(cardRef.current, {
+      backgroundColor: null,
+      scale: EXPORT_SCALE,
+      useCORS: true,
+      logging: false,
+      // Captura exatamente o tamanho do card sem cortar
+      width: CARD_W,
+      height: CARD_H,
+      scrollX: 0,
+      scrollY: 0,
+    });
   }
 
   function toBlob(canvas: HTMLCanvasElement): Promise<Blob | null> {
@@ -194,15 +205,15 @@ export function ShareProgressDrawer({ open, onClose, data }: DrawerProps) {
           {/* Scrollable */}
           <div style={{ flex: 1, overflowY: "auto", padding: "20px 20px 48px" }}>
 
-            {/* Preview — white wrapper matching the new white/gold card */}
+            {/* Preview — fundo gradiente para simular um "story" e visualizar o card transparente */}
             <div ref={wrapRef} style={{ display: "flex", justifyContent: "center", marginBottom: 22 }}>
               <div style={{
                 width:  CARD_W * scale,
                 height: CARD_H * scale,
                 overflow: "hidden",
                 borderRadius: 22 * scale,
-                background: "#ffffff",
-                boxShadow: "0 36px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1)",
+                background: "linear-gradient(145deg, #fdf8ef 0%, #f5ead5 50%, #fef9f0 100%)",
+                boxShadow: "0 24px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.08)",
               }}>
                 <div style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}>
                   <StoryCard
