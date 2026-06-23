@@ -1,0 +1,1973 @@
+diff --git a/app/(app)/dieta/DietaClient.tsx b/app/(app)/dieta/DietaClient.tsx
+index 0202be5..c305db7 100644
+--- a/app/(app)/dieta/DietaClient.tsx
++++ b/app/(app)/dieta/DietaClient.tsx
+@@ -1,85 +1,25 @@
+ "use client";
+ 
+-import { useEffect, useMemo, useState, useRef } from "react";
+-import {
+-  Utensils,
+-  Trash2,
+-  ChevronRight,
+-  Sparkles,
+-  Camera,
+-  Check,
+-  ChevronDown,
+-  ChevronUp,
+-  Star,
+-  History,
+-  TrendingUp,
+-  AlertCircle,
+-} from "lucide-react";
++import { useEffect, useMemo, useState } from "react";
+ import toast from "react-hot-toast";
+ import { supabase } from "@/lib/supabase";
+ import { PageHeader } from "@/components/PageHeader";
+-import { LoadingSpinner } from "@/components/LoadingSpinner";
+-import { Card } from "@/components/Card";
+-import { EmptyState } from "@/components/EmptyState";
+ import { usePlano } from "@/hooks/usePlano";
+ import { BlurPaywall } from "@/components/BlurPaywall";
+-import { createPortal } from "react-dom";
++import { faseFromDose } from "@/lib/diet-plans";
++import { DashboardTab } from "@/components/dieta/DashboardTab";
++import { ReceitasTab } from "@/components/dieta/ReceitasTab";
++import { RegistrarRefeicaoModal } from "@/components/dieta/RegistrarRefeicaoModal";
+ import {
+-  BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell,
+-} from "recharts";
+-import { PLANOS, faseFromDose, type FaseMounjaro } from "@/lib/diet-plans";
++  type Refeicao,
++  type FavoritoRefeicao,
++  getFavoritos,
++  saveFavoritos,
++} from "@/components/dieta/types";
+ 
+ type Tab = "Dashboard" | "Receitas";
+-type TipoRefeicao = "cafe" | "almoco" | "jantar" | "lanche";
+-
+-interface Refeicao {
+-  id: string;
+-  nome: string;
+-  calorias: number;
+-  proteinas: number;
+-  carboidratos: number;
+-  gorduras: number;
+-  criado_em: string;
+-  tipo?: TipoRefeicao;
+-}
+-
+-interface FavoritoRefeicao {
+-  nome: string;
+-  calorias: number;
+-  proteinas: number;
+-  carboidratos: number;
+-  gorduras: number;
+-  tipo: TipoRefeicao;
+-}
+-
+-const TIPO_LABELS: Record<TipoRefeicao, string> = {
+-  cafe:   "☕ Café",
+-  almoco: "🍽️ Almoço",
+-  jantar: "🌙 Jantar",
+-  lanche: "🍎 Lanche",
+-};
+-
+-const CONFIANCA_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+-  alta:  { label: "Alta precisão",   color: "text-green-500", bg: "bg-green-500/10 border-green-500/20" },
+-  media: { label: "Precisão média",  color: "text-amber-500", bg: "bg-amber-500/10 border-amber-500/20" },
+-  baixa: { label: "Baixa precisão",  color: "text-red-500",   bg: "bg-red-500/10 border-red-500/20"   },
+-};
+-
+-function getFavoritos(): FavoritoRefeicao[] {
+-  if (typeof window === "undefined") return [];
+-  try { return JSON.parse(localStorage.getItem("momo-fav-refeicoes") || "[]"); }
+-  catch { return []; }
+-}
+-
+-function saveFavoritos(favs: FavoritoRefeicao[]) {
+-  localStorage.setItem("momo-fav-refeicoes", JSON.stringify(favs.slice(0, 10)));
+-}
+-
+-// ─────────────────────────────────────────────────────────
+-// Main client
+-// ─────────────────────────────────────────────────────────
+ 
+ export function DietaClient({
+   userId,
+   doseMg,
+   refeicoesIniciais,
+@@ -100,17 +40,14 @@ export function DietaClient({
+       criado_em: r.data || r.criado_em,
+       tipo: r.tipo,
+     }))
+   );
+   const [registering, setRegistering] = useState(false);
+-  const [showPlanoDetalhamento, setShowPlanoDetalhamento] = useState(false);
+-  const [showHistorico, setShowHistorico] = useState(false);
+   const [favoritos, setFavoritos] = useState<FavoritoRefeicao[]>([]);
+ 
+   const { isExpirado } = usePlano();
+   const fase = faseFromDose(doseMg);
+-  const plano = PLANOS[fase];
+ 
+   useEffect(() => { setFavoritos(getFavoritos()); }, []);
+ 
+   function hojeEmBrasilia() {
+     return new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+@@ -125,70 +62,10 @@ export function DietaClient({
+       setHoje((prev) => (prev !== atual ? atual : prev));
+     }, 60_000);
+     return () => clearInterval(id);
+   }, []);
+ 
+-  const refeicoesHoje = useMemo(
+-    () => refeicoes.filter((r) => {
+-      if (!r.criado_em) return false;
+-      return new Date(r.criado_em).toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" }) === hoje;
+-    }),
+-    [refeicoes, hoje]
+-  );
+-
+-  const totaisHoje = useMemo(
+-    () => refeicoesHoje.reduce(
+-      (acc, r) => ({
+-        calorias:     acc.calorias     + r.calorias,
+-        proteinas:    acc.proteinas    + r.proteinas,
+-        carboidratos: acc.carboidratos + r.carboidratos,
+-        gorduras:     acc.gorduras     + r.gorduras,
+-      }),
+-      { calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0 }
+-    ),
+-    [refeicoesHoje]
+-  );
+-
+-  const progressoPct = Math.min(
+-    100,
+-    Math.round((totaisHoje.calorias / (plano?.caloriasMax || 2000)) * 100)
+-  );
+-
+-  // 7-day protein bar chart (all dates in Brasília timezone)
+-  const chartData7d = useMemo(() => {
+-    const days: Record<string, { proteinas: number; date: string }> = {};
+-    for (let i = 6; i >= 0; i--) {
+-      const d = new Date();
+-      d.setDate(d.getDate() - i);
+-      const key = d.toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+-      const label = d.toLocaleDateString("pt-BR", { weekday: "short", timeZone: "America/Sao_Paulo" }).replace(".", "");
+-      days[key] = { proteinas: 0, date: label };
+-    }
+-    for (const r of refeicoes) {
+-      if (!r.criado_em) continue;
+-      const day = new Date(r.criado_em).toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+-      if (days[day]) days[day].proteinas += r.proteinas;
+-    }
+-    return Object.values(days);
+-  }, [refeicoes]);
+-
+-  // Past 7 days (excluding today) grouped by date in Brasília timezone
+-  const historico = useMemo(() => {
+-    const map: Record<string, Refeicao[]> = {};
+-    for (const r of refeicoes) {
+-      if (!r.criado_em) continue;
+-      const day = new Date(r.criado_em).toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+-      if (day !== hoje) {
+-        if (!map[day]) map[day] = [];
+-        map[day].push(r);
+-      }
+-    }
+-    return Object.entries(map)
+-      .sort(([a], [b]) => b.localeCompare(a))
+-      .slice(0, 7);
+-  }, [refeicoes, hoje]);
+-
+   function toggleFavorito(r: Refeicao) {
+     const fav: FavoritoRefeicao = {
+       nome: r.nome,
+       calorias: r.calorias,
+       proteinas: r.proteinas,
+@@ -252,787 +129,31 @@ export function DietaClient({
+           ))}
+         </div>
+ 
+         <div className="animate-fade-up mt-6">
+           {tab === "Dashboard" ? (
+-            <div className="space-y-6">
+-              {/* Macro Dashboard */}
+-              <Card className="p-6">
+-                <div className="flex items-center justify-between mb-6">
+-                  <div>
+-                    <p className="text-[11px] font-bold uppercase tracking-widest text-muted">Fase {fase}</p>
+-                    <h2 className="text-xl font-black text-text">{plano?.nome}</h2>
+-                  </div>
+-                  <div className="text-right">
+-                    <p className="text-[11px] font-bold uppercase tracking-widest text-muted">Calorias</p>
+-                    <p className="text-lg font-black text-text">
+-                      {totaisHoje.calorias}{" "}
+-                      <span className="text-sm font-medium text-dim">/ {plano?.caloriasMax} kcal</span>
+-                    </p>
+-                  </div>
+-                </div>
+-
+-                <div className="flex justify-around items-center gap-4 py-2">
+-                  <div className="text-center">
+-                    <div className="h-14 w-14 rounded-full border-4 border-ember/20 flex items-center justify-center text-[11px] font-black text-ember">
+-                      {totaisHoje.proteinas}g
+-                    </div>
+-                    <p className="text-[10px] font-bold uppercase text-muted mt-2">Prot</p>
+-                  </div>
+-                  <div className="text-center">
+-                    <div className="h-14 w-14 rounded-full border-4 border-green-500/20 flex items-center justify-center text-[11px] font-black text-green-500">
+-                      {totaisHoje.carboidratos}g
+-                    </div>
+-                    <p className="text-[10px] font-bold uppercase text-muted mt-2">Carb</p>
+-                  </div>
+-                  <div className="text-center">
+-                    <div className="h-14 w-14 rounded-full border-4 border-amber-500/20 flex items-center justify-center text-[11px] font-black text-amber-500">
+-                      {totaisHoje.gorduras}g
+-                    </div>
+-                    <p className="text-[10px] font-bold uppercase text-muted mt-2">Gord</p>
+-                  </div>
+-                </div>
+-
+-                {/* Progress Bar */}
+-                <div className="mt-8 space-y-2">
+-                  <div className="flex justify-between text-[11px] font-bold uppercase tracking-widest text-muted">
+-                    <span>Progresso do dia</span>
+-                    <span className="text-ember">{progressoPct}%</span>
+-                  </div>
+-                  <div className="h-2 w-full bg-surface-border rounded-full overflow-hidden">
+-                    <div
+-                      className="h-full bg-ember transition-all duration-500"
+-                      style={{ width: `${progressoPct}%` }}
+-                    />
+-                  </div>
+-                </div>
+-              </Card>
+-
+-              {/* 7-day protein chart */}
+-              <Card className="p-5">
+-                <div className="flex items-center gap-2 mb-4">
+-                  <TrendingUp size={15} className="text-ember" />
+-                  <h3 className="text-[11px] font-bold uppercase tracking-widest text-muted">Proteína — 7 dias</h3>
+-                </div>
+-                <div className="h-[90px]">
+-                  <ResponsiveContainer width="100%" height="100%">
+-                    <BarChart data={chartData7d} barCategoryGap="30%">
+-                      <XAxis
+-                        dataKey="date"
+-                        axisLine={false}
+-                        tickLine={false}
+-                        tick={{ fill: "var(--color-text-dim)", fontSize: 9, fontWeight: 700 }}
+-                        dy={6}
+-                      />
+-                      <Tooltip
+-                        cursor={{ fill: "rgba(255,101,0,0.05)" }}
+-                        contentStyle={{
+-                          backgroundColor: "var(--color-surface)",
+-                          border: "1px solid var(--color-surface-border)",
+-                          borderRadius: "12px",
+-                          padding: "8px 12px",
+-                          fontSize: "11px",
+-                        }}
+-                        formatter={(v: number) => [`${v}g`, "Proteína"]}
+-                      />
+-                      <Bar dataKey="proteinas" radius={[4, 4, 0, 0]} barSize={18}>
+-                        {chartData7d.map((_, index) => (
+-                          <Cell
+-                            key={index}
+-                            fill={index === chartData7d.length - 1 ? "#ff6500" : "rgba(255,101,0,0.25)"}
+-                          />
+-                        ))}
+-                      </Bar>
+-                    </BarChart>
+-                  </ResponsiveContainer>
+-                </div>
+-              </Card>
+-
+-              {/* Plano Detalhamento */}
+-              <Card className="overflow-hidden">
+-                <button
+-                  onClick={() => setShowPlanoDetalhamento(!showPlanoDetalhamento)}
+-                  className="w-full p-4 flex items-center justify-between hover:bg-surface-hover transition-colors text-left"
+-                >
+-                  <div className="flex items-center gap-3">
+-                    <div className="h-8 w-8 rounded-lg bg-ember/10 flex items-center justify-center text-ember">
+-                      <Utensils size={18} />
+-                    </div>
+-                    <div>
+-                      <p className="text-xs font-bold text-text">Guia Nutricional</p>
+-                      <p className="text-[10px] text-muted">O que comer na Fase {fase}</p>
+-                    </div>
+-                  </div>
+-                  {showPlanoDetalhamento ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+-                </button>
+-                {showPlanoDetalhamento && (
+-                  <div className="p-4 border-t border-surface-border bg-surface-mid/50 space-y-4">
+-                    <div>
+-                      <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted mb-2">Foco da Fase</h4>
+-                      <p className="text-xs text-text font-medium leading-relaxed">{plano?.resumo}</p>
+-                    </div>
+-                    <div className="grid grid-cols-2 gap-4">
+-                      <div>
+-                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-green-600 mb-2">Recomendados</h4>
+-                        <ul className="space-y-1">
+-                          {plano?.alimentosRecomendados.slice(0, 4).map((a) => (
+-                            <li key={a} className="text-[10px] text-muted flex items-center gap-1">
+-                              <Check size={10} className="text-green-500" /> {a}
+-                            </li>
+-                          ))}
+-                        </ul>
+-                      </div>
+-                      <div>
+-                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-red-500 mb-2">Evitar</h4>
+-                        <ul className="space-y-1">
+-                          {plano?.alimentosEvitar.slice(0, 4).map((a) => (
+-                            <li key={a} className="text-[10px] text-muted flex items-center gap-1">
+-                              <span className="text-red-500">•</span> {a}
+-                            </li>
+-                          ))}
+-                        </ul>
+-                      </div>
+-                    </div>
+-                  </div>
+-                )}
+-              </Card>
+-
+-              <button
+-                onClick={() => setRegistering(true)}
+-                className="w-full h-14 bg-ember text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-ember active:scale-95 transition-all"
+-              >
+-                <Sparkles size={20} fill="currentColor" />
+-                Registrar Refeição (IA)
+-              </button>
+-
+-              {/* Today's meals */}
+-              <div className="space-y-3">
+-                <h3 className="text-xs font-bold uppercase tracking-widest text-muted ml-1">Refeições de Hoje</h3>
+-                {refeicoesHoje.length === 0 ? (
+-                  <EmptyState
+-                    icon={<Utensils />}
+-                    title="Nada ainda"
+-                    description="Registre sua refeição com foto ou texto para estimar macros."
+-                  />
+-                ) : (
+-                  refeicoesHoje.map((r) => (
+-                    <RefeicaoCard
+-                      key={r.id}
+-                      r={r}
+-                      isFavorito={favoritos.some((f) => f.nome === r.nome)}
+-                      onToggleFavorito={() => toggleFavorito(r)}
+-                      onRemover={() => removerRefeicao(r.id)}
+-                    />
+-                  ))
+-                )}
+-              </div>
+-
+-              {/* 7-day history */}
+-              {historico.length > 0 && (
+-                <Card className="overflow-hidden">
+-                  <button
+-                    onClick={() => setShowHistorico(!showHistorico)}
+-                    className="w-full p-4 flex items-center justify-between hover:bg-surface-hover transition-colors text-left"
+-                  >
+-                    <div className="flex items-center gap-3">
+-                      <div className="h-8 w-8 rounded-lg bg-surface-mid flex items-center justify-center text-muted">
+-                        <History size={16} />
+-                      </div>
+-                      <div>
+-                        <p className="text-xs font-bold text-text">Histórico</p>
+-                        <p className="text-[10px] text-muted">Últimos 7 dias</p>
+-                      </div>
+-                    </div>
+-                    {showHistorico
+-                      ? <ChevronUp size={18} className="text-dim" />
+-                      : <ChevronDown size={18} className="text-dim" />}
+-                  </button>
+-                  {showHistorico && (
+-                    <div className="border-t border-surface-border divide-y divide-surface-border">
+-                      {historico.map(([dia, refeicoesDia]) => {
+-                        const totalDia = refeicoesDia.reduce((s, r) => s + r.calorias, 0);
+-                        const protDia  = refeicoesDia.reduce((s, r) => s + r.proteinas, 0);
+-                        const label = new Date(dia + "T12:00:00").toLocaleDateString("pt-BR", {
+-                          weekday: "short", day: "numeric", month: "short",
+-                        });
+-                        return (
+-                          <div key={dia} className="p-4">
+-                            <div className="flex items-center justify-between mb-2">
+-                              <p className="text-[11px] font-bold text-text capitalize">{label}</p>
+-                              <div className="flex gap-3">
+-                                <span className="text-[10px] font-bold text-muted">🔥 {totalDia} kcal</span>
+-                                <span className="text-[10px] font-bold text-ember">💪 {protDia}g</span>
+-                              </div>
+-                            </div>
+-                            <div className="space-y-1">
+-                              {refeicoesDia.map((r) => (
+-                                <div key={r.id} className="flex items-center justify-between text-[11px] text-muted">
+-                                  <span className="capitalize truncate max-w-[60%]">{r.nome}</span>
+-                                  <span>{r.calorias} kcal</span>
+-                                </div>
+-                              ))}
+-                            </div>
+-                          </div>
+-                        );
+-                      })}
+-                    </div>
+-                  )}
+-                </Card>
+-              )}
+-            </div>
++            <DashboardTab
++              fase={fase}
++              refeicoes={refeicoes}
++              hoje={hoje}
++              favoritos={favoritos}
++              onRegistrar={() => setRegistering(true)}
++              onToggleFavorito={toggleFavorito}
++              onRemoverRefeicao={removerRefeicao}
++            />
+           ) : (
+-            <ReceitasIA userId={userId} fase={fase} doseMg={doseMg} />
++            <ReceitasTab userId={userId} fase={fase} doseMg={doseMg} />
+           )}
+         </div>
+       </BlurPaywall>
+ 
+       {registering && (
+-        <RegistrarRefeicaoIA
++        <RegistrarRefeicaoModal
+           userId={userId}
+           favoritos={favoritos}
+           onClose={() => setRegistering(false)}
+           onSuccess={onRefeicaoSalva}
+         />
+       )}
+     </div>
+   );
+ }
+-
+-// ─────────────────────────────────────────────────────────
+-// Meal card with star + delete
+-// ─────────────────────────────────────────────────────────
+-
+-function RefeicaoCard({
+-  r,
+-  isFavorito,
+-  onToggleFavorito,
+-  onRemover,
+-}: {
+-  r: Refeicao;
+-  isFavorito: boolean;
+-  onToggleFavorito: () => void;
+-  onRemover: () => void;
+-}) {
+-  return (
+-    <Card className="p-4 flex items-center justify-between gap-3">
+-      <div className="flex-1 min-w-0">
+-        <div className="flex items-center gap-2">
+-          <h4 className="text-sm font-bold text-text capitalize truncate">{r.nome}</h4>
+-          {r.tipo && (
+-            <span className="text-[9px] font-bold text-muted shrink-0">
+-              {TIPO_LABELS[r.tipo]?.split(" ")[0]}
+-            </span>
+-          )}
+-        </div>
+-        <p className="text-[11px] text-muted mt-0.5">
+-          {r.calorias} kcal · P: {r.proteinas}g · C: {r.carboidratos}g · G: {r.gorduras}g
+-        </p>
+-      </div>
+-      <div className="flex items-center gap-1 shrink-0">
+-        <button
+-          onClick={onToggleFavorito}
+-          className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all ${
+-            isFavorito ? "text-amber-400" : "text-dim hover:text-amber-400"
+-          }`}
+-        >
+-          <Star size={15} fill={isFavorito ? "currentColor" : "none"} />
+-        </button>
+-        <button
+-          onClick={onRemover}
+-          className="h-8 w-8 rounded-lg flex items-center justify-center text-dim hover:text-red-500 transition-all"
+-        >
+-          <Trash2 size={15} />
+-        </button>
+-      </div>
+-    </Card>
+-  );
+-}
+-
+-// ─────────────────────────────────────────────────────────
+-// Register meal modal
+-// ─────────────────────────────────────────────────────────
+-
+-const TIPOS_OPTIONS: { key: TipoRefeicao; label: string }[] = [
+-  { key: "cafe",   label: "☕ Café"    },
+-  { key: "almoco", label: "🍽️ Almoço" },
+-  { key: "jantar", label: "🌙 Jantar"  },
+-  { key: "lanche", label: "🍎 Lanche"  },
+-];
+-
+-function RegistrarRefeicaoIA({
+-  userId,
+-  favoritos,
+-  onClose,
+-  onSuccess,
+-}: {
+-  userId: string;
+-  favoritos: FavoritoRefeicao[];
+-  onClose: () => void;
+-  onSuccess: (r: any) => void;
+-}) {
+-  const [text, setText] = useState("");
+-  const [image, setImage] = useState<string | null>(null);
+-  const [tipo, setTipo] = useState<TipoRefeicao>("almoco");
+-  const [analyzing, setAnalyzing] = useState(false);
+-  const [result, setResult] = useState<any>(null);
+-  const [saving, setSaving] = useState(false);
+-  const [mounted, setMounted] = useState(false);
+-  const fileInputRef = useRef<HTMLInputElement>(null);
+-
+-  useEffect(() => setMounted(true), []);
+-
+-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+-    const file = e.target.files?.[0];
+-    if (!file) return;
+-    const reader = new FileReader();
+-    reader.onloadend = () => setImage(reader.result as string);
+-    reader.readAsDataURL(file);
+-  }
+-
+-  async function analisar() {
+-    if (!text && !image) return toast.error("Adicione uma foto ou descrição.");
+-    setAnalyzing(true);
+-    try {
+-      const res = await fetch("/api/diet/analyze", {
+-        method: "POST",
+-        body: JSON.stringify({ text, image }),
+-      });
+-      const data = await res.json();
+-      setResult(data);
+-    } catch {
+-      toast.error("Erro ao analisar.");
+-    } finally {
+-      setAnalyzing(false);
+-    }
+-  }
+-
+-  async function salvar(override?: { nome: string; calorias: number; proteinas: number; carboidratos: number; gorduras: number }) {
+-    const dados = override ?? result;
+-    if (!dados) return;
+-    setSaving(true);
+-    try {
+-      let foto_url: string | null = null;
+-      if (image && !override) {
+-        try {
+-          const blob = await fetch(image).then((r) => r.blob());
+-          const ext = blob.type.split("/")[1] || "jpg";
+-          const path = `${userId}/${Date.now()}.${ext}`;
+-          const { data: up } = await supabase.storage
+-            .from("refeicoes-fotos")
+-            .upload(path, blob, { contentType: blob.type, upsert: false });
+-          if (up) {
+-            const { data: urlData } = supabase.storage
+-              .from("refeicoes-fotos")
+-              .getPublicUrl(path);
+-            foto_url = urlData.publicUrl;
+-          }
+-        } catch {}
+-      }
+-
+-      const { data, error } = await supabase
+-        .from("refeicoes_registradas")
+-        .insert({
+-          user_id: userId,
+-          descricao: dados.nome,
+-          calorias_estimadas: dados.calorias,
+-          proteinas_g: dados.proteinas,
+-          carboidratos_g: dados.carboidratos,
+-          gorduras_g: dados.gorduras,
+-          data: new Date().toISOString(),
+-          tipo,
+-          ...(foto_url ? { foto_url } : {}),
+-        })
+-        .select()
+-        .single();
+-      if (error) throw error;
+-      onSuccess(data);
+-      toast.success("Salvo!");
+-    } catch {
+-      toast.error("Erro ao salvar.");
+-    } finally {
+-      setSaving(false);
+-    }
+-  }
+-
+-  if (!mounted) return null;
+-
+-  const confiancaInfo = result?.confianca ? CONFIANCA_CONFIG[result.confianca] : null;
+-
+-  return createPortal(
+-    <div
+-      className="fixed inset-0 flex items-end sm:items-center justify-center p-4"
+-      style={{ zIndex: "var(--z-modal)" }}
+-    >
+-      <div
+-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+-        onClick={onClose}
+-        style={{ zIndex: "var(--z-overlay)" }}
+-      />
+-      <div
+-        className="relative w-full max-w-md bg-bg rounded-[32px] overflow-hidden shadow-2xl animate-in slide-in-from-bottom-8 duration-300 max-h-[90vh] flex flex-col"
+-        style={{ zIndex: "var(--z-modal)" }}
+-      >
+-        {/* Header + tipo selector — fixed */}
+-        <div className="p-6 flex-shrink-0">
+-          <div className="flex justify-between items-center mb-5">
+-            <h2 className="text-xl font-black text-text">Registrar Refeição</h2>
+-            <button onClick={onClose} className="p-2 text-dim">
+-              <ChevronDown size={24} />
+-            </button>
+-          </div>
+-
+-          {/* Meal type pills */}
+-          <div className="flex gap-1.5">
+-            {TIPOS_OPTIONS.map((t) => (
+-              <button
+-                key={t.key}
+-                onClick={() => setTipo(t.key)}
+-                className={`flex-1 py-2 text-[10px] font-bold rounded-xl border transition-all ${
+-                  tipo === t.key
+-                    ? "bg-ember/10 border-ember/30 text-ember"
+-                    : "border-surface-border text-muted"
+-                }`}
+-              >
+-                {t.label}
+-              </button>
+-            ))}
+-          </div>
+-        </div>
+-
+-        {/* Scrollable content */}
+-        <div className="overflow-y-auto flex-1 px-6 pb-6 space-y-5">
+-          {!result ? (
+-            <>
+-              {/* Favoritos quick-add */}
+-              {favoritos.length > 0 && (
+-                <div>
+-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted mb-2">
+-                    ⭐ Favoritos
+-                  </p>
+-                  <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x">
+-                    {favoritos.slice(0, 6).map((fav, i) => (
+-                      <button
+-                        key={i}
+-                        onClick={() => salvar(fav)}
+-                        disabled={saving}
+-                        className="shrink-0 snap-start text-left p-3 bg-surface rounded-2xl border border-surface-border hover:border-ember/40 active:scale-95 transition-all disabled:opacity-50"
+-                        style={{ minWidth: 120 }}
+-                      >
+-                        <p className="text-xs font-bold text-text capitalize leading-tight truncate max-w-[108px]">
+-                          {fav.nome}
+-                        </p>
+-                        <p className="text-[10px] text-muted mt-0.5">{fav.calorias} kcal</p>
+-                      </button>
+-                    ))}
+-                  </div>
+-                </div>
+-              )}
+-
+-              {/* Photo upload */}
+-              <div
+-                onClick={() => fileInputRef.current?.click()}
+-                className="aspect-video rounded-2xl bg-surface-mid border-2 border-dashed border-surface-border flex flex-col items-center justify-center overflow-hidden cursor-pointer"
+-              >
+-                {image ? (
+-                  <img src={image} className="w-full h-full object-cover" alt="Prato" />
+-                ) : (
+-                  <>
+-                    <Camera size={32} className="text-muted mb-2" />
+-                    <p className="text-xs font-bold text-muted">Tirar foto do prato</p>
+-                  </>
+-                )}
+-                <input
+-                  type="file"
+-                  ref={fileInputRef}
+-                  onChange={handleImageUpload}
+-                  accept="image/*"
+-                  capture="environment"
+-                  className="hidden"
+-                />
+-              </div>
+-
+-              <textarea
+-                value={text}
+-                onChange={(e) => setText(e.target.value)}
+-                placeholder="Ou descreva sua refeição..."
+-                className="w-full h-24 bg-surface rounded-2xl p-4 text-sm outline-none border border-surface-border focus:border-ember resize-none"
+-              />
+-
+-              <button
+-                onClick={analisar}
+-                disabled={analyzing}
+-                className="w-full h-14 bg-ember text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-ember disabled:opacity-50"
+-              >
+-                {analyzing ? (
+-                  <LoadingSpinner size="sm" color="white" />
+-                ) : (
+-                  <><Sparkles size={20} fill="currentColor" /> Estimar Macros</>
+-                )}
+-              </button>
+-            </>
+-          ) : (
+-            <div className="space-y-5">
+-              <div className="text-center p-6 bg-surface-mid rounded-[24px]">
+-                <h3 className="text-xl font-black text-text mb-4 capitalize">{result.nome}</h3>
+-                <div className="grid grid-cols-4 gap-2">
+-                  {[
+-                    { l: "Kcal", v: result.calorias },
+-                    { l: "Prot", v: `${result.proteinas}g` },
+-                    { l: "Carb", v: `${result.carboidratos}g` },
+-                    { l: "Gord", v: `${result.gorduras}g` },
+-                  ].map((s) => (
+-                    <div key={s.l} className="p-2 bg-surface rounded-xl border border-surface-border text-center">
+-                      <p className="text-[9px] font-bold text-muted uppercase">{s.l}</p>
+-                      <p className="text-sm font-black text-text">{s.v}</p>
+-                    </div>
+-                  ))}
+-                </div>
+-                {confiancaInfo && (
+-                  <div className={`inline-flex items-center gap-1.5 mt-4 px-3 py-1.5 rounded-full border text-[10px] font-bold ${confiancaInfo.bg} ${confiancaInfo.color}`}>
+-                    <AlertCircle size={11} />
+-                    {confiancaInfo.label}
+-                  </div>
+-                )}
+-              </div>
+-              <div className="flex gap-3">
+-                <button
+-                  onClick={() => setResult(null)}
+-                  className="flex-1 h-14 bg-surface text-text rounded-2xl font-bold border border-surface-border"
+-                >
+-                  Refazer
+-                </button>
+-                <button
+-                  onClick={() => salvar()}
+-                  disabled={saving}
+-                  className="flex-1 h-14 bg-ember text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-ember disabled:opacity-50"
+-                >
+-                  {saving ? <LoadingSpinner size="sm" color="white" /> : "Confirmar"}
+-                </button>
+-              </div>
+-            </div>
+-          )}
+-        </div>
+-      </div>
+-    </div>,
+-    document.body
+-  );
+-}
+-
+-// ─────────────────────────────────────────────────────────
+-// Recipes tab
+-// ─────────────────────────────────────────────────────────
+-
+-interface ReceitaIA {
+-  id: string;
+-  nome: string;
+-  tipo: string;
+-  calorias: number;
+-  proteinas: number;
+-  carboidratos: number;
+-  gorduras: number;
+-  tempo_preparo: number;
+-  dificuldade: string;
+-  emoji: string;
+-  dica_mounjaro?: string;
+-  ingredientes: string[];
+-  modo_preparo: string[];
+-}
+-
+-const RESTRICOES_OPTIONS = [
+-  { id: "sem_gluten",   label: "Sem glúten"  },
+-  { id: "sem_lactose",  label: "Sem lactose" },
+-  { id: "vegetariano",  label: "Vegetariano" },
+-  { id: "vegano",       label: "Vegano"      },
+-];
+-
+-function ReceitasIA({ userId, fase, doseMg }: { userId: string; fase: FaseMounjaro; doseMg: number }) {
+-  const [receitas, setReceitas] = useState<ReceitaIA[]>([]);
+-  const [loading, setLoading] = useState(false);
+-  const [selecionada, setSelecionada] = useState<ReceitaIA | null>(null);
+-  const [restricoes, setRestricoes] = useState<string[]>([]);
+-
+-  async function carregarReceitas(forcar = false) {
+-    setLoading(true);
+-    try {
+-      const res = await fetch("/api/receitas/gerar", {
+-        method: "POST",
+-        headers: { "Content-Type": "application/json" },
+-        body: JSON.stringify({ fase, dose_mg: doseMg, forcar, restricoes }),
+-      });
+-      const data = await res.json();
+-      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+-      setReceitas((data.receitas ?? []) as ReceitaIA[]);
+-    } catch (error: any) {
+-      toast.error(error.message || "Erro ao carregar receitas.");
+-    } finally {
+-      setLoading(false);
+-    }
+-  }
+-
+-  useEffect(() => { carregarReceitas(); }, []);
+-
+-  function toggleRestricao(id: string) {
+-    setRestricoes((prev) =>
+-      prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]
+-    );
+-  }
+-
+-  return (
+-    <div className="space-y-5">
+-      <div className="flex items-center justify-between">
+-        <div>
+-          <h3 className="text-lg font-black text-text">Receitas IA</h3>
+-          <p className="text-xs text-muted">Sugestões para a Fase {fase}</p>
+-        </div>
+-        <button
+-          onClick={() => carregarReceitas(true)}
+-          disabled={loading}
+-          className="flex items-center gap-2 px-4 py-2 bg-ember/10 text-ember rounded-full text-xs font-bold active:scale-95 transition-all disabled:opacity-50"
+-        >
+-          {loading ? <LoadingSpinner size="sm" /> : <><Sparkles size={14} /> Atualizar</>}
+-        </button>
+-      </div>
+-
+-      {/* Dietary restrictions */}
+-      <div className="flex flex-wrap gap-2 items-center">
+-        {RESTRICOES_OPTIONS.map((opt) => {
+-          const active = restricoes.includes(opt.id);
+-          return (
+-            <button
+-              key={opt.id}
+-              onClick={() => toggleRestricao(opt.id)}
+-              className={`px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all ${
+-                active
+-                  ? "bg-ember/10 border-ember/30 text-ember"
+-                  : "border-surface-border text-muted"
+-              }`}
+-            >
+-              {opt.label}
+-            </button>
+-          );
+-        })}
+-        {restricoes.length > 0 && (
+-          <button
+-            onClick={() => carregarReceitas(true)}
+-            className="px-3 py-1.5 rounded-full text-[11px] font-bold bg-ember text-white active:scale-95 transition-all"
+-          >
+-            Aplicar filtros →
+-          </button>
+-        )}
+-      </div>
+-
+-      <div className="grid grid-cols-1 gap-4">
+-        {receitas.length === 0 && !loading ? (
+-          <EmptyState
+-            icon={<Sparkles />}
+-            title="Nenhuma receita"
+-            description="Gere sugestões personalizadas para seu tratamento."
+-          />
+-        ) : (
+-          receitas.map((r) => (
+-            <Card
+-              key={r.id}
+-              onClick={() => setSelecionada(r)}
+-              className="p-4 flex items-center gap-4 cursor-pointer hover:bg-surface-hover transition-all"
+-            >
+-              <div className="h-14 w-14 rounded-2xl bg-ember/10 flex items-center justify-center text-3xl">
+-                {r.emoji}
+-              </div>
+-              <div className="flex-1">
+-                <h4 className="text-sm font-bold text-text leading-tight">{r.nome}</h4>
+-                <div className="flex items-center gap-3 mt-1">
+-                  <span className="text-[10px] font-bold text-muted uppercase">🔥 {r.calorias} kcal</span>
+-                  <span className="text-[10px] font-bold text-muted uppercase">💪 {r.proteinas}g Prot</span>
+-                </div>
+-              </div>
+-              <ChevronRight size={18} className="text-dim" />
+-            </Card>
+-          ))
+-        )}
+-      </div>
+-
+-      {selecionada && (
+-        <ReceitaDrawer receita={selecionada} onClose={() => setSelecionada(null)} />
+-      )}
+-    </div>
+-  );
+-}
+-
+-// ─────────────────────────────────────────────────────────
+-// Recipe drawer
+-// ─────────────────────────────────────────────────────────
+-
+-function ReceitaDrawer({ receita, onClose }: { receita: ReceitaIA; onClose: () => void }) {
+-  const [mounted, setMounted] = useState(false);
+-  useEffect(() => setMounted(true), []);
+-  if (!mounted) return null;
+-
+-  return createPortal(
+-    <div
+-      className="fixed inset-0 flex items-end sm:items-center justify-center p-4"
+-      style={{ zIndex: "var(--z-modal)" }}
+-    >
+-      <div
+-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+-        onClick={onClose}
+-        style={{ zIndex: "var(--z-overlay)" }}
+-      />
+-      <div
+-        className="relative w-full max-w-md bg-bg rounded-[32px] overflow-hidden shadow-2xl animate-in slide-in-from-bottom-8 flex flex-col max-h-[90vh]"
+-        style={{ zIndex: "var(--z-modal)" }}
+-      >
+-        <div className="relative p-6 bg-surface-mid text-center">
+-          <button onClick={onClose} className="absolute right-6 top-6 p-2 text-dim">
+-            <ChevronDown size={24} />
+-          </button>
+-          <div className="h-20 w-20 rounded-3xl bg-ember/10 flex items-center justify-center text-4xl mx-auto mb-4">
+-            {receita.emoji}
+-          </div>
+-          <h2 className="text-xl font-black text-text">{receita.nome}</h2>
+-        </div>
+-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+-          <div className="grid grid-cols-4 gap-2">
+-            {[
+-              { l: "Kcal", v: receita.calorias },
+-              { l: "Prot", v: `${receita.proteinas}g` },
+-              { l: "Carb", v: `${receita.carboidratos}g` },
+-              { l: "Gord", v: `${receita.gorduras}g` },
+-            ].map((s) => (
+-              <div key={s.l} className="p-2 bg-surface rounded-xl border border-surface-border text-center">
+-                <p className="text-[9px] font-bold text-muted uppercase">{s.l}</p>
+-                <p className="text-sm font-black text-text">{s.v}</p>
+-              </div>
+-            ))}
+-          </div>
+-          <div>
+-            <h3 className="text-xs font-bold uppercase tracking-widest text-muted mb-3 ml-1">Ingredientes</h3>
+-            <ul className="space-y-2">
+-              {receita.ingredientes.map((ing, i) => (
+-                <li
+-                  key={i}
+-                  className="flex gap-3 text-sm text-text bg-surface p-3 rounded-xl border border-surface-border"
+-                >
+-                  <div className="h-5 w-5 rounded-full bg-ember/10 text-ember flex items-center justify-center text-[10px] font-bold shrink-0">
+-                    {i + 1}
+-                  </div>
+-                  {ing}
+-                </li>
+-              ))}
+-            </ul>
+-          </div>
+-          <div>
+-            <h3 className="text-xs font-bold uppercase tracking-widest text-muted mb-3 ml-1">Preparo</h3>
+-            <div className="space-y-4">
+-              {receita.modo_preparo.map((step, i) => (
+-                <div key={i} className="flex gap-3">
+-                  <div className="text-ember font-black text-lg italic opacity-30">{i + 1}</div>
+-                  <p className="text-sm text-text leading-relaxed">{step}</p>
+-                </div>
+-              ))}
+-            </div>
+-          </div>
+-        </div>
+-      </div>
+-    </div>,
+-    document.body
+-  );
+-}
+diff --git a/components/dieta/DashboardTab.tsx b/components/dieta/DashboardTab.tsx
+new file mode 100644
+index 0000000..40f527c
+--- /dev/null
++++ b/components/dieta/DashboardTab.tsx
+@@ -0,0 +1,385 @@
++"use client";
++
++import { useMemo, useState } from "react";
++import {
++  Utensils,
++  Trash2,
++  Sparkles,
++  Check,
++  ChevronDown,
++  ChevronUp,
++  Star,
++  History,
++  TrendingUp,
++} from "lucide-react";
++import { Card } from "@/components/Card";
++import { EmptyState } from "@/components/EmptyState";
++import {
++  BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell,
++} from "recharts";
++import { PLANOS, type FaseMounjaro } from "@/lib/diet-plans";
++import { type Refeicao, type FavoritoRefeicao, TIPO_LABELS } from "./types";
++
++// ─────────────────────────────────────────────────────────
++// Meal card with star + delete
++// ─────────────────────────────────────────────────────────
++
++function RefeicaoCard({
++  r,
++  isFavorito,
++  onToggleFavorito,
++  onRemover,
++}: {
++  r: Refeicao;
++  isFavorito: boolean;
++  onToggleFavorito: () => void;
++  onRemover: () => void;
++}) {
++  return (
++    <Card className="p-4 flex items-center justify-between gap-3">
++      <div className="flex-1 min-w-0">
++        <div className="flex items-center gap-2">
++          <h4 className="text-sm font-bold text-text capitalize truncate">{r.nome}</h4>
++          {r.tipo && (
++            <span className="text-[9px] font-bold text-muted shrink-0">
++              {TIPO_LABELS[r.tipo]?.split(" ")[0]}
++            </span>
++          )}
++        </div>
++        <p className="text-[11px] text-muted mt-0.5">
++          {r.calorias} kcal · P: {r.proteinas}g · C: {r.carboidratos}g · G: {r.gorduras}g
++        </p>
++      </div>
++      <div className="flex items-center gap-1 shrink-0">
++        <button
++          onClick={onToggleFavorito}
++          className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all ${
++            isFavorito ? "text-amber-400" : "text-dim hover:text-amber-400"
++          }`}
++        >
++          <Star size={15} fill={isFavorito ? "currentColor" : "none"} />
++        </button>
++        <button
++          onClick={onRemover}
++          className="h-8 w-8 rounded-lg flex items-center justify-center text-dim hover:text-red-500 transition-all"
++        >
++          <Trash2 size={15} />
++        </button>
++      </div>
++    </Card>
++  );
++}
++
++// ─────────────────────────────────────────────────────────
++// Dashboard tab
++// ─────────────────────────────────────────────────────────
++
++interface DashboardTabProps {
++  fase: FaseMounjaro;
++  refeicoes: Refeicao[];
++  hoje: string;
++  favoritos: FavoritoRefeicao[];
++  onRegistrar: () => void;
++  onToggleFavorito: (r: Refeicao) => void;
++  onRemoverRefeicao: (id: string) => void;
++}
++
++export function DashboardTab({
++  fase,
++  refeicoes,
++  hoje,
++  favoritos,
++  onRegistrar,
++  onToggleFavorito,
++  onRemoverRefeicao,
++}: DashboardTabProps) {
++  const plano = PLANOS[fase];
++  const [showPlanoDetalhamento, setShowPlanoDetalhamento] = useState(false);
++  const [showHistorico, setShowHistorico] = useState(false);
++
++  const refeicoesHoje = useMemo(
++    () => refeicoes.filter((r) => {
++      if (!r.criado_em) return false;
++      return new Date(r.criado_em).toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" }) === hoje;
++    }),
++    [refeicoes, hoje]
++  );
++
++  const totaisHoje = useMemo(
++    () => refeicoesHoje.reduce(
++      (acc, r) => ({
++        calorias:     acc.calorias     + r.calorias,
++        proteinas:    acc.proteinas    + r.proteinas,
++        carboidratos: acc.carboidratos + r.carboidratos,
++        gorduras:     acc.gorduras     + r.gorduras,
++      }),
++      { calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0 }
++    ),
++    [refeicoesHoje]
++  );
++
++  const progressoPct = Math.min(
++    100,
++    Math.round((totaisHoje.calorias / (plano?.caloriasMax || 2000)) * 100)
++  );
++
++  const chartData7d = useMemo(() => {
++    const days: Record<string, { proteinas: number; date: string }> = {};
++    for (let i = 6; i >= 0; i--) {
++      const d = new Date();
++      d.setDate(d.getDate() - i);
++      const key = d.toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
++      const label = d.toLocaleDateString("pt-BR", { weekday: "short", timeZone: "America/Sao_Paulo" }).replace(".", "");
++      days[key] = { proteinas: 0, date: label };
++    }
++    for (const r of refeicoes) {
++      if (!r.criado_em) continue;
++      const day = new Date(r.criado_em).toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
++      if (days[day]) days[day].proteinas += r.proteinas;
++    }
++    return Object.values(days);
++  }, [refeicoes]);
++
++  const historico = useMemo(() => {
++    const map: Record<string, Refeicao[]> = {};
++    for (const r of refeicoes) {
++      if (!r.criado_em) continue;
++      const day = new Date(r.criado_em).toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
++      if (day !== hoje) {
++        if (!map[day]) map[day] = [];
++        map[day].push(r);
++      }
++    }
++    return Object.entries(map)
++      .sort(([a], [b]) => b.localeCompare(a))
++      .slice(0, 7);
++  }, [refeicoes, hoje]);
++
++  return (
++    <div className="space-y-6">
++      {/* Macro Dashboard */}
++      <Card className="p-6">
++        <div className="flex items-center justify-between mb-6">
++          <div>
++            <p className="text-[11px] font-bold uppercase tracking-widest text-muted">Fase {fase}</p>
++            <h2 className="text-xl font-black text-text">{plano?.nome}</h2>
++          </div>
++          <div className="text-right">
++            <p className="text-[11px] font-bold uppercase tracking-widest text-muted">Calorias</p>
++            <p className="text-lg font-black text-text">
++              {totaisHoje.calorias}{" "}
++              <span className="text-sm font-medium text-dim">/ {plano?.caloriasMax} kcal</span>
++            </p>
++          </div>
++        </div>
++
++        <div className="flex justify-around items-center gap-4 py-2">
++          <div className="text-center">
++            <div className="h-14 w-14 rounded-full border-4 border-ember/20 flex items-center justify-center text-[11px] font-black text-ember">
++              {totaisHoje.proteinas}g
++            </div>
++            <p className="text-[10px] font-bold uppercase text-muted mt-2">Prot</p>
++          </div>
++          <div className="text-center">
++            <div className="h-14 w-14 rounded-full border-4 border-green-500/20 flex items-center justify-center text-[11px] font-black text-green-500">
++              {totaisHoje.carboidratos}g
++            </div>
++            <p className="text-[10px] font-bold uppercase text-muted mt-2">Carb</p>
++          </div>
++          <div className="text-center">
++            <div className="h-14 w-14 rounded-full border-4 border-amber-500/20 flex items-center justify-center text-[11px] font-black text-amber-500">
++              {totaisHoje.gorduras}g
++            </div>
++            <p className="text-[10px] font-bold uppercase text-muted mt-2">Gord</p>
++          </div>
++        </div>
++
++        {/* Progress Bar */}
++        <div className="mt-8 space-y-2">
++          <div className="flex justify-between text-[11px] font-bold uppercase tracking-widest text-muted">
++            <span>Progresso do dia</span>
++            <span className="text-ember">{progressoPct}%</span>
++          </div>
++          <div className="h-2 w-full bg-surface-border rounded-full overflow-hidden">
++            <div
++              className="h-full bg-ember transition-all duration-500"
++              style={{ width: `${progressoPct}%` }}
++            />
++          </div>
++        </div>
++      </Card>
++
++      {/* 7-day protein chart */}
++      <Card className="p-5">
++        <div className="flex items-center gap-2 mb-4">
++          <TrendingUp size={15} className="text-ember" />
++          <h3 className="text-[11px] font-bold uppercase tracking-widest text-muted">Proteína — 7 dias</h3>
++        </div>
++        <div className="h-[90px]">
++          <ResponsiveContainer width="100%" height="100%">
++            <BarChart data={chartData7d} barCategoryGap="30%">
++              <XAxis
++                dataKey="date"
++                axisLine={false}
++                tickLine={false}
++                tick={{ fill: "var(--color-text-dim)", fontSize: 9, fontWeight: 700 }}
++                dy={6}
++              />
++              <Tooltip
++                cursor={{ fill: "rgba(255,101,0,0.05)" }}
++                contentStyle={{
++                  backgroundColor: "var(--color-surface)",
++                  border: "1px solid var(--color-surface-border)",
++                  borderRadius: "12px",
++                  padding: "8px 12px",
++                  fontSize: "11px",
++                }}
++                formatter={(v: number) => [`${v}g`, "Proteína"]}
++              />
++              <Bar dataKey="proteinas" radius={[4, 4, 0, 0]} barSize={18}>
++                {chartData7d.map((_, index) => (
++                  <Cell
++                    key={index}
++                    fill={index === chartData7d.length - 1 ? "#ff6500" : "rgba(255,101,0,0.25)"}
++                  />
++                ))}
++              </Bar>
++            </BarChart>
++          </ResponsiveContainer>
++        </div>
++      </Card>
++
++      {/* Plano Detalhamento */}
++      <Card className="overflow-hidden">
++        <button
++          onClick={() => setShowPlanoDetalhamento(!showPlanoDetalhamento)}
++          className="w-full p-4 flex items-center justify-between hover:bg-surface-hover transition-colors text-left"
++        >
++          <div className="flex items-center gap-3">
++            <div className="h-8 w-8 rounded-lg bg-ember/10 flex items-center justify-center text-ember">
++              <Utensils size={18} />
++            </div>
++            <div>
++              <p className="text-xs font-bold text-text">Guia Nutricional</p>
++              <p className="text-[10px] text-muted">O que comer na Fase {fase}</p>
++            </div>
++          </div>
++          {showPlanoDetalhamento ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
++        </button>
++        {showPlanoDetalhamento && (
++          <div className="p-4 border-t border-surface-border bg-surface-mid/50 space-y-4">
++            <div>
++              <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted mb-2">Foco da Fase</h4>
++              <p className="text-xs text-text font-medium leading-relaxed">{plano?.resumo}</p>
++            </div>
++            <div className="grid grid-cols-2 gap-4">
++              <div>
++                <h4 className="text-[10px] font-bold uppercase tracking-widest text-green-600 mb-2">Recomendados</h4>
++                <ul className="space-y-1">
++                  {plano?.alimentosRecomendados.slice(0, 4).map((a) => (
++                    <li key={a} className="text-[10px] text-muted flex items-center gap-1">
++                      <Check size={10} className="text-green-500" /> {a}
++                    </li>
++                  ))}
++                </ul>
++              </div>
++              <div>
++                <h4 className="text-[10px] font-bold uppercase tracking-widest text-red-500 mb-2">Evitar</h4>
++                <ul className="space-y-1">
++                  {plano?.alimentosEvitar.slice(0, 4).map((a) => (
++                    <li key={a} className="text-[10px] text-muted flex items-center gap-1">
++                      <span className="text-red-500">•</span> {a}
++                    </li>
++                  ))}
++                </ul>
++              </div>
++            </div>
++          </div>
++        )}
++      </Card>
++
++      <button
++        onClick={onRegistrar}
++        className="w-full h-14 bg-ember text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-ember active:scale-95 transition-all"
++      >
++        <Sparkles size={20} fill="currentColor" />
++        Registrar Refeição (IA)
++      </button>
++
++      {/* Today's meals */}
++      <div className="space-y-3">
++        <h3 className="text-xs font-bold uppercase tracking-widest text-muted ml-1">Refeições de Hoje</h3>
++        {refeicoesHoje.length === 0 ? (
++          <EmptyState
++            icon={<Utensils />}
++            title="Nada ainda"
++            description="Registre sua refeição com foto ou texto para estimar macros."
++          />
++        ) : (
++          refeicoesHoje.map((r) => (
++            <RefeicaoCard
++              key={r.id}
++              r={r}
++              isFavorito={favoritos.some((f) => f.nome === r.nome)}
++              onToggleFavorito={() => onToggleFavorito(r)}
++              onRemover={() => onRemoverRefeicao(r.id)}
++            />
++          ))
++        )}
++      </div>
++
++      {/* 7-day history */}
++      {historico.length > 0 && (
++        <Card className="overflow-hidden">
++          <button
++            onClick={() => setShowHistorico(!showHistorico)}
++            className="w-full p-4 flex items-center justify-between hover:bg-surface-hover transition-colors text-left"
++          >
++            <div className="flex items-center gap-3">
++              <div className="h-8 w-8 rounded-lg bg-surface-mid flex items-center justify-center text-muted">
++                <History size={16} />
++              </div>
++              <div>
++                <p className="text-xs font-bold text-text">Histórico</p>
++                <p className="text-[10px] text-muted">Últimos 7 dias</p>
++              </div>
++            </div>
++            {showHistorico
++              ? <ChevronUp size={18} className="text-dim" />
++              : <ChevronDown size={18} className="text-dim" />}
++          </button>
++          {showHistorico && (
++            <div className="border-t border-surface-border divide-y divide-surface-border">
++              {historico.map(([dia, refeicoesDia]) => {
++                const totalDia = refeicoesDia.reduce((s, r) => s + r.calorias, 0);
++                const protDia  = refeicoesDia.reduce((s, r) => s + r.proteinas, 0);
++                const label = new Date(dia + "T12:00:00").toLocaleDateString("pt-BR", {
++                  weekday: "short", day: "numeric", month: "short",
++                });
++                return (
++                  <div key={dia} className="p-4">
++                    <div className="flex items-center justify-between mb-2">
++                      <p className="text-[11px] font-bold text-text capitalize">{label}</p>
++                      <div className="flex gap-3">
++                        <span className="text-[10px] font-bold text-muted">🔥 {totalDia} kcal</span>
++                        <span className="text-[10px] font-bold text-ember">💪 {protDia}g</span>
++                      </div>
++                    </div>
++                    <div className="space-y-1">
++                      {refeicoesDia.map((r) => (
++                        <div key={r.id} className="flex items-center justify-between text-[11px] text-muted">
++                          <span className="capitalize truncate max-w-[60%]">{r.nome}</span>
++                          <span>{r.calorias} kcal</span>
++                        </div>
++                      ))}
++                    </div>
++                  </div>
++                );
++              })}
++            </div>
++          )}
++        </Card>
++      )}
++    </div>
++  );
++}
+diff --git a/components/dieta/ReceitaDrawer.tsx b/components/dieta/ReceitaDrawer.tsx
+new file mode 100644
+index 0000000..ba418b6
+--- /dev/null
++++ b/components/dieta/ReceitaDrawer.tsx
+@@ -0,0 +1,87 @@
++"use client";
++
++import { useEffect, useState } from "react";
++import { ChevronDown } from "lucide-react";
++import { createPortal } from "react-dom";
++import { type ReceitaIA } from "./types";
++
++interface ReceitaDrawerProps {
++  receita: ReceitaIA;
++  onClose: () => void;
++}
++
++export function ReceitaDrawer({ receita, onClose }: ReceitaDrawerProps) {
++  const [mounted, setMounted] = useState(false);
++  useEffect(() => setMounted(true), []);
++  if (!mounted) return null;
++
++  return createPortal(
++    <div
++      className="fixed inset-0 flex items-end sm:items-center justify-center p-4"
++      style={{ zIndex: "var(--z-modal)" }}
++    >
++      <div
++        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
++        onClick={onClose}
++        style={{ zIndex: "var(--z-overlay)" }}
++      />
++      <div
++        className="relative w-full max-w-md bg-bg rounded-[32px] overflow-hidden shadow-2xl animate-in slide-in-from-bottom-8 flex flex-col max-h-[90vh]"
++        style={{ zIndex: "var(--z-modal)" }}
++      >
++        <div className="relative p-6 bg-surface-mid text-center">
++          <button onClick={onClose} className="absolute right-6 top-6 p-2 text-dim">
++            <ChevronDown size={24} />
++          </button>
++          <div className="h-20 w-20 rounded-3xl bg-ember/10 flex items-center justify-center text-4xl mx-auto mb-4">
++            {receita.emoji}
++          </div>
++          <h2 className="text-xl font-black text-text">{receita.nome}</h2>
++        </div>
++        <div className="flex-1 overflow-y-auto p-6 space-y-6">
++          <div className="grid grid-cols-4 gap-2">
++            {[
++              { l: "Kcal", v: receita.calorias },
++              { l: "Prot", v: `${receita.proteinas}g` },
++              { l: "Carb", v: `${receita.carboidratos}g` },
++              { l: "Gord", v: `${receita.gorduras}g` },
++            ].map((s) => (
++              <div key={s.l} className="p-2 bg-surface rounded-xl border border-surface-border text-center">
++                <p className="text-[9px] font-bold text-muted uppercase">{s.l}</p>
++                <p className="text-sm font-black text-text">{s.v}</p>
++              </div>
++            ))}
++          </div>
++          <div>
++            <h3 className="text-xs font-bold uppercase tracking-widest text-muted mb-3 ml-1">Ingredientes</h3>
++            <ul className="space-y-2">
++              {receita.ingredientes.map((ing, i) => (
++                <li
++                  key={i}
++                  className="flex gap-3 text-sm text-text bg-surface p-3 rounded-xl border border-surface-border"
++                >
++                  <div className="h-5 w-5 rounded-full bg-ember/10 text-ember flex items-center justify-center text-[10px] font-bold shrink-0">
++                    {i + 1}
++                  </div>
++                  {ing}
++                </li>
++              ))}
++            </ul>
++          </div>
++          <div>
++            <h3 className="text-xs font-bold uppercase tracking-widest text-muted mb-3 ml-1">Preparo</h3>
++            <div className="space-y-4">
++              {receita.modo_preparo.map((step, i) => (
++                <div key={i} className="flex gap-3">
++                  <div className="text-ember font-black text-lg italic opacity-30">{i + 1}</div>
++                  <p className="text-sm text-text leading-relaxed">{step}</p>
++                </div>
++              ))}
++            </div>
++          </div>
++        </div>
++      </div>
++    </div>,
++    document.body
++  );
++}
+diff --git a/components/dieta/ReceitasTab.tsx b/components/dieta/ReceitasTab.tsx
+new file mode 100644
+index 0000000..5e4cf0f
+--- /dev/null
++++ b/components/dieta/ReceitasTab.tsx
+@@ -0,0 +1,137 @@
++"use client";
++
++import { useEffect, useState } from "react";
++import { Sparkles, ChevronRight } from "lucide-react";
++import toast from "react-hot-toast";
++import { Card } from "@/components/Card";
++import { EmptyState } from "@/components/EmptyState";
++import { LoadingSpinner } from "@/components/LoadingSpinner";
++import { type FaseMounjaro } from "@/lib/diet-plans";
++import { type ReceitaIA } from "./types";
++import { ReceitaDrawer } from "./ReceitaDrawer";
++
++const RESTRICOES_OPTIONS = [
++  { id: "sem_gluten",   label: "Sem glúten"  },
++  { id: "sem_lactose",  label: "Sem lactose" },
++  { id: "vegetariano",  label: "Vegetariano" },
++  { id: "vegano",       label: "Vegano"      },
++];
++
++interface ReceitasTabProps {
++  userId: string;
++  fase: FaseMounjaro;
++  doseMg: number;
++}
++
++export function ReceitasTab({ userId, fase, doseMg }: ReceitasTabProps) {
++  const [receitas, setReceitas] = useState<ReceitaIA[]>([]);
++  const [loading, setLoading] = useState(false);
++  const [selecionada, setSelecionada] = useState<ReceitaIA | null>(null);
++  const [restricoes, setRestricoes] = useState<string[]>([]);
++
++  async function carregarReceitas(forcar = false) {
++    setLoading(true);
++    try {
++      const res = await fetch("/api/receitas/gerar", {
++        method: "POST",
++        headers: { "Content-Type": "application/json" },
++        body: JSON.stringify({ fase, dose_mg: doseMg, forcar, restricoes }),
++      });
++      const data = await res.json();
++      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
++      setReceitas((data.receitas ?? []) as ReceitaIA[]);
++    } catch (error: any) {
++      toast.error(error.message || "Erro ao carregar receitas.");
++    } finally {
++      setLoading(false);
++    }
++  }
++
++  useEffect(() => { carregarReceitas(); }, []);
++
++  function toggleRestricao(id: string) {
++    setRestricoes((prev) =>
++      prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]
++    );
++  }
++
++  return (
++    <div className="space-y-5">
++      <div className="flex items-center justify-between">
++        <div>
++          <h3 className="text-lg font-black text-text">Receitas IA</h3>
++          <p className="text-xs text-muted">Sugestões para a Fase {fase}</p>
++        </div>
++        <button
++          onClick={() => carregarReceitas(true)}
++          disabled={loading}
++          className="flex items-center gap-2 px-4 py-2 bg-ember/10 text-ember rounded-full text-xs font-bold active:scale-95 transition-all disabled:opacity-50"
++        >
++          {loading ? <LoadingSpinner size="sm" /> : <><Sparkles size={14} /> Atualizar</>}
++        </button>
++      </div>
++
++      {/* Dietary restrictions */}
++      <div className="flex flex-wrap gap-2 items-center">
++        {RESTRICOES_OPTIONS.map((opt) => {
++          const active = restricoes.includes(opt.id);
++          return (
++            <button
++              key={opt.id}
++              onClick={() => toggleRestricao(opt.id)}
++              className={`px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all ${
++                active
++                  ? "bg-ember/10 border-ember/30 text-ember"
++                  : "border-surface-border text-muted"
++              }`}
++            >
++              {opt.label}
++            </button>
++          );
++        })}
++        {restricoes.length > 0 && (
++          <button
++            onClick={() => carregarReceitas(true)}
++            className="px-3 py-1.5 rounded-full text-[11px] font-bold bg-ember text-white active:scale-95 transition-all"
++          >
++            Aplicar filtros →
++          </button>
++        )}
++      </div>
++
++      <div className="grid grid-cols-1 gap-4">
++        {receitas.length === 0 && !loading ? (
++          <EmptyState
++            icon={<Sparkles />}
++            title="Nenhuma receita"
++            description="Gere sugestões personalizadas para seu tratamento."
++          />
++        ) : (
++          receitas.map((r) => (
++            <Card
++              key={r.id}
++              onClick={() => setSelecionada(r)}
++              className="p-4 flex items-center gap-4 cursor-pointer hover:bg-surface-hover transition-all"
++            >
++              <div className="h-14 w-14 rounded-2xl bg-ember/10 flex items-center justify-center text-3xl">
++                {r.emoji}
++              </div>
++              <div className="flex-1">
++                <h4 className="text-sm font-bold text-text leading-tight">{r.nome}</h4>
++                <div className="flex items-center gap-3 mt-1">
++                  <span className="text-[10px] font-bold text-muted uppercase">🔥 {r.calorias} kcal</span>
++                  <span className="text-[10px] font-bold text-muted uppercase">💪 {r.proteinas}g Prot</span>
++                </div>
++              </div>
++              <ChevronRight size={18} className="text-dim" />
++            </Card>
++          ))
++        )}
++      </div>
++
++      {selecionada && (
++        <ReceitaDrawer receita={selecionada} onClose={() => setSelecionada(null)} />
++      )}
++    </div>
++  );
++}
+diff --git a/components/dieta/RegistrarRefeicaoModal.tsx b/components/dieta/RegistrarRefeicaoModal.tsx
+new file mode 100644
+index 0000000..6aee49c
+--- /dev/null
++++ b/components/dieta/RegistrarRefeicaoModal.tsx
+@@ -0,0 +1,286 @@
++"use client";
++
++import { useEffect, useRef, useState } from "react";
++import {
++  Sparkles,
++  Camera,
++  ChevronDown,
++  AlertCircle,
++} from "lucide-react";
++import toast from "react-hot-toast";
++import { supabase } from "@/lib/supabase";
++import { LoadingSpinner } from "@/components/LoadingSpinner";
++import { createPortal } from "react-dom";
++import {
++  type TipoRefeicao,
++  type FavoritoRefeicao,
++  CONFIANCA_CONFIG,
++} from "./types";
++
++const TIPOS_OPTIONS: { key: TipoRefeicao; label: string }[] = [
++  { key: "cafe",   label: "☕ Café"    },
++  { key: "almoco", label: "🍽️ Almoço" },
++  { key: "jantar", label: "🌙 Jantar"  },
++  { key: "lanche", label: "🍎 Lanche"  },
++];
++
++interface RegistrarRefeicaoModalProps {
++  userId: string;
++  favoritos: FavoritoRefeicao[];
++  onClose: () => void;
++  onSuccess: (r: any) => void;
++}
++
++export function RegistrarRefeicaoModal({
++  userId,
++  favoritos,
++  onClose,
++  onSuccess,
++}: RegistrarRefeicaoModalProps) {
++  const [text, setText] = useState("");
++  const [image, setImage] = useState<string | null>(null);
++  const [tipo, setTipo] = useState<TipoRefeicao>("almoco");
++  const [analyzing, setAnalyzing] = useState(false);
++  const [result, setResult] = useState<any>(null);
++  const [saving, setSaving] = useState(false);
++  const [mounted, setMounted] = useState(false);
++  const fileInputRef = useRef<HTMLInputElement>(null);
++
++  useEffect(() => setMounted(true), []);
++
++  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
++    const file = e.target.files?.[0];
++    if (!file) return;
++    const reader = new FileReader();
++    reader.onloadend = () => setImage(reader.result as string);
++    reader.readAsDataURL(file);
++  }
++
++  async function analisar() {
++    if (!text && !image) return toast.error("Adicione uma foto ou descrição.");
++    setAnalyzing(true);
++    try {
++      const res = await fetch("/api/diet/analyze", {
++        method: "POST",
++        body: JSON.stringify({ text, image }),
++      });
++      const data = await res.json();
++      setResult(data);
++    } catch {
++      toast.error("Erro ao analisar.");
++    } finally {
++      setAnalyzing(false);
++    }
++  }
++
++  async function salvar(override?: { nome: string; calorias: number; proteinas: number; carboidratos: number; gorduras: number }) {
++    const dados = override ?? result;
++    if (!dados) return;
++    setSaving(true);
++    try {
++      let foto_url: string | null = null;
++      if (image && !override) {
++        try {
++          const blob = await fetch(image).then((r) => r.blob());
++          const ext = blob.type.split("/")[1] || "jpg";
++          const path = `${userId}/${Date.now()}.${ext}`;
++          const { data: up } = await supabase.storage
++            .from("refeicoes-fotos")
++            .upload(path, blob, { contentType: blob.type, upsert: false });
++          if (up) {
++            const { data: urlData } = supabase.storage
++              .from("refeicoes-fotos")
++              .getPublicUrl(path);
++            foto_url = urlData.publicUrl;
++          }
++        } catch {}
++      }
++
++      const { data, error } = await supabase
++        .from("refeicoes_registradas")
++        .insert({
++          user_id: userId,
++          descricao: dados.nome,
++          calorias_estimadas: dados.calorias,
++          proteinas_g: dados.proteinas,
++          carboidratos_g: dados.carboidratos,
++          gorduras_g: dados.gorduras,
++          data: new Date().toISOString(),
++          tipo,
++          ...(foto_url ? { foto_url } : {}),
++        })
++        .select()
++        .single();
++      if (error) throw error;
++      onSuccess(data);
++      toast.success("Salvo!");
++    } catch {
++      toast.error("Erro ao salvar.");
++    } finally {
++      setSaving(false);
++    }
++  }
++
++  if (!mounted) return null;
++
++  const confiancaInfo = result?.confianca ? CONFIANCA_CONFIG[result.confianca] : null;
++
++  return createPortal(
++    <div
++      className="fixed inset-0 flex items-end sm:items-center justify-center p-4"
++      style={{ zIndex: "var(--z-modal)" }}
++    >
++      <div
++        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
++        onClick={onClose}
++        style={{ zIndex: "var(--z-overlay)" }}
++      />
++      <div
++        className="relative w-full max-w-md bg-bg rounded-[32px] overflow-hidden shadow-2xl animate-in slide-in-from-bottom-8 duration-300 max-h-[90vh] flex flex-col"
++        style={{ zIndex: "var(--z-modal)" }}
++      >
++        {/* Header + tipo selector — fixed */}
++        <div className="p-6 flex-shrink-0">
++          <div className="flex justify-between items-center mb-5">
++            <h2 className="text-xl font-black text-text">Registrar Refeição</h2>
++            <button onClick={onClose} className="p-2 text-dim">
++              <ChevronDown size={24} />
++            </button>
++          </div>
++
++          {/* Meal type pills */}
++          <div className="flex gap-1.5">
++            {TIPOS_OPTIONS.map((t) => (
++              <button
++                key={t.key}
++                onClick={() => setTipo(t.key)}
++                className={`flex-1 py-2 text-[10px] font-bold rounded-xl border transition-all ${
++                  tipo === t.key
++                    ? "bg-ember/10 border-ember/30 text-ember"
++                    : "border-surface-border text-muted"
++                }`}
++              >
++                {t.label}
++              </button>
++            ))}
++          </div>
++        </div>
++
++        {/* Scrollable content */}
++        <div className="overflow-y-auto flex-1 px-6 pb-6 space-y-5">
++          {!result ? (
++            <>
++              {/* Favoritos quick-add */}
++              {favoritos.length > 0 && (
++                <div>
++                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted mb-2">
++                    ⭐ Favoritos
++                  </p>
++                  <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x">
++                    {favoritos.slice(0, 6).map((fav, i) => (
++                      <button
++                        key={i}
++                        onClick={() => salvar(fav)}
++                        disabled={saving}
++                        className="shrink-0 snap-start text-left p-3 bg-surface rounded-2xl border border-surface-border hover:border-ember/40 active:scale-95 transition-all disabled:opacity-50"
++                        style={{ minWidth: 120 }}
++                      >
++                        <p className="text-xs font-bold text-text capitalize leading-tight truncate max-w-[108px]">
++                          {fav.nome}
++                        </p>
++                        <p className="text-[10px] text-muted mt-0.5">{fav.calorias} kcal</p>
++                      </button>
++                    ))}
++                  </div>
++                </div>
++              )}
++
++              {/* Photo upload */}
++              <div
++                onClick={() => fileInputRef.current?.click()}
++                className="aspect-video rounded-2xl bg-surface-mid border-2 border-dashed border-surface-border flex flex-col items-center justify-center overflow-hidden cursor-pointer"
++              >
++                {image ? (
++                  <img src={image} className="w-full h-full object-cover" alt="Prato" />
++                ) : (
++                  <>
++                    <Camera size={32} className="text-muted mb-2" />
++                    <p className="text-xs font-bold text-muted">Tirar foto do prato</p>
++                  </>
++                )}
++                <input
++                  type="file"
++                  ref={fileInputRef}
++                  onChange={handleImageUpload}
++                  accept="image/*"
++                  capture="environment"
++                  className="hidden"
++                />
++              </div>
++
++              <textarea
++                value={text}
++                onChange={(e) => setText(e.target.value)}
++                placeholder="Ou descreva sua refeição..."
++                className="w-full h-24 bg-surface rounded-2xl p-4 text-sm outline-none border border-surface-border focus:border-ember resize-none"
++              />
++
++              <button
++                onClick={analisar}
++                disabled={analyzing}
++                className="w-full h-14 bg-ember text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-ember disabled:opacity-50"
++              >
++                {analyzing ? (
++                  <LoadingSpinner size="sm" color="white" />
++                ) : (
++                  <><Sparkles size={20} fill="currentColor" /> Estimar Macros</>
++                )}
++              </button>
++            </>
++          ) : (
++            <div className="space-y-5">
++              <div className="text-center p-6 bg-surface-mid rounded-[24px]">
++                <h3 className="text-xl font-black text-text mb-4 capitalize">{result.nome}</h3>
++                <div className="grid grid-cols-4 gap-2">
++                  {[
++                    { l: "Kcal", v: result.calorias },
++                    { l: "Prot", v: `${result.proteinas}g` },
++                    { l: "Carb", v: `${result.carboidratos}g` },
++                    { l: "Gord", v: `${result.gorduras}g` },
++                  ].map((s) => (
++                    <div key={s.l} className="p-2 bg-surface rounded-xl border border-surface-border text-center">
++                      <p className="text-[9px] font-bold text-muted uppercase">{s.l}</p>
++                      <p className="text-sm font-black text-text">{s.v}</p>
++                    </div>
++                  ))}
++                </div>
++                {confiancaInfo && (
++                  <div className={`inline-flex items-center gap-1.5 mt-4 px-3 py-1.5 rounded-full border text-[10px] font-bold ${confiancaInfo.bg} ${confiancaInfo.color}`}>
++                    <AlertCircle size={11} />
++                    {confiancaInfo.label}
++                  </div>
++                )}
++              </div>
++              <div className="flex gap-3">
++                <button
++                  onClick={() => setResult(null)}
++                  className="flex-1 h-14 bg-surface text-text rounded-2xl font-bold border border-surface-border"
++                >
++                  Refazer
++                </button>
++                <button
++                  onClick={() => salvar()}
++                  disabled={saving}
++                  className="flex-1 h-14 bg-ember text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-ember disabled:opacity-50"
++                >
++                  {saving ? <LoadingSpinner size="sm" color="white" /> : "Confirmar"}
++                </button>
++              </div>
++            </div>
++          )}
++        </div>
++      </div>
++    </div>,
++    document.body
++  );
++}
+diff --git a/components/dieta/types.ts b/components/dieta/types.ts
+new file mode 100644
+index 0000000..a699e40
+--- /dev/null
++++ b/components/dieta/types.ts
+@@ -0,0 +1,60 @@
++export type TipoRefeicao = "cafe" | "almoco" | "jantar" | "lanche";
++
++export interface Refeicao {
++  id: string;
++  nome: string;
++  calorias: number;
++  proteinas: number;
++  carboidratos: number;
++  gorduras: number;
++  criado_em: string;
++  tipo?: TipoRefeicao;
++}
++
++export interface FavoritoRefeicao {
++  nome: string;
++  calorias: number;
++  proteinas: number;
++  carboidratos: number;
++  gorduras: number;
++  tipo: TipoRefeicao;
++}
++
++export interface ReceitaIA {
++  id: string;
++  nome: string;
++  tipo: string;
++  calorias: number;
++  proteinas: number;
++  carboidratos: number;
++  gorduras: number;
++  tempo_preparo: number;
++  dificuldade: string;
++  emoji: string;
++  dica_mounjaro?: string;
++  ingredientes: string[];
++  modo_preparo: string[];
++}
++
++export const TIPO_LABELS: Record<TipoRefeicao, string> = {
++  cafe:   "☕ Café",
++  almoco: "🍽️ Almoço",
++  jantar: "🌙 Jantar",
++  lanche: "🍎 Lanche",
++};
++
++export const CONFIANCA_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
++  alta:  { label: "Alta precisão",   color: "text-green-500", bg: "bg-green-500/10 border-green-500/20" },
++  media: { label: "Precisão média",  color: "text-amber-500", bg: "bg-amber-500/10 border-amber-500/20" },
++  baixa: { label: "Baixa precisão",  color: "text-red-500",   bg: "bg-red-500/10 border-red-500/20"   },
++};
++
++export function getFavoritos(): FavoritoRefeicao[] {
++  if (typeof window === "undefined") return [];
++  try { return JSON.parse(localStorage.getItem("momo-fav-refeicoes") || "[]"); }
++  catch { return []; }
++}
++
++export function saveFavoritos(favs: FavoritoRefeicao[]) {
++  localStorage.setItem("momo-fav-refeicoes", JSON.stringify(favs.slice(0, 10)));
++}

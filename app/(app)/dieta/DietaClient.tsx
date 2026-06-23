@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { supabase } from "@/lib/supabase";
 import { PageHeader } from "@/components/PageHeader";
