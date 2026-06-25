@@ -33,6 +33,7 @@ export interface FornecedorProduto {
 
 export type StatusPedido =
   | "novo"
+  | "aguardando_pagamento"
   | "confirmado"
   | "enviado"
   | "entregue"
@@ -93,6 +94,7 @@ export const STATUS_PEDIDO: Record<
   { label: string; cls: string; animated?: boolean }
 > = {
   novo: { label: "Novo", cls: "bg-amber-100 text-amber-700", animated: true },
+  aguardando_pagamento: { label: "Aguard. Pgto", cls: "bg-orange-100 text-orange-700", animated: true },
   confirmado: {
     label: "Confirmado",
     cls: "bg-blue-100 text-blue-700",

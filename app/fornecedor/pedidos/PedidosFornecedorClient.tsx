@@ -27,6 +27,7 @@ import Link from "next/link";
 
 const STATUS_COLORS: Record<string, string> = {
   novo: "var(--color-ember)",
+  aguardando_pagamento: "var(--color-warning)",
   confirmado: "var(--color-success)",
   enviado: "#60a5fa",
   entregue: "var(--color-text-dim)",
@@ -147,6 +148,7 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
     () => ({
       todos: pedidos.length,
       novo: pedidos.filter((p) => p.status === "novo").length,
+      aguardando_pagamento: pedidos.filter((p) => p.status === "aguardando_pagamento").length,
       confirmado: pedidos.filter((p) => p.status === "confirmado").length,
       enviado: pedidos.filter((p) => p.status === "enviado").length,
       entregue: pedidos.filter((p) => p.status === "entregue").length,
@@ -234,7 +236,7 @@ export function PedidosFornecedorClient({ fornecedorId }: { fornecedorId: string
             onConfirm={(date: string) =>
               updateStatus(
                 showAcceptModal.id,
-                "confirmado",
+                "aguardando_pagamento",
                 { previsao_entrega: date },
                 "PEDIDO_ACEITO"
               )
@@ -324,6 +326,15 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
           </div>
         )}
 
+        {pedido.status === "aguardando_pagamento" && (
+          <button 
+            onClick={() => onUpdateStatus(pedido.id, "confirmado")}
+            className="w-full h-[38px] bg-green-500/10 border border-green-500/20 text-green-500 rounded-[10px] text-[11px] font-[700] flex items-center justify-center gap-2 mt-[10px]"
+          >
+            <CheckCircle2 size={14} /> CONFIRMAR PAGAMENTO
+          </button>
+        )}
+
         {pedido.status === "confirmado" && (
           <button 
             onClick={() => {
@@ -335,20 +346,18 @@ function PedidoCard({ pedido, onAccept, onReject, onUpdateStatus }: { pedido: an
                 "MOTOBOY_SAIU"
               );
             }}
-            className="w-full h-[38px] bg-blue-500/10 border border-blue-500/20 text-blue-500 rounded-[10px] text-[11px] font-[700] flex items-center justify-center gap-2"
+            className="w-full h-[38px] mt-[10px] bg-blue-500/10 border border-blue-500/20 text-blue-500 rounded-[10px] text-[11px] font-[700] flex items-center justify-center gap-2"
           >
             <Truck size={14} /> MARCAR COMO ENVIADO
           </button>
         )}
 
-        {pedido.status !== "novo" && pedido.status !== "confirmado" && (
-           <Link 
-             href={`/fornecedor/pedidos/${pedido.id}`}
-             className="w-full h-[38px] bg-surface-mid text-muted rounded-[10px] text-[10px] font-[700] uppercase tracking-widest flex items-center justify-center gap-2"
-           >
-             Ver detalhes <ArrowUpRight size={12} />
-           </Link>
-        )}
+        <Link 
+          href={`/fornecedor/pedidos/${pedido.id}`}
+          className="w-full h-[38px] mt-[10px] bg-surface-mid text-muted rounded-[10px] text-[10px] font-[700] uppercase tracking-widest flex items-center justify-center gap-2"
+        >
+          Ver detalhes <ArrowUpRight size={12} />
+        </Link>
       </div>
     </motion.div>
   );
