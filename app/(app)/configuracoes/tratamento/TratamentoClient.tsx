@@ -12,6 +12,7 @@ interface Form {
   medico_nome: string;
   peso_inicial: string;
   peso_meta: string;
+  altura_cm: string;
 }
 
 const DOSES = ["2.5", "5", "7.5", "10", "12.5", "15"];
@@ -41,6 +42,7 @@ export function TratamentoClient({
           medico_nome: form.medico_nome.trim() || null,
           peso_inicial: form.peso_inicial ? Number(form.peso_inicial) : null,
           peso_meta: form.peso_meta ? Number(form.peso_meta) : null,
+          altura_cm: form.altura_cm ? Number(form.altura_cm) : null,
         })
         .eq("id", userId);
       if (error) throw error;
@@ -99,6 +101,15 @@ export function TratamentoClient({
               value={form.peso_meta}
               onChange={(v) => set("peso_meta", v)}
               placeholder="Opcional"
+            />
+          </Field>
+          <Field label="Altura (cm)">
+            <TextInput
+              type="number"
+              inputMode="decimal"
+              value={form.altura_cm}
+              onChange={(v) => set("altura_cm", v)}
+              placeholder="Ex: 170"
             />
           </Field>
         </div>

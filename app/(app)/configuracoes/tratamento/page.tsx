@@ -14,7 +14,7 @@ export default async function TratamentoPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("dose_atual_mg, data_inicio_tratamento, medico_nome, peso_inicial, peso_meta")
+    .select("dose_atual_mg, data_inicio_tratamento, medico_nome, peso_inicial, peso_meta, altura_cm")
     .eq("id", session.user.id)
     .single();
 
@@ -27,6 +27,7 @@ export default async function TratamentoPage() {
         medico_nome: profile?.medico_nome ?? "",
         peso_inicial: profile?.peso_inicial != null ? String(profile.peso_inicial) : "",
         peso_meta: profile?.peso_meta != null ? String(profile.peso_meta) : "",
+        altura_cm: profile?.altura_cm != null ? String(profile.altura_cm) : "",
       }}
     />
   );

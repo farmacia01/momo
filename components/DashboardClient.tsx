@@ -344,7 +344,7 @@ export function DashboardClient({
       {/* Stats Row */}
       <div className="grid grid-cols-3 gap-3">
         <MiniStatCard variants={item} label="IMC atual" value={imcShare > 0 ? imcShare.toFixed(1) : '--'} delta={imcShare > 0 ? (imcShare < 25 ? 'Normal' : imcShare < 30 ? 'Sobrepeso' : 'Obesidade') : ''} />
-        <MiniStatCard variants={item} label="Semanas" value={`${weeksCompleted}`} />
+        <MiniStatCard variants={item} label="Semana atual" value={`${weeksCompleted + 1}`} />
         <MiniStatCard variants={item} label="Perdido" value={`${weightDelta}kg`} delta="total" />
       </div>
 
