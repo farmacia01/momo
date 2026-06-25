@@ -16,10 +16,10 @@ export function SocialProofBox({ type = 'trust', className = '' }: SocialProofBo
           <Users className="h-5 w-5 mt-0.5" style={{ color: '#ff6500' }} />
           <div>
             <p className="font-bold text-sm" style={{ color: '#111' }}>
-              2.340 mulheres com Monjaro já começaram
+              2.340 mulheres acompanhando sua jornada com Monjaro
             </p>
             <p className="text-xs mt-1" style={{ color: 'rgba(17, 17, 17, 0.6)' }}>
-              Receitas testadas que funcionam
+              Histórico, progresso, comunidade e suporte em um só lugar
             </p>
           </div>
         </div>
@@ -28,19 +28,19 @@ export function SocialProofBox({ type = 'trust', className = '' }: SocialProofBo
           <div className="flex items-start gap-2">
             <TrendingDown className="h-4 w-4 mt-0.5" style={{ color: '#ff6500' }} />
             <p className="text-xs" style={{ color: '#111' }}>
-              <span className="font-bold">Carla:</span> -2,4kg em 2 semanas (Frango com Abóbora)
+              <span className="font-bold">Carla:</span> -2,4kg em 2 semanas (acompanhando as doses)
             </p>
           </div>
           <div className="flex items-start gap-2">
             <TrendingDown className="h-4 w-4 mt-0.5" style={{ color: '#ff6500' }} />
             <p className="text-xs" style={{ color: '#111' }}>
-              <span className="font-bold">Paula:</span> -1,8kg em 3 semanas (Sopa de Legumes)
+              <span className="font-bold">Paula:</span> -1,8kg em 3 semanas (com lembretes e histórico)
             </p>
           </div>
           <div className="flex items-start gap-2">
             <TrendingDown className="h-4 w-4 mt-0.5" style={{ color: '#ff6500' }} />
             <p className="text-xs" style={{ color: '#111' }}>
-              <span className="font-bold">Marina:</span> -3,1kg em 4 semanas (Ovo com Batata Doce)
+              <span className="font-bold">Marina:</span> -3,1kg em 4 semanas (conectada à comunidade)
             </p>
           </div>
         </div>
@@ -52,7 +52,7 @@ export function SocialProofBox({ type = 'trust', className = '' }: SocialProofBo
             ))}
           </div>
           <p className="text-xs font-bold" style={{ color: '#ff6500' }}>
-            Comunidade que entende
+            Comunidade de mulheres com Monjaro
           </p>
         </div>
       </div>
@@ -69,7 +69,7 @@ export function SocialProofBox({ type = 'trust', className = '' }: SocialProofBo
               Primeiras 2-3 semanas com Monjaro definem seu resultado
             </p>
             <p className="text-xs mt-2" style={{ color: 'rgba(17, 17, 17, 0.6)' }}>
-              Nutricionistas dizem: receitas certas agora = resultado real depois. Cada dia conta.
+              Acompanhamento consistente, histórico de doses e suporte agora = transformação real depois. Cada dia conta.
             </p>
           </div>
         </div>
@@ -81,19 +81,19 @@ export function SocialProofBox({ type = 'trust', className = '' }: SocialProofBo
     return (
       <div className={`rounded-2xl p-5 space-y-3 ${className}`} style={{ background: 'rgba(76, 175, 80, 0.05)', border: '1px solid rgba(76, 175, 80, 0.2)' }}>
         <p className="text-sm font-bold" style={{ color: '#111' }}>
-          Tudo o que você precisa:
+          Tudo o que você precisa para sua jornada:
         </p>
         <div className="space-y-2 pl-6">
           <div className="flex items-start gap-2">
             <span style={{ color: '#4CAF50' }} className="text-sm font-bold">✓</span>
             <p className="text-xs" style={{ color: '#111' }}>
-              Receitas testadas (2.340 pessoas já comeram)
+              Histórico de doses e progresso (gráficos em tempo real)
             </p>
           </div>
           <div className="flex items-start gap-2">
             <span style={{ color: '#4CAF50' }} className="text-sm font-bold">✓</span>
             <p className="text-xs" style={{ color: '#111' }}>
-              Comunidade responde em &lt;1h (5.234 mulheres)
+              Lembretes e comunidade (5.234 mulheres se ajudando)
             </p>
           </div>
           <div className="flex items-start gap-2">
@@ -123,7 +123,7 @@ export function SocialProofBox({ type = 'trust', className = '' }: SocialProofBo
           Enquanto isso...
         </p>
         <p className="text-xs" style={{ color: 'rgba(17, 17, 17, 0.6)' }}>
-          5.234 mulheres estão salvando receitas e compartilhando histórias de transformação. Você vai se juntar em breve! 🎉
+          5.234 mulheres estão acompanhando suas doses, compartilhando progresso e se apoiando mutuamente. Você vai se juntar em breve! 🎉
         </p>
       </div>
     );
