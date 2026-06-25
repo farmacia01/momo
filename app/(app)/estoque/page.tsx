@@ -1,6 +1,5 @@
 import { createServerClient } from "@/lib/supabase-server";
 import { EstoqueClient } from "./EstoqueClient";
-import { FornecedoresSection } from "./FornecedoresSection";
 
 export const dynamic = 'force-dynamic';
 
@@ -66,7 +65,6 @@ export default async function EstoquePage() {
         profile={profile}
         ampolasUsadas={ampolasUsadas}
       />
-      <FornecedoresSection userId={session.user.id} />
     </div>
   );
 }
