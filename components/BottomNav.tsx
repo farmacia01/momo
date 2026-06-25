@@ -78,7 +78,7 @@ export function BottomNav() {
   const primaryItems: Item[] = role === 'paciente' ? [
     { label: "Home", href: "/", icon: Home },
     { label: "Doses", href: "/doses", icon: Syringe },
-    { label: "Loja", href: "/fornecedores", icon: Store },
+    { label: "Dieta", href: "/dieta", icon: Salad },
     { label: "Saúde", href: "/saude", icon: HeartPulse },
   ] : [
     { label: "Home", href: "/", icon: Home },
@@ -91,7 +91,6 @@ export function BottomNav() {
     { label: "Assistente IA", href: "/assistente", icon: Bot },
     { label: "Configurações", href: "/configuracoes", icon: Settings },
     ...(role === 'paciente' ? [
-      { label: "Dieta", href: "/dieta", icon: Salad },
       { label: "Estoque", href: "/estoque", icon: PackageOpen },
       { label: "Meus Pedidos", href: "/meus-pedidos", icon: ShoppingBag },
     ] : []),
