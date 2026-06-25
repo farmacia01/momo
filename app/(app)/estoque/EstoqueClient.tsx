@@ -85,9 +85,6 @@ export function EstoqueClient({ userId, initialAmpolas, initialAlerta, profile, 
         title="Meu Estoque" 
         action={
           <div className="flex gap-2">
-            <Link href="/meus-pedidos" className="flex h-10 w-10 items-center justify-center rounded-full bg-surface text-dim shadow-sm active:scale-90 transition-transform">
-              <ShoppingCart size={20} />
-            </Link>
             <button onClick={() => setShowForm(true)} className="flex h-10 w-10 items-center justify-center rounded-full bg-ember text-white shadow-lg active:scale-90 transition-transform">
               <Plus size={20} />
             </button>

@@ -92,7 +92,6 @@ export function BottomNav() {
     { label: "Configurações", href: "/configuracoes", icon: Settings },
     ...(role === 'paciente' ? [
       { label: "Estoque", href: "/estoque", icon: PackageOpen },
-      { label: "Meus Pedidos", href: "/meus-pedidos", icon: ShoppingBag },
     ] : []),
   ];
 
