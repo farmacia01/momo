@@ -1,6 +1,12 @@
 import { addDays, differenceInDays, isToday, isTomorrow, isPast, format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
+/** Parse a YYYY-MM-DD date string as local midnight (avoids UTC-offset shifting). */
+export function parseDateStr(dateStr: string): Date {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
 export interface CalculoDose {
   data: Date;
   dataFormatada: string;

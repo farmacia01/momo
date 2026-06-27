@@ -1,7 +1,7 @@
 import { createServerClient } from "@/lib/supabase-server";
 import { DashboardClient } from "@/components/DashboardClient";
 import { differenceInDays, differenceInWeeks } from "date-fns";
-import { calcularProximaDose } from "@/lib/utils/dose";
+import { calcularProximaDose, parseDateStr } from "@/lib/utils/dose";
 
 export const dynamic = 'force-dynamic';
 
@@ -60,8 +60,11 @@ export default async function DashboardPage() {
   const ampolasUsadas = doses?.length || 0;
   const totalAmpolas = Math.max(0, totalPurchased - ampolasUsadas);
 
-  // Calculations
-  const startTreatmentDate = profile?.data_inicio_tratamento ? new Date(profile.data_inicio_tratamento) : new Date();
+  // Calculations — prefer explicit start date, fall back to first dose, then today
+  const firstDoseDate = doses?.length ? parseDateStr(doses[doses.length - 1].data_aplicacao) : null;
+  const startTreatmentDate = profile?.data_inicio_tratamento
+    ? parseDateStr(profile.data_inicio_tratamento)
+    : firstDoseDate ?? new Date();
   const weeksCompleted = differenceInWeeks(new Date(), startTreatmentDate);
   
   const lastWeight = weights?.[0];

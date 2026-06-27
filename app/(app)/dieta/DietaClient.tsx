@@ -23,10 +23,14 @@ export function DietaClient({
   userId,
   doseMg,
   refeicoesIniciais,
+  weeksCompleted,
+  imc,
 }: {
   userId: string;
   doseMg: number;
   refeicoesIniciais: any[];
+  weeksCompleted: number | null;
+  imc: number | null;
 }) {
   const [tab, setTab] = useState<Tab>("Dashboard");
   const [refeicoes, setRefeicoes] = useState<Refeicao[]>(
@@ -139,6 +143,8 @@ export function DietaClient({
               onRegistrar={() => setRegistering(true)}
               onToggleFavorito={toggleFavorito}
               onRemoverRefeicao={removerRefeicao}
+              weeksCompleted={weeksCompleted}
+              imc={imc}
             />
           ) : (
             <ReceitasTab userId={userId} fase={fase} doseMg={doseMg} />

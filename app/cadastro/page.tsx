@@ -4,9 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, ArrowRight, Check, User, Activity, Target, Star, Bell, TrendingUp, Utensils, Package, BookOpen, ShieldCheck, Smartphone, Share2, MoreVertical, Plus, Phone, Mail, MailCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, User, Activity, Target, Smartphone, Share2, MoreVertical, Plus, Mail, MailCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { SocialProofBox } from '@/components/SocialProofBox';
 
 const DOSES = ['2.5', '5', '7.5', '10', '12.5', '15'];
 const DIAS_SEMANA = [
@@ -36,13 +35,6 @@ const getFriendlySignupError = (error: { code?: string; message?: string; status
   return "Não foi possível criar a conta. Tente novamente.";
 };
 
-const BENEFICIOS = [
-  { icon: <Bell size={15} />, text: 'Lembretes automáticos de dose' },
-  { icon: <TrendingUp size={15} />, text: 'Gráficos de peso e progresso' },
-  { icon: <Utensils size={15} />, text: 'Receitas para sua fase do tratamento' },
-  { icon: <Package size={15} />, text: 'Alerta de estoque de ampolas' },
-  { icon: <BookOpen size={15} />, text: 'Histórico completo para o médico' },
-];
 
 export default function CadastroPage() {
   const router = useRouter();
@@ -227,22 +219,17 @@ export default function CadastroPage() {
             <div className="space-y-4 animate-fade-up">
               <StepHeader icon={<User className="h-5 w-5" />} title="Dados pessoais" subtitle="Comece sua jornada" />
 
-              {/* Social Proof in Step 1 */}
-              <SocialProofBox type="trust" className="mb-4" />
-
               <DarkInput label="Nome completo" name="nome" value={formData.nome} onChange={handleChange} placeholder="Como deseja ser chamado?" />
               <DarkInput label="E-mail" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="seu@email.com" />
               <DarkInput label="Telefone (WhatsApp)" name="telefone" type="tel" value={formData.telefone} onChange={handleChange} placeholder="(11) 99999-9999" />
               <DarkInput label="Senha" name="password" type="password" value={formData.password} onChange={handleChange} placeholder="Mínimo 8 caracteres" />
+
             </div>
           )}
 
           {step === 2 && (
             <div className="space-y-6 animate-fade-up">
               <StepHeader icon={<Activity className="h-5 w-5" />} title="Seu tratamento" subtitle="Personalize seu acompanhamento" />
-
-              {/* Urgency Banner in Step 2 */}
-              <SocialProofBox type="urgency" />
 
               <DarkInput label="Início do tratamento" name="data_inicio_tratamento" type="date" value={formData.data_inicio_tratamento} onChange={handleChange} />
 
@@ -278,9 +265,6 @@ export default function CadastroPage() {
             <div className="space-y-6 animate-fade-up">
               <StepHeader icon={<Target className="h-5 w-5" />} title="Metas e rotina" subtitle="Onde você quer chegar?" />
               <DarkInput label="Peso meta (opcional)" name="peso_meta" type="number" value={formData.peso_meta} onChange={handleChange} placeholder="Ex: 70.0" />
-
-              {/* Objection Crusher before final details */}
-              <SocialProofBox type="objection" />
 
               <div>
                 <label className="mb-2 block text-sm font-bold text-text">Dia da aplicação</label>
@@ -329,8 +313,6 @@ export default function CadastroPage() {
                 </p>
               </div>
 
-              {/* Social Proof while waiting for confirmation */}
-              <SocialProofBox type="waiting" />
             </div>
           )}
 
@@ -408,8 +390,12 @@ export default function CadastroPage() {
       </main>
 
       <footer
-        className="fixed bottom-0 left-0 right-0 z-40 p-6"
-        style={{ background: "var(--color-surface)", borderTop: "1px solid var(--color-surface-border)" }}
+        className="fixed bottom-0 left-0 right-0 z-40 px-6 pt-6"
+        style={{
+          background: "var(--color-surface)",
+          borderTop: "1px solid var(--color-surface-border)",
+          paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom, 1.5rem))',
+        }}
       >
         <div className="mx-auto max-w-md">
           {step < 3 && (

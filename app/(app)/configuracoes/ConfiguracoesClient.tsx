@@ -10,9 +10,6 @@ import {
   Bell,
   Download,
   Trash2,
-  Info,
-  FileText,
-  ShieldCheck,
   Star,
   LogOut,
   ChevronRight,
@@ -129,36 +126,6 @@ export function ConfiguracoesClient({
         </Card>
       </section>
 
-      {/* SEÇÃO 5 — SOBRE */}
-      <section>
-        <SectionLabel>Sobre</SectionLabel>
-        <Card>
-          <InfoRow
-            icon={<Info size={20} strokeWidth={2.5} />}
-            title="Versão do app"
-            value={`v${appVersion}`}
-          />
-          <Divider />
-          <LinkRow
-            icon={<FileText size={20} strokeWidth={2.5} />}
-            title="Termos de uso"
-            href="#"
-          />
-          <Divider />
-          <LinkRow
-            icon={<ShieldCheck size={20} strokeWidth={2.5} />}
-            title="Política de privacidade"
-            href="#"
-          />
-          <Divider />
-          <LinkRow
-            icon={<Star size={20} strokeWidth={2.5} />}
-            title="Avalie o app"
-            href="#"
-          />
-        </Card>
-      </section>
-
       {/* SEÇÃO ADMIN — visível apenas para o dono */}
       {email === "ryan@gmail.com" && (
         <section>
@@ -226,57 +193,6 @@ function NavItem({
         <ChevronRight className="h-5 w-5 text-dim transition-colors group-hover:text-ember" />
       )}
     </button>
-  );
-}
-
-function InfoRow({
-  icon,
-  title,
-  value,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  value: string;
-}) {
-  return (
-    <div className="flex w-full items-center gap-4 p-4">
-      <div 
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-ember"
-        style={{ background: "var(--color-bg)" }}
-      >
-        {icon}
-      </div>
-      <h3 className="flex-1 text-sm font-bold text-text">{title}</h3>
-      <span className="text-sm font-semibold text-muted">{value}</span>
-    </div>
-  );
-}
-
-function LinkRow({
-  icon,
-  title,
-  href,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  href: string;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex w-full items-center gap-4 p-4 active:bg-surface-mid/50 transition-colors"
-    >
-      <div 
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-ember"
-        style={{ background: "var(--color-bg)" }}
-      >
-        {icon}
-      </div>
-      <h3 className="flex-1 text-sm font-bold text-text">{title}</h3>
-      <ChevronRight className="h-5 w-5 text-dim transition-colors group-hover:text-ember" />
-    </a>
   );
 }
 

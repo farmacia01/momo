@@ -82,6 +82,8 @@ interface DashboardTabProps {
   onRegistrar: () => void;
   onToggleFavorito: (r: Refeicao) => void;
   onRemoverRefeicao: (id: string) => void;
+  weeksCompleted: number | null;
+  imc: number | null;
 }
 
 export function DashboardTab({
@@ -92,6 +94,8 @@ export function DashboardTab({
   onRegistrar,
   onToggleFavorito,
   onRemoverRefeicao,
+  weeksCompleted,
+  imc,
 }: DashboardTabProps) {
   const plano = PLANOS[fase];
   const [showPlanoDetalhamento, setShowPlanoDetalhamento] = useState(false);
@@ -155,8 +159,30 @@ export function DashboardTab({
       .slice(0, 7);
   }, [refeicoes, hoje]);
 
+  const imcLabel = imc === null ? '' : imc < 18.5 ? 'Abaixo do peso' : imc < 25 ? 'Normal' : imc < 30 ? 'Sobrepeso' : 'Obesidade';
+
   return (
     <div className="space-y-6">
+      {/* Week + IMC stats */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="rounded-[16px] p-3 bg-surface border border-surface-border">
+          <p className="text-[10px] font-medium text-muted">Semana atual</p>
+          <h5 className="text-[17px] font-bold mt-1 tracking-tight text-text">
+            {weeksCompleted !== null ? weeksCompleted + 1 : '--'}
+          </h5>
+          <p className="text-[10px] font-bold mt-0.5 text-ember">de tratamento</p>
+        </div>
+        <div className="rounded-[16px] p-3 bg-surface border border-surface-border">
+          <p className="text-[10px] font-medium text-muted">IMC atual</p>
+          <h5 className="text-[17px] font-bold mt-1 tracking-tight text-text">
+            {imc !== null ? imc.toFixed(1) : '--'}
+          </h5>
+          {imcLabel && (
+            <p className="text-[10px] font-bold mt-0.5 text-ember">{imcLabel}</p>
+          )}
+        </div>
+      </div>
+
       {/* Macro Dashboard */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-6">

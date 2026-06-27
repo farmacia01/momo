@@ -9,7 +9,7 @@ import Link from "next/link";
 import { WeekTracker } from "./WeekTracker";
 import { NotificationBell } from "./NotificationBell";
 import { ShareProgressDrawer } from "./ShareProgressDrawer";
-import { getTextoProximaDose, type CalculoDose } from "@/lib/utils/dose";
+import { getTextoProximaDose, parseDateStr, type CalculoDose } from "@/lib/utils/dose";
 import dynamic from "next/dynamic";
 import { SkeletonChart } from "@/components/ui/Skeleton";
 import { usePlano } from "@/hooks/usePlano";
@@ -100,7 +100,7 @@ export function DashboardClient({
   const alturaM = (profile?.altura_cm || 0) / 100;
   const imcShare = lastWeight?.peso_kg && alturaM > 0 ? lastWeight.peso_kg / (alturaM * alturaM) : 0;
   const firstWeight = weights?.[weights.length - 1];
-  const startDate = profile?.data_inicio_tratamento ? new Date(profile.data_inicio_tratamento) : new Date();
+  const startDate = profile?.data_inicio_tratamento ? parseDateStr(profile.data_inicio_tratamento) : new Date();
   const diasTratamento = Math.max(1, differenceInDays(new Date(), startDate));
   const shareData = {
     pesoPerdido,

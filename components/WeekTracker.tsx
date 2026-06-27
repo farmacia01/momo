@@ -4,6 +4,7 @@ import { format, startOfWeek, addDays, isSameDay, isPast } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Check } from "lucide-react";
 import { useTheme } from "@/app/providers";
+import { parseDateStr } from "@/lib/utils/dose";
 
 interface WeekTrackerProps {
   doseDates: string[];
@@ -19,7 +20,7 @@ export function WeekTracker({ doseDates, nextDoseDate }: WeekTrackerProps) {
 
   const days = Array.from({ length: 7 }, (_, i) => {
     const date = addDays(start, i);
-    const hasDose = doseDates.some(d => isSameDay(new Date(d), date));
+    const hasDose = doseDates.some(d => isSameDay(parseDateStr(d), date));
     const isNextDoseDay = nextDoseDate ? isSameDay(nextDoseDate, date) : false;
     const isDayToday = isSameDay(date, today);
     const isDayPast = isPast(date) && !isDayToday;
