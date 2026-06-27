@@ -123,6 +123,7 @@ function PedidoCard({ pedido, index }: { pedido: PedidoComInfo, index: number })
   
   const statusIcon = {
     novo: <Clock size={14} className="text-amber-600" />,
+    aguardando_pagamento: <Clock size={14} className="text-orange-600" />,
     confirmado: <CheckCircle2 size={14} className="text-blue-600" />,
     enviado: <Truck size={14} className="text-indigo-600" />,
     entregue: <CheckCircle2 size={14} className="text-green-600" />,
@@ -131,6 +132,7 @@ function PedidoCard({ pedido, index }: { pedido: PedidoComInfo, index: number })
 
   const statusBg = {
     novo: "bg-amber-500/10",
+    aguardando_pagamento: "bg-orange-500/10",
     confirmado: "bg-blue-500/10",
     enviado: "bg-indigo-500/10",
     entregue: "bg-green-500/10",
