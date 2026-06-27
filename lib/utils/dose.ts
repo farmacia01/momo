@@ -3,6 +3,9 @@ import { ptBR } from 'date-fns/locale'
 
 /** Parse a YYYY-MM-DD date string as local midnight (avoids UTC-offset shifting). */
 export function parseDateStr(dateStr: string): Date {
+  if (dateStr.includes('T')) {
+    return new Date(dateStr);
+  }
   const [y, m, d] = dateStr.split('-').map(Number);
   return new Date(y, m - 1, d);
 }
