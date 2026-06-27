@@ -48,17 +48,23 @@ export default async function AdminDashboardPage() {
     { data: rawInvites },
     { data: rawMedicoes },
     { data: rawDoses },
+    { data: rawReceitas },
+    { data: rawPushSubs },
   ] = await Promise.all([
     admin.from("profiles").select("id, created_at, nome, email"),
     admin.from("referral_invites").select("referrer_id, invited_id, criado_em"),
     admin.from("medicoes_saude").select("user_id, data_medicao"),
     admin.from("doses").select("user_id, data_aplicacao"),
+    admin.from("receitas_geradas").select("id, created_at"),
+    admin.from("push_subscriptions").select("user_id").eq("active", true),
   ]);
 
   const profiles = rawProfiles || [];
   const invites = rawInvites || [];
   const medicoes = rawMedicoes || [];
   const doses = rawDoses || [];
+  const receitas = rawReceitas || [];
+  const pushSubs = rawPushSubs || [];
 
   // ── Users ──
   const totalUsers = profiles.length;
@@ -96,6 +102,31 @@ export default async function AdminDashboardPage() {
   const growthChart  = buildMonthlyChart(profiles, "created_at");
   const invitesChart = buildMonthlyChart(invites, "criado_em");
 
+  // ── Daily Actions Chart ──
+  const dailyActionsMap = new Map<string, number>();
+  for (let i = 29; i >= 0; i--) {
+    const label = format(subDays(now, i), "dd/MM", { locale: ptBR });
+    dailyActionsMap.set(label, 0);
+  }
+  for (const m of medicoes) {
+    if (parseISO(m.data_medicao) >= thirtyDaysAgo) {
+      const label = format(parseISO(m.data_medicao), "dd/MM", { locale: ptBR });
+      if (dailyActionsMap.has(label)) dailyActionsMap.set(label, (dailyActionsMap.get(label) || 0) + 1);
+    }
+  }
+  for (const d of doses) {
+    if (parseISO(d.data_aplicacao) >= thirtyDaysAgo) {
+      const label = format(parseISO(d.data_aplicacao), "dd/MM", { locale: ptBR });
+      if (dailyActionsMap.has(label)) dailyActionsMap.set(label, (dailyActionsMap.get(label) || 0) + 1);
+    }
+  }
+  const dailyActionsChart = Array.from(dailyActionsMap.entries()).map(([date, value]) => ({ date, value }));
+
+  // ── Deep Metrics ──
+  const receitasGeradas = receitas.length;
+  const avgMedicoesPerUser = totalUsers > 0 ? (medicoes.length / totalUsers).toFixed(1) : "0";
+  const pushOptInPercent = totalUsers > 0 ? Math.round((new Set(pushSubs.map(s => s.user_id)).size / totalUsers) * 100) : 0;
+
   // ── Gate donut ──
   const gateDistribution = [
     { name: "Liberados (≥3)", value: gateCleared },
@@ -115,6 +146,9 @@ export default async function AdminDashboardPage() {
   if (inactiveCount > 5) alerts.push({ type: "info", text: `${inactiveCount} usuários inativos há +15 dias` });
 
   // ── Recent users ──
+  const usersWithDoses = new Set(doses.map(d => d.user_id));
+  const usersWithMedicoes = new Set(medicoes.map(m => m.user_id));
+
   const recentUsers = [...profiles]
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     .slice(0, 6)
@@ -124,6 +158,8 @@ export default async function AdminDashboardPage() {
       email: p.email || "",
       data: p.created_at,
       inviteCount: inviteCountByUser.get(p.id) || 0,
+      hasDoses: usersWithDoses.has(p.id),
+      hasMedicoes: usersWithMedicoes.has(p.id),
     }));
 
   return (
@@ -139,9 +175,13 @@ export default async function AdminDashboardPage() {
         activeUsers30d,
         activeUsers7d,
         activeUsersToday,
+        receitasGeradas,
+        avgMedicoesPerUser,
+        pushOptInPercent,
       }}
       growthChart={growthChart}
       invitesChart={invitesChart}
+      dailyActionsChart={dailyActionsChart}
       gateDistribution={gateDistribution}
       recentUsers={recentUsers}
       alerts={alerts}

@@ -48,14 +48,18 @@ interface Metrics {
   activeUsers30d: number;
   activeUsers7d: number;
   activeUsersToday: number;
+  receitasGeradas: number;
+  avgMedicoesPerUser: string;
+  pushOptInPercent: number;
 }
 
 interface AdminDashboardClientProps {
   metrics: Metrics;
   growthChart: { date: string; value: number }[];
   invitesChart: { date: string; value: number }[];
+  dailyActionsChart: { date: string; value: number }[];
   gateDistribution: { name: string; value: number }[];
-  recentUsers: { id: string; nome: string; email: string; data: string; inviteCount: number }[];
+  recentUsers: { id: string; nome: string; email: string; data: string; inviteCount: number; hasDoses: boolean; hasMedicoes: boolean }[];
   alerts: { type: "warning" | "info" | "danger"; text: string }[];
 }
 
@@ -84,6 +88,7 @@ export function AdminDashboardClient({
   metrics,
   growthChart,
   invitesChart,
+  dailyActionsChart,
   gateDistribution,
   recentUsers,
   alerts,
@@ -217,9 +222,9 @@ export function AdminDashboardClient({
       {/* Sub-metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { label: "Ativos 30d",  value: metrics.activeUsers30d, icon: Users },
-          { label: "Ativos 7d",     value: metrics.activeUsers7d,      icon: Activity },
-          { label: "Ativos Hoje",   value: metrics.activeUsersToday,   icon: Zap },
+          { label: "Receitas IA",   value: metrics.receitasGeradas,    icon: Activity },
+          { label: "Medições/User", value: metrics.avgMedicoesPerUser, icon: Activity },
+          { label: "Push Opt-in",   value: `${metrics.pushOptInPercent}%`, icon: Zap },
         ].map((mini) => (
           <motion.div key={mini.label} variants={item} className="rounded-[20px] p-5 flex items-center gap-4 bg-surface border border-surface-border hover:bg-surface-hover transition-colors">
             <div className="h-10 w-10 rounded-2xl flex items-center justify-center shrink-0 bg-surface-mid border border-surface-border text-text-muted">
@@ -262,6 +267,33 @@ export function AdminDashboardClient({
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--color-text-muted)", fontSize: 11, fontWeight: 600 }} width={36} />
                 <Tooltip cursor={{ stroke: "var(--color-surface-border)", strokeWidth: 1, strokeDasharray: "4 4" }} {...tooltipStyle} />
                 <Area type="monotone" dataKey="value" stroke={EMBER} strokeWidth={3} fill="url(#emberGrad)" activeDot={{ r: 6, fill: EMBER, stroke: "var(--color-surface)", strokeWidth: 4 }} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        {/* Daily Actions Chart */}
+        <motion.div variants={item} className="lg:col-span-8 rounded-[24px] p-6 sm:p-8 bg-surface border border-surface-border">
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <h4 className="text-lg font-bold text-text tracking-tight">Atividade Diária no App</h4>
+              <p className="text-sm text-text-muted mt-1">Doses + Medições registradas (últimos 30 dias)</p>
+            </div>
+          </div>
+          <div className="h-[240px] md:h-[280px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={dailyActionsChart}>
+                <defs>
+                  <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stopColor="#3b82f6" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} stroke="var(--color-surface-border)" strokeDasharray="4 4" />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "var(--color-text-muted)", fontSize: 11, fontWeight: 600 }} dy={14} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--color-text-muted)", fontSize: 11, fontWeight: 600 }} width={36} />
+                <Tooltip cursor={{ stroke: "var(--color-surface-border)", strokeWidth: 1, strokeDasharray: "4 4" }} {...tooltipStyle} />
+                <Area type="monotone" dataKey="value" stroke="#3b82f6" strokeWidth={3} fill="url(#blueGrad)" activeDot={{ r: 6, fill: "#3b82f6", stroke: "var(--color-surface)", strokeWidth: 4 }} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -370,8 +402,8 @@ export function AdminDashboardClient({
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="text-right hidden sm:block">
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                  <div className="text-right hidden sm:flex flex-col items-end gap-1">
+                    <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${
                       u.inviteCount >= 3
                         ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
                         : u.inviteCount > 0
@@ -380,7 +412,11 @@ export function AdminDashboardClient({
                     }`}>
                       {u.inviteCount >= 3 ? "✓ Gate ok" : u.inviteCount > 0 ? `${u.inviteCount}/3 conv.` : "0 convites"}
                     </span>
-                    <p className="text-[11px] mt-1.5 font-medium text-text-dim">
+                    <div className="flex gap-1">
+                      {u.hasDoses && <span className="text-[9px] font-bold px-1.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20">Dose</span>}
+                      {u.hasMedicoes && <span className="text-[9px] font-bold px-1.5 rounded bg-purple-500/10 text-purple-500 border border-purple-500/20">Saúde</span>}
+                    </div>
+                    <p className="text-[10px] mt-1 font-medium text-text-dim">
                       {format(new Date(u.data), "dd MMM", { locale: ptBR })}
                     </p>
                   </div>
