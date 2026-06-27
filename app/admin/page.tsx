@@ -45,31 +45,20 @@ export default async function AdminDashboardPage() {
 
   const [
     { data: rawProfiles },
-    { data: rawFornAssinaturas },
     { data: rawInvites },
     { data: rawMedicoes },
     { data: rawDoses },
-    { data: rawFornecedores },
   ] = await Promise.all([
     admin.from("profiles").select("id, created_at, nome, email"),
-    admin.from("fornecedor_assinaturas").select("status, current_period_end, criado_em"),
     admin.from("referral_invites").select("referrer_id, invited_id, criado_em"),
     admin.from("medicoes_saude").select("user_id, data_medicao"),
     admin.from("doses").select("user_id, data_aplicacao"),
-    admin.from("fornecedores").select("id, nome_fantasia, status"),
   ]);
 
   const profiles = rawProfiles || [];
-  const fornAssinaturas = rawFornAssinaturas || [];
   const invites = rawInvites || [];
   const medicoes = rawMedicoes || [];
   const doses = rawDoses || [];
-  const fornecedores = rawFornecedores || [];
-
-  // ── Supplier revenue ──
-  const activeSubs = fornAssinaturas.filter(s => s.status === "ativa");
-  const supplierMrr = activeSubs.length * 99;
-  const activeFornecedores = fornecedores.filter(f => f.status === "ativo").length;
 
   // ── Users ──
   const totalUsers = profiles.length;
@@ -117,12 +106,7 @@ export default async function AdminDashboardPage() {
 
   // ── Alerts ──
   const alerts: { type: "warning" | "info" | "danger"; text: string }[] = [];
-  const fiveDaysFromNow = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
-  const proxRenovacao = activeSubs.filter(s => s.current_period_end && new Date(s.current_period_end) <= fiveDaysFromNow).length;
-  if (proxRenovacao > 0) alerts.push({ type: "warning", text: `${proxRenovacao} fornecedor(es) renovam nos próximos 5 dias` });
   if (gateBlocked > 0)   alerts.push({ type: "danger",  text: `${gateBlocked} usuário(s) bloqueados pelo gate — risco de abandono` });
-  const inadimplentes = fornAssinaturas.filter(s => s.status === "inadimplente").length;
-  if (inadimplentes > 0) alerts.push({ type: "danger",  text: `${inadimplentes} fornecedor(es) com pagamento inadimplente` });
   const activeRecent = new Set([
     ...medicoes.filter(m => parseISO(m.data_medicao) >= fifteenDaysAgo).map(m => m.user_id),
     ...doses.filter(d => parseISO(d.data_aplicacao) >= fifteenDaysAgo).map(d => d.user_id),
@@ -145,8 +129,6 @@ export default async function AdminDashboardPage() {
   return (
     <AdminDashboardClient
       metrics={{
-        supplierMrr,
-        activeFornecedores,
         totalUsers,
         newThisMonth,
         kFactor,

@@ -37,8 +37,7 @@ const GATE_COLORS = [
 ];
 
 interface Metrics {
-  supplierMrr: number;
-  activeFornecedores: number;
+
   totalUsers: number;
   newThisMonth: number;
   kFactor: number;
@@ -92,13 +91,13 @@ export function AdminDashboardClient({
 
   const kpiCards = [
     {
-      label: "MRR Fornecedores",
-      value: formatBRL(metrics.supplierMrr),
-      sub: `${metrics.activeFornecedores} fornecedores ativos · R$99/mês`,
-      icon: DollarSign,
-      trend: metrics.activeFornecedores > 0 ? `${metrics.activeFornecedores} ativos` : "Nenhum ainda",
-      trendUp: metrics.activeFornecedores > 0,
-      href: "/admin/financeiro",
+      label: "Usuários Ativos (30d)",
+      value: metrics.activeUsers30d,
+      sub: "Engajamento mensal do app",
+      icon: Activity,
+      trend: metrics.activeUsers30d > 0 ? `${metrics.activeUsers30d} engajados` : "Nenhum ainda",
+      trendUp: metrics.activeUsers30d > 0,
+      href: "/admin/usuarios",
     },
     {
       label: "Total Usuários",
@@ -218,7 +217,7 @@ export function AdminDashboardClient({
       {/* Sub-metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { label: "Forn. Ativos",  value: metrics.activeFornecedores, icon: Building2 },
+          { label: "Ativos 30d",  value: metrics.activeUsers30d, icon: Users },
           { label: "Ativos 7d",     value: metrics.activeUsers7d,      icon: Activity },
           { label: "Ativos Hoje",   value: metrics.activeUsersToday,   icon: Zap },
         ].map((mini) => (
