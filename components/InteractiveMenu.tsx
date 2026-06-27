@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import './InteractiveMenu.css';
 
-type IconComponentType = React.ElementType<{ className?: string; size?: number; strokeWidth?: number }>;
+type IconComponentType = React.ElementType<{ className?: string; size?: number | string; strokeWidth?: number | string }>;
 
 export interface InteractiveMenuItem {
   label: string;
@@ -74,7 +74,7 @@ export const InteractiveMenu: React.FC<InteractiveMenuProps> = ({ items, accentC
             key={item.href}
             className={`interactive-menu__item ${isActive ? 'active' : ''}`}
             onClick={() => handleItemClick(index, item.href)}
-            ref={(el) => (itemRefs.current[index] = el)}
+            ref={(el) => { itemRefs.current[index] = el; }}
             style={{ '--lineWidth': '0px' } as React.CSSProperties}
           >
             <div className="interactive-menu__icon">
@@ -83,7 +83,7 @@ export const InteractiveMenu: React.FC<InteractiveMenuProps> = ({ items, accentC
             <div className="interactive-menu__text-wrapper">
               <strong
                 className="interactive-menu__text"
-                ref={(el) => (textRefs.current[index] = el)}
+                ref={(el) => { textRefs.current[index] = el; }}
               >
                 {item.label}
               </strong>
