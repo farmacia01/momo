@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { PageHeader } from "@/components/PageHeader";
 import { usePlano } from "@/hooks/usePlano";
 import { BlurPaywall } from "@/components/BlurPaywall";
-import { faseFromDose } from "@/lib/diet-plans";
+import { getFase } from "@/lib/diet-plans";
 import { DashboardTab } from "@/components/dieta/DashboardTab";
 import { ReceitasTab } from "@/components/dieta/ReceitasTab";
 import { RegistrarRefeicaoModal } from "@/components/dieta/RegistrarRefeicaoModal";
@@ -49,7 +49,7 @@ export function DietaClient({
   const [favoritos, setFavoritos] = useState<FavoritoRefeicao[]>([]);
 
   const { isExpirado } = usePlano();
-  const fase = faseFromDose(doseMg);
+  const fase = getFase(weeksCompleted, doseMg);
 
   useEffect(() => { setFavoritos(getFavoritos()); }, []);
 

@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { supabase } from "@/lib/supabase";
 import { PageHeader } from "@/components/PageHeader";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { faseFromDose } from "@/lib/diet-plans";
+import { getFase } from "@/lib/diet-plans";
 import { Card, SaveButton } from "../ui";
 
 const OPCOES = [
@@ -20,10 +20,12 @@ const OPCOES = [
 export function RestricoesClient({
   userId,
   doseMg,
+  weeksCompleted,
   initial,
 }: {
   userId: string;
   doseMg: number;
+  weeksCompleted: number | null;
   initial: string[];
 }) {
   const [selected, setSelected] = useState<string[]>(initial);
@@ -54,7 +56,7 @@ export function RestricoesClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          fase: faseFromDose(doseMg),
+          fase: getFase(weeksCompleted, doseMg),
           dose_mg: doseMg,
           restricoes: labels,
         }),

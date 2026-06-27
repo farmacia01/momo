@@ -52,15 +52,16 @@ export async function middleware(req: NextRequest) {
 
     if (!profile?.acesso_vitalicio && profile?.created_at) {
       const createdAt = new Date(profile.created_at);
-      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const daysSinceCreation = (Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
 
-      if (createdAt < sevenDaysAgo) {
+      if (daysSinceCreation > 7) {
         const { count } = await supabase
           .from('referral_invites')
           .select('*', { count: 'exact', head: true })
           .eq('referrer_id', session.user.id);
 
-        if ((count ?? 0) < 3) {
+        const daysAllowed = 7 + (count ?? 0) * 5;
+        if (daysSinceCreation > daysAllowed) {
           return NextResponse.redirect(new URL('/convite', req.url));
         }
       }

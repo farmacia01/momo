@@ -2,7 +2,7 @@
  * Predefined Mounjaro diet plans and model meals.
  *
  * These are static, evidence-informed templates keyed by treatment phase. The
- * user's active plan is derived from their current dose (`faseFromDose`).
+ * user's active plan is derived from their current dose/weeks (`getFase`).
  * Nothing here is medical advice — copy reflects general guidance for people on
  * tirzepatide and is shown alongside the "consulte seu médico" disclaimer.
  */
@@ -73,8 +73,13 @@ export function macroPercent(m: Macros) {
   };
 }
 
-/** Maps the current dose (mg) to a treatment phase. */
-export function faseFromDose(doseMg: number): FaseMounjaro {
+/** Maps the number of completed weeks (or current dose) to a treatment phase. */
+export function getFase(weeksCompleted: number | null, doseMg: number = 2.5): FaseMounjaro {
+  if (weeksCompleted !== null) {
+    if (weeksCompleted < 8) return 1;
+    if (weeksCompleted < 16) return 2;
+    return 3;
+  }
   if (doseMg <= 5) return 1;
   if (doseMg <= 10) return 2;
   return 3;

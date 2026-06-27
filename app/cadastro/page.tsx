@@ -53,7 +53,10 @@ export default function CadastroPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('ref');
-    if (ref) setRefCode(ref);
+    if (ref) {
+      setRefCode(ref);
+      setFormData(prev => ({ ...prev, codigo_convite: ref }));
+    }
   }, []);
 
   const [formData, setFormData] = useState({
@@ -61,6 +64,7 @@ export default function CadastroPage() {
     email: '',
     telefone: '',
     password: '',
+    codigo_convite: '',
     data_inicio_tratamento: '',
     dose_atual_mg: '2.5',
     altura_cm: '',
@@ -110,12 +114,13 @@ export default function CadastroPage() {
       setEmailPendente(true);
     }
 
-    // Processa referral se veio de convite
-    if (refCode) {
+    // Processa referral (via link ?ref= ou digitado manualmente)
+    const codeToUse = formData.codigo_convite.trim() || refCode;
+    if (codeToUse) {
       await fetch('/api/referral/accept', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: refCode }),
+        body: JSON.stringify({ code: codeToUse }),
       }).catch(() => {}); // não bloqueia o fluxo se falhar
     }
 
@@ -223,6 +228,13 @@ export default function CadastroPage() {
               <DarkInput label="E-mail" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="seu@email.com" />
               <DarkInput label="Telefone (WhatsApp)" name="telefone" type="tel" value={formData.telefone} onChange={handleChange} placeholder="(11) 99999-9999" />
               <DarkInput label="Senha" name="password" type="password" value={formData.password} onChange={handleChange} placeholder="Mínimo 8 caracteres" />
+
+              <div>
+                <DarkInput label="Código de convite (opcional)" name="codigo_convite" value={formData.codigo_convite} onChange={handleChange} placeholder="Ex: ABC123" />
+                <p className="mt-1.5 text-[11px]" style={{ color: "var(--color-text-dim)" }}>
+                  Se um amigo te convidou, coloque o código dele aqui e ele ganha +5 dias.
+                </p>
+              </div>
 
             </div>
           )}

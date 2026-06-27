@@ -15,6 +15,10 @@ import {
   ChevronRight,
   AlertTriangle,
   LayoutDashboard,
+  Gift,
+  Share2,
+  Copy,
+  Check,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { supabase } from "@/lib/supabase";
@@ -37,6 +41,8 @@ interface Props {
   estado: string | null;
   doseMg: number | null;
   appVersion: string;
+  referralCode: string;
+  inviteCount: number;
 }
 
 export function ConfiguracoesClient({
@@ -46,6 +52,8 @@ export function ConfiguracoesClient({
   cidade,
   estado,
   appVersion,
+  referralCode,
+  inviteCount,
 }: Props) {
   const router = useRouter();
   const [signOutOpen, setSignOutOpen] = useState(false);
@@ -108,7 +116,13 @@ export function ConfiguracoesClient({
         <NotificacoesSection userId={userId} />
       </section>
 
-      {/* SEÇÃO 4 — PRIVACIDADE E DADOS */}
+      {/* SEÇÃO 4 — CONVITES */}
+      <section>
+        <SectionLabel>Convites</SectionLabel>
+        <ConvitesSection referralCode={referralCode} inviteCount={inviteCount} />
+      </section>
+
+      {/* SEÇÃO 5 — PRIVACIDADE E DADOS */}
       <section>
         <SectionLabel>Privacidade e Dados</SectionLabel>
         <Card>
@@ -154,6 +168,102 @@ export function ConfiguracoesClient({
       {deleteOpen && (
         <DeleteAccountModal email={email} onClose={() => setDeleteOpen(false)} />
       )}
+    </div>
+  );
+}
+
+/* ---------- Convites ---------- */
+
+function ConvitesSection({ referralCode, inviteCount }: { referralCode: string; inviteCount: number }) {
+  const [copied, setCopied] = useState(false);
+  const diasBonus = inviteCount * 5;
+  const inviteUrl = `https://www.usemomo.online/convite/${referralCode}`;
+  const shareMessage = `Estou usando o Momo para acompanhar meu tratamento com Mounjaro — dose, peso, dieta e tudo mais. É gratuito! Entre pelo meu link: ${inviteUrl}`;
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {}
+  };
+
+  const handleShare = async () => {
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: "Momo", text: shareMessage, url: inviteUrl });
+        return;
+      } catch {}
+    }
+    await copyToClipboard();
+  };
+
+  return (
+    <div className="space-y-3">
+      {/* Contador de dias */}
+      <Card>
+        <div className="flex items-center gap-4 p-4">
+          <div
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-ember"
+            style={{ background: "var(--color-bg)" }}
+          >
+            <Gift size={20} strokeWidth={2.5} />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-sm font-bold text-text">
+              {diasBonus > 0 ? `+${diasBonus} dias de bônus` : "Ganhe dias de bônus"}
+            </h3>
+            <p className="text-[11px] font-medium text-muted">
+              {inviteCount === 0
+                ? "Cada amigo convidado = +5 dias de app"
+                : `${inviteCount} ${inviteCount === 1 ? "amigo convidado" : "amigos convidados"} · +5 dias cada`}
+            </p>
+          </div>
+          {diasBonus > 0 && (
+            <span
+              className="shrink-0 rounded-full px-3 py-1 text-xs font-bold text-white"
+              style={{ background: "var(--color-ember)" }}
+            >
+              +{diasBonus}d
+            </span>
+          )}
+        </div>
+      </Card>
+
+      {/* Link de convite */}
+      <Card>
+        <div className="p-4 space-y-3">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-muted">Seu link de convite</p>
+          <div
+            className="flex items-center gap-2 rounded-xl px-4 py-3"
+            style={{ background: "var(--color-bg)", border: "1px solid var(--color-surface-border)" }}
+          >
+            <span className="flex-1 truncate text-sm text-muted">
+              usemomo.online/convite/
+              <strong className="text-ember">{referralCode || "—"}</strong>
+            </span>
+            <button
+              onClick={copyToClipboard}
+              className="shrink-0 rounded-lg p-1.5 transition-colors"
+              style={{ color: copied ? "var(--color-ember)" : "var(--color-text-dim)" }}
+              aria-label="Copiar link"
+            >
+              {copied ? <Check size={16} /> : <Copy size={16} />}
+            </button>
+          </div>
+          <button
+            onClick={handleShare}
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-full text-sm font-bold text-white transition-all active:scale-95"
+            style={{ background: "var(--color-ember)", boxShadow: "var(--shadow-ember)" }}
+          >
+            <Share2 size={16} />
+            Compartilhar link
+          </button>
+          <p className="text-center text-[11px] text-muted">
+            O convite só conta quando seu amigo criar a conta pelo seu link
+          </p>
+        </div>
+      </Card>
     </div>
   );
 }

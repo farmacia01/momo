@@ -14,11 +14,20 @@ export default async function ConfiguracoesPage() {
 
   if (!session) redirect("/login");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id, nome, cidade, estado, dose_atual_mg")
-    .eq("id", session.user.id)
-    .single();
+  const [profileResult, inviteResult] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("id, nome, cidade, estado, dose_atual_mg, referral_code")
+      .eq("id", session.user.id)
+      .single(),
+    supabase
+      .from("referral_invites")
+      .select("*", { count: "exact", head: true })
+      .eq("referrer_id", session.user.id),
+  ]);
+
+  const profile = profileResult.data;
+  const inviteCount = inviteResult.count ?? 0;
 
   return (
     <ConfiguracoesClient
@@ -29,6 +38,8 @@ export default async function ConfiguracoesPage() {
       estado={profile?.estado ?? null}
       doseMg={profile?.dose_atual_mg ?? null}
       appVersion={pkg.version}
+      referralCode={profile?.referral_code ?? ""}
+      inviteCount={inviteCount}
     />
   );
 }
