@@ -15,6 +15,11 @@ import {
   ShieldAlert,
   ChevronRight,
   Share2,
+  LogIn,
+  Syringe,
+  HeartPulse,
+  ChefHat,
+  Send,
 } from "lucide-react";
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
@@ -37,7 +42,6 @@ const GATE_COLORS = [
 ];
 
 interface Metrics {
-
   totalUsers: number;
   newThisMonth: number;
   kFactor: number;
@@ -51,6 +55,11 @@ interface Metrics {
   receitasGeradas: number;
   avgMedicoesPerUser: string;
   pushOptInPercent: number;
+  loginsToday: number;
+  dosesToday: number;
+  medicaesToday: number;
+  receitasToday: number;
+  invitesToday: number;
 }
 
 interface AdminDashboardClientProps {
@@ -218,6 +227,43 @@ export function AdminDashboardClient({
           </motion.div>
         ))}
       </div>
+
+      {/* Pulso de Hoje */}
+      <motion.div variants={item}>
+        <div className="rounded-[24px] p-5 sm:p-6 bg-surface border border-surface-border">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="h-8 w-8 rounded-xl flex items-center justify-center bg-[#ff6500]/10 border border-[#ff6500]/20">
+              <Activity size={15} className="text-[#ff6500]" strokeWidth={2.5} />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-text leading-tight">Pulso de Hoje</p>
+              <p className="text-[11px] text-text-muted">
+                {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
+              </p>
+            </div>
+            <div className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ff6500]/10 border border-[#ff6500]/20">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#ff6500] animate-pulse" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#ff6500]">Ao vivo</span>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            {[
+              { label: "Logins",    value: metrics.loginsToday,   icon: LogIn,      color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20", desc: "Sessões abertas" },
+              { label: "Doses",     value: metrics.dosesToday,    icon: Syringe,    color: "text-blue-500",    bg: "bg-blue-500/10",    border: "border-blue-500/20",    desc: "Usuários registraram" },
+              { label: "Medições",  value: metrics.medicaesToday, icon: HeartPulse, color: "text-purple-500",  bg: "bg-purple-500/10",  border: "border-purple-500/20",  desc: "Métricas de saúde" },
+              { label: "Receitas",  value: metrics.receitasToday, icon: ChefHat,    color: "text-amber-500",   bg: "bg-amber-500/10",   border: "border-amber-500/20",   desc: "Geradas por IA" },
+              { label: "Convites",  value: metrics.invitesToday,  icon: Send,       color: "text-[#ff6500]",   bg: "bg-[#ff6500]/10",   border: "border-[#ff6500]/20",   desc: "Enviados hoje" },
+            ].map((stat) => (
+              <div key={stat.label} className={`flex flex-col items-center text-center py-4 px-3 rounded-2xl ${stat.bg} border ${stat.border}`}>
+                <stat.icon size={18} className={`${stat.color} mb-2`} strokeWidth={2} />
+                <p className={`text-2xl font-bold tracking-tight ${stat.color}`}>{stat.value}</p>
+                <p className="text-[10px] font-bold text-text mt-0.5">{stat.label}</p>
+                <p className="text-[9px] text-text-muted mt-0.5 leading-tight">{stat.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
 
       {/* Sub-metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

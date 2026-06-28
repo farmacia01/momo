@@ -59,6 +59,9 @@ export default async function AdminDashboardPage() {
     admin.from("push_subscriptions").select("user_id").eq("active", true),
   ]);
 
+  const { data: authListData } = await admin.auth.admin.listUsers({ perPage: 1000 });
+  const authUsers = authListData?.users || [];
+
   const profiles = rawProfiles || [];
   const invites = rawInvites || [];
   const medicoes = rawMedicoes || [];
@@ -122,6 +125,13 @@ export default async function AdminDashboardPage() {
   }
   const dailyActionsChart = Array.from(dailyActionsMap.entries()).map(([date, value]) => ({ date, value }));
 
+  // ── Today's precise activity ──
+  const loginsToday = authUsers.filter(u => u.last_sign_in_at && parseISO(u.last_sign_in_at) >= today).length;
+  const dosesToday = new Set(doses.filter(d => parseISO(d.data_aplicacao) >= today).map(d => d.user_id)).size;
+  const medicaesToday = new Set(medicoes.filter(m => parseISO(m.data_medicao) >= today).map(m => m.user_id)).size;
+  const receitasToday = receitas.filter(r => parseISO(r.created_at) >= today).length;
+  const invitesToday = invites.filter(i => parseISO(i.criado_em) >= today).length;
+
   // ── Deep Metrics ──
   const receitasGeradas = receitas.length;
   const avgMedicoesPerUser = totalUsers > 0 ? (medicoes.length / totalUsers).toFixed(1) : "0";
@@ -178,6 +188,11 @@ export default async function AdminDashboardPage() {
         receitasGeradas,
         avgMedicoesPerUser,
         pushOptInPercent,
+        loginsToday,
+        dosesToday,
+        medicaesToday,
+        receitasToday,
+        invitesToday,
       }}
       growthChart={growthChart}
       invitesChart={invitesChart}
