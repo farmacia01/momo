@@ -28,7 +28,7 @@ export async function GET(req: Request) {
       .from("configuracoes_notificacao")
       .select(`
         user_id, lembrete_dose, dia_semana_dose, alerta_estoque, relatorio_semanal, dicas_dieta,
-        profiles!inner(id, nome, plano_ativo, trial_expira_em, created_at, peso_inicial, altura_cm)
+        profiles!inner(id, nome, created_at, peso_inicial, altura_cm)
       `);
 
     if (!allConfigs || allConfigs.length === 0) {
@@ -120,18 +120,6 @@ export async function GET(req: Request) {
             await send(userId, { ...NOTIFICACOES.ESTOQUE.AMPOLA_BAIXO(nome, estoque), tag: "estoque-check" });
             logs.push(`${userId}:ESTOQUE_BAIXO`);
           }
-        }
-      }
-
-      // ── TRIAL ─────────────────────────────────────────
-      if (profile.plano_ativo === "trial" && profile.trial_expira_em && currentHour >= 8) {
-        const daysLeft = differenceInDays(parseISO(profile.trial_expira_em), agora);
-        if (daysLeft === 2 && await notSentTodayWithTag(supabase, userId, "trial-2d", hojeStr)) {
-          await send(userId, { ...NOTIFICACOES.ENGAJAMENTO.TRIAL_EXPIRA_2DIAS(nome), tag: "trial-2d" });
-          logs.push(`${userId}:TRIAL_2`);
-        } else if (daysLeft === 0 && await notSentTodayWithTag(supabase, userId, "trial-hoje", hojeStr)) {
-          await send(userId, { ...NOTIFICACOES.ENGAJAMENTO.TRIAL_EXPIRA_HOJE(nome), tag: "trial-hoje" });
-          logs.push(`${userId}:TRIAL_0`);
         }
       }
 
@@ -275,6 +263,25 @@ export async function GET(req: Request) {
         if (cMes === 0) {
           await send(userId, { ...NOTIFICACOES.ENGAJAMENTO.PRIMEIRO_MES(nome), tag: "primeiro-mes" });
           logs.push(`${userId}:PRIMEIRO_MES`);
+        }
+      }
+
+      // ── MOTIVAÇÃO DIÁRIA (seg–sex às 8h) ─────────────
+      if (currentDay >= 1 && currentDay <= 5 && currentHour >= 8) {
+        if (await notSentTodayWithTag(supabase, userId, "motivacao-manha", hojeStr)) {
+          await send(userId, { ...NOTIFICACOES.DIARIO.MOTIVACAO_MANHA(nome, currentDay), tag: "motivacao-manha" });
+          logs.push(`${userId}:MOTIVACAO_MANHA`);
+        }
+      }
+
+      // ── CHECK-IN DA TARDE (seg–sex às 19h) ───────────
+      if (currentDay >= 1 && currentDay <= 5 && currentHour >= 19) {
+        if (await notSentTodayWithTag(supabase, userId, "checkin-tarde", hojeStr)) {
+          const { data: pesoHoje } = await supabase
+            .from("medicoes_saude").select("id").eq("user_id", userId)
+            .not("peso_kg", "is", null).gte("data_medicao", hojeStr).maybeSingle();
+          await send(userId, { ...NOTIFICACOES.DIARIO.CHECKIN_TARDE(nome, !!pesoHoje), tag: "checkin-tarde" });
+          logs.push(`${userId}:CHECKIN_TARDE`);
         }
       }
 

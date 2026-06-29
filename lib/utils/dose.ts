@@ -30,9 +30,9 @@ export interface TextosDose {
 export function calcularProximaDose(ultimaDoseISO: string | null | undefined, inicioTratamentoISO: string | null | undefined): CalculoDose {
   // Fallback: se não tem nenhuma dose registrada, usa a data de início do tratamento
   const dataBase = ultimaDoseISO
-    ? new Date(ultimaDoseISO)
+    ? parseDateStr(ultimaDoseISO)
     : inicioTratamentoISO
-      ? new Date(inicioTratamentoISO)
+      ? parseDateStr(inicioTratamentoISO)
       : new Date()
 
   // Próxima dose = data base + 7 dias

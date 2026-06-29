@@ -1,6 +1,6 @@
 "use client";
 
-import { format, startOfWeek, addDays, isSameDay, isPast } from "date-fns";
+import { format, startOfWeek, addDays, getDay, isSameDay, isPast } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Check } from "lucide-react";
 import { useTheme } from "@/app/providers";
@@ -16,7 +16,11 @@ export function WeekTracker({ doseDates, nextDoseDate }: WeekTrackerProps) {
   const isDark = theme === "dark";
 
   const today = new Date();
-  const start = startOfWeek(today, { weekStartsOn: 1 });
+  // Align the 7-day window to the user's treatment day-of-week (day they inject).
+  // e.g. if last dose was a Saturday, always show Sat→Fri instead of Mon→Sun.
+  const lastDoseDate = doseDates.length > 0 ? parseDateStr(doseDates[0]) : null;
+  const treatmentDow = lastDoseDate ? (getDay(lastDoseDate) as 0|1|2|3|4|5|6) : 1;
+  const start = startOfWeek(today, { weekStartsOn: treatmentDow });
 
   const days = Array.from({ length: 7 }, (_, i) => {
     const date = addDays(start, i);

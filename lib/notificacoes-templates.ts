@@ -345,6 +345,38 @@ export const NOTIFICACOES = {
       desc: 'Preparação para consulta médica mensal.'
     }),
   },
+
+  // ━━━━━━━━━━━━━━━━━━━━━━
+  // CATEGORIA 7 — DIÁRIO (seg–sex)
+  // Timing: 8h motivação + 19h check-in
+  // ━━━━━━━━━━━━━━━━━━━━━━
+  DIARIO: {
+
+    MOTIVACAO_MANHA: (nome: string, diaSemana: number) => {
+      const primeiro = nome.split(' ')[0];
+      const msgs = [
+        { title: `Segunda com energia, ${primeiro}! 💪`, body: 'Nova semana, nova chance de avançar no tratamento. Você está no caminho certo!' },
+        { title: `Bom dia, ${primeiro}! 🌿`,             body: 'Cada dia de comprometimento constrói o resultado que você quer. Continue firme!' },
+        { title: `Meio da semana, ${primeiro}! ⚡`,      body: 'Metade da semana cumprida. Você está mais perto do que imagina dos seus objetivos.' },
+        { title: `Quinta-feira cheia de força! 🔥`,      body: `${primeiro}, o fim de semana está chegando — mas o tratamento não para. Um dia de cada vez.` },
+        { title: `Sextou com saúde, ${primeiro}! 🎉`,   body: 'Mais uma semana de tratamento chegando ao fim. Você está fazendo o que é certo para sua saúde.' },
+      ];
+      const msg = msgs[diaSemana - 1] ?? msgs[0];
+      return { ...msg, url: '/', tag: 'motivacao-manha', desc: 'Motivação matinal seg–sex.' };
+    },
+
+    CHECKIN_TARDE: (nome: string, temPesoHoje: boolean) => ({
+      title: temPesoHoje
+        ? `Ótimo registro hoje, ${nome.split(' ')[0]}! 📊`
+        : `E aí, ${nome.split(' ')[0]}? Como foi seu dia? 📋`,
+      body: temPesoHoje
+        ? 'Você registrou seu peso hoje. Cada dado conta na sua evolução — continue assim!'
+        : 'Não esqueça de registrar como você está se sentindo. Seus dados constroem seu progresso!',
+      url: '/saude',
+      tag: 'checkin-tarde',
+      desc: 'Check-in diário às 19h seg–sex.',
+    }),
+  },
 };
 
 export type NotificationTemplateKey = string;

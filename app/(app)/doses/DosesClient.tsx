@@ -86,8 +86,8 @@ export function DosesClient({
       }
 
       let lado_corpo = 'abdomen';
-      if (localAplicacao.includes('esquerdo')) lado_corpo = 'esquerdo';
-      if (localAplicacao.includes('direito')) lado_corpo = 'direito';
+      if (localAplicacao.includes('esquerdo') || localAplicacao.includes('esquerda')) lado_corpo = 'esquerdo';
+      if (localAplicacao.includes('direito') || localAplicacao.includes('direita')) lado_corpo = 'direito';
 
       const { data: newDose, error: insertError } = await supabase
         .from('doses')
@@ -111,6 +111,7 @@ export function DosesClient({
       setShowForm(false);
       setFotoFile(null);
       setObservacoes("");
+      setLocalAplicacao("");
       setDataAplicacao(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (err: any) {

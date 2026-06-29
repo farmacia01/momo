@@ -36,7 +36,7 @@ export default async function DosesPage() {
     <DosesClient 
       userId={session.user.id} 
       initialDoses={doses || []} 
-      currentDoseMg={profile?.dose_atual_mg || 2.5}
+      currentDoseMg={doses?.[0]?.dose_mg ?? profile?.dose_atual_mg ?? 2.5}
       calculoDose={calculoDose}
     />
   );

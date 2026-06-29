@@ -15,7 +15,7 @@ export default async function DashboardPage() {
   const [profileResult, dosesResult, weightsResult, ampolasResult] = await Promise.all([
     supabase
       .from('profiles')
-      .select('nome, dose_atual_mg, data_inicio_tratamento, peso_meta, trial_expira_em, peso_inicial, altura_cm')
+      .select('nome, dose_atual_mg, data_inicio_tratamento, peso_meta, peso_inicial, altura_cm')
       .eq('id', session.user.id)
       .single(),
 
@@ -27,7 +27,7 @@ export default async function DashboardPage() {
 
     supabase
       .from('medicoes_saude')
-      .select('data_medicao, peso_kg')
+      .select('data_medicao, peso_kg, imc')
       .eq('user_id', session.user.id)
       .not('peso_kg', 'is', null)
       .order('data_medicao', { ascending: false })
@@ -73,7 +73,11 @@ export default async function DashboardPage() {
   
   const lastWeight = weights?.[0];
   const firstWeight = weights?.[weights.length - 1];
-  const weightDelta = (firstWeight?.peso_kg && lastWeight?.peso_kg) ? (firstWeight.peso_kg - lastWeight.peso_kg).toFixed(1) : 0;
+  // Prefer profile.peso_inicial as the baseline; fall back to oldest recorded measurement
+  const pesoBaselineDashboard = profile?.peso_inicial || firstWeight?.peso_kg;
+  const weightDelta = (pesoBaselineDashboard && lastWeight?.peso_kg)
+    ? (pesoBaselineDashboard - lastWeight.peso_kg).toFixed(1)
+    : 0;
   const daysSinceLastWeight = lastWeight ? differenceInDays(new Date(), new Date(lastWeight.data_medicao)) : null;
   
   const calculoDose = calcularProximaDose(

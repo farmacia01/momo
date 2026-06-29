@@ -98,7 +98,8 @@ export function DashboardClient({
   const pesoPerdido = Number(weightDelta) > 0 ? Number(weightDelta) : 0;
   const semanasShare = Math.max(1, weeksCompleted);
   const alturaM = (profile?.altura_cm || 0) / 100;
-  const imcShare = lastWeight?.peso_kg && alturaM > 0 ? lastWeight.peso_kg / (alturaM * alturaM) : 0;
+  const imcFrontend = lastWeight?.peso_kg && alturaM > 0 ? lastWeight.peso_kg / (alturaM * alturaM) : 0;
+  const imcShare = lastWeight?.imc || imcFrontend;
   const firstWeight = weights?.[weights.length - 1];
   const startDate = profile?.data_inicio_tratamento ? parseDateStr(profile.data_inicio_tratamento) : new Date();
   const diasTratamento = Math.max(1, differenceInDays(new Date(), startDate));
@@ -257,7 +258,7 @@ export function DashboardClient({
             variants={item}
             icon={<Scale className="w-4 h-4" />}
             label="Peso atual"
-            value={`${lastWeight?.peso_kg || '--'}`}
+            value={lastWeight?.peso_kg != null ? lastWeight.peso_kg.toFixed(1) : '--'}
             subValue="kg"
             badge={Number(weightDelta) > 0 ? `-${weightDelta}kg total` : undefined}
             accentColor="#ff6500"
@@ -314,7 +315,7 @@ export function DashboardClient({
               </h3>
               <p className="text-[11px] mt-0.5" style={{ color: lastDoseSubtextColor }}>
                 {lastDose
-                  ? `Há ${differenceInDays(new Date(), new Date(lastDose.data_aplicacao))} dias · ${lastDose.dose_mg}mg`
+                  ? `Há ${differenceInDays(new Date(), parseDateStr(lastDose.data_aplicacao))} dias · ${lastDose.dose_mg}mg`
                   : '---'}
               </p>
             </div>

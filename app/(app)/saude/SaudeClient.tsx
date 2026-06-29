@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { format, differenceInWeeks, differenceInDays, subDays } from "date-fns";
+import { parseDateStr } from "@/lib/utils/dose";
 import { ptBR } from "date-fns/locale";
 import { Plus, X, Scale, Activity, Trophy, TrendingDown, Star, AlertCircle, Droplets, ChevronDown, ChevronUp, TrendingUp, Target, Minus, Share2 } from "lucide-react";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
@@ -81,13 +82,13 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
 
   const handleMedicaoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!peso) {
-      toast.error("O peso é obrigatório");
+    const pesoNum = parseFloat(peso);
+    if (!peso || isNaN(pesoNum) || pesoNum <= 0) {
+      toast.error("Peso inválido");
       return;
     }
     setLoading(true);
     try {
-      const pesoNum = parseFloat(peso);
       const alturaM = (profile?.altura_cm || 0) / 100;
       const imc = alturaM > 0 ? pesoNum / (alturaM * alturaM) : null;
 
@@ -107,8 +108,8 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
 
       if (error) throw error;
 
-      // Se for a primeira medição ou se o peso inicial não estiver definido
-      if (medicoes.length === 0 || !profile?.peso_inicial) {
+      // Só define peso_inicial na primeira medição E se nunca foi configurado
+      if (medicoes.length === 0 && !profile?.peso_inicial) {
         await supabase.from('profiles').update({ peso_inicial: pesoNum }).eq('id', userId);
       }
 
@@ -157,8 +158,8 @@ export function SaudeClient({ userId, profile, initialMedicoes, initialSintomas 
   };
   const infoImc = getClassImc(imcAtual);
 
-  const dataInicio = profile?.data_inicio_tratamento ? new Date(profile.data_inicio_tratamento) : null;
-  const semanasTratamento = dataInicio ? Math.max(1, differenceInWeeks(new Date(), dataInicio)) : 1;
+  const dataInicio = profile?.data_inicio_tratamento ? parseDateStr(profile.data_inicio_tratamento) : null;
+  const semanasTratamento = dataInicio ? Math.max(1, differenceInWeeks(new Date(), dataInicio) + 1) : 1;
   const diasTratamento = dataInicio ? differenceInDays(new Date(), dataInicio) : 0;
   const mediaSemana = deltaPeso / semanasTratamento;
 

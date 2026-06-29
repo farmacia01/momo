@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
   const { fase, dose_mg, restricoes = [], forcar = false } = await req.json();
 
-  // Return cached recipes if < 7 days old and not forcing
+  // Always return cached recipes unless the user explicitly forces a refresh
   if (!forcar) {
     const { data: cached } = await supabase
       .from("receitas_geradas")
@@ -22,11 +22,10 @@ export async function POST(req: Request) {
       .maybeSingle();
 
     if (cached?.receitas) {
-      const ageDays = (Date.now() - new Date(cached.gerado_em).getTime()) / 86_400_000;
-      if (ageDays < 1) {
-        return NextResponse.json({ receitas: cached.receitas });
-      }
+      return NextResponse.json({ receitas: cached.receitas });
     }
+    // No cache yet and not forced — return empty immediately, don't call OpenAI
+    return NextResponse.json({ receitas: [] });
   }
 
   // --- Verificação de Limite Diário ---
