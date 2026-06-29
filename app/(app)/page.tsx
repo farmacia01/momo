@@ -60,12 +60,16 @@ export default async function DashboardPage() {
   const ampolasUsadas = doses?.length || 0;
   const totalAmpolas = Math.max(0, totalPurchased - ampolasUsadas);
 
-  // Calculations — prefer explicit start date, fall back to first dose, then today
-  const firstDoseDate = doses?.length ? parseDateStr(doses[doses.length - 1].data_aplicacao) : null;
+  // Calculations — use explicit start date (consistent with dieta page)
   const startTreatmentDate = profile?.data_inicio_tratamento
     ? parseDateStr(profile.data_inicio_tratamento)
-    : firstDoseDate ?? new Date();
-  const weeksCompleted = differenceInWeeks(new Date(), startTreatmentDate);
+    : null;
+  const firstDoseDate = doses?.length ? parseDateStr(doses[doses.length - 1].data_aplicacao) : null;
+  const weeksCompleted = startTreatmentDate
+    ? differenceInWeeks(new Date(), startTreatmentDate)
+    : firstDoseDate
+      ? differenceInWeeks(new Date(), firstDoseDate)
+      : 0;
   
   const lastWeight = weights?.[0];
   const firstWeight = weights?.[weights.length - 1];
