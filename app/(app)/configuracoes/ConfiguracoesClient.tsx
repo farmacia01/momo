@@ -73,13 +73,7 @@ export function ConfiguracoesClient({
             subtitle="Dados pessoais e senha"
             onClick={() => router.push("/configuracoes/usuario")}
           />
-          <Divider />
-          <NavItem
-            icon={<MapPin size={20} strokeWidth={2.5} />}
-            title="Endereço de Entrega"
-            subtitle={cidade ? `${cidade}${estado ? `/${estado}` : ""}` : "Não configurado"}
-            onClick={() => router.push("/configuracoes/endereco")}
-          />
+
           <Divider />
           <NavItem
             icon={<Star size={20} strokeWidth={2.5} />}
