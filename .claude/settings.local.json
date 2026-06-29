@@ -14,7 +14,8 @@
       "Bash(git push *)",
       "Bash(npm i *)",
       "Bash(vercel deploy *)",
-      "Bash(timeout 120 bash -c 'until grep -q \"Ready\" \"C:\\\\Users\\\\Ryan\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--baixados-monjaro\\\\2aba732b-86cb-42c6-8815-8b16248fe02f\\\\tasks\\\\b0moa3004.output\" 2>/dev/null; do sleep 5; done')"
+      "Bash(timeout 120 bash -c 'until grep -q \"Ready\" \"C:\\\\Users\\\\Ryan\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--baixados-monjaro\\\\2aba732b-86cb-42c6-8815-8b16248fe02f\\\\tasks\\\\b0moa3004.output\" 2>/dev/null; do sleep 5; done')",
+      "Bash(xargs grep -l \"last_seen\\\\|last_login\\\\|user_activity\\\\|activity_log\\\\|feature_usage\\\\|event_log\")"
     ]
   },
   "enabledPlugins": {
